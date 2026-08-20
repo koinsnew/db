@@ -401,7 +401,10 @@ div:where(.swal2-container){z-index:9999!important;}
       <span style="color:#3b82f6;">● 12:00~14:59</span>
       <span style="color:#22c55e;">● 15:00~</span>
     </div>
-    <div id="kakaoMap" style="width:100%;height:52vh;background:#eef2f7;display:flex;align-items:center;justify-content:center;color:var(--tx3);font-size:13px;">지도를 불러오는 중…</div>
+    <div style="position:relative;">
+      <div id="kakaoMap" style="width:100%;height:52vh;background:#eef2f7;display:flex;align-items:center;justify-content:center;color:var(--tx3);font-size:13px;">지도를 불러오는 중…</div>
+      <button id="mapMyLocBtn" onclick="window.mapMyLocation()" style="position:absolute;right:12px;bottom:12px;z-index:20;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:800;color:var(--tx1);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;display:flex;align-items:center;gap:5px;">📍 현재위치</button>
+    </div>
     <div id="mapInfoPanel" style="padding:12px 14px 96px;">
       <div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">핀을 누르면 다른 섭외지까지 거리·소요시간이 표시됩니다.</div>
     </div>
@@ -997,6 +1000,7 @@ var KAKAO_JS_KEY = '5f7844e9d97e6d3d47b03dd0ff42caac';
 var kakaoMapObj = null, kakaoSdkLoading = false;
 var mapMarkers = [], mapOverlays = [], mapVenuesGeo = [], geocodeCache = {};
 var mapFailedVenues = [], mapClickListener = null;
+var myLocMarker = null, myLocOverlay = null;
 var mapDate = null;   // 'YYYY-MM-DD' (지도는 하루 단위)
 
 function mapTodayStr(){
@@ -1057,6 +1061,36 @@ function loadKakaoSdk(cb){
 window.mapPrevDay = function(){ mapDate = mapShiftDay(mapDate, -1); syncMapDateInput(); renderMap(); };
 window.mapNextDay = function(){ mapDate = mapShiftDay(mapDate, 1);  syncMapDateInput(); renderMap(); };
 window.onMapDateChange = function(val){ if (!val) return; mapDate = val; renderMap(); };
+
+// 현재위치 점 이미지 (파란 점 + 반투명 원)
+function myLocDotImage(){
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">'
+    + '<circle cx="12" cy="12" r="11" fill="#2563eb" fill-opacity="0.22"/>'
+    + '<circle cx="12" cy="12" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"/></svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// 현재위치로 지도 이동 (브라우저 위치 권한 필요, HTTPS에서 동작)
+window.mapMyLocation = function(){
+  if (!kakaoMapObj){ window.toast('지도가 아직 준비되지 않았습니다', 'info'); return; }
+  if (!navigator.geolocation){ window.toast('이 브라우저는 위치 기능을 지원하지 않습니다', 'error'); return; }
+  window.toast('현재 위치를 찾는 중…', 'info');
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var latlng = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+    if (myLocMarker) myLocMarker.setMap(null);
+    if (myLocOverlay) myLocOverlay.setMap(null);
+    var img = new kakao.maps.MarkerImage(myLocDotImage(), new kakao.maps.Size(24, 24), { offset: new kakao.maps.Point(12, 12) });
+    myLocMarker = new kakao.maps.Marker({ position: latlng, image: img, map: kakaoMapObj, zIndex: 10 });
+    myLocOverlay = new kakao.maps.CustomOverlay({ position: latlng, yAnchor: 0, zIndex: 11,
+      content: '<div style="padding:1px 6px;background:#2563eb;color:#fff;font-size:11px;font-weight:700;border-radius:6px;white-space:nowrap;">현재위치</div>' });
+    myLocOverlay.setMap(kakaoMapObj);
+    kakaoMapObj.setCenter(latlng);
+    kakaoMapObj.setLevel(6);
+  }, function(err){
+    var msg = (err && err.code === 1) ? '위치 권한이 거부되었습니다. 브라우저 설정에서 위치 허용을 확인하세요' : '현재 위치를 가져오지 못했습니다';
+    window.toast(msg, 'error');
+  }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 });
+};
 
 window.loadMap = function(){
   mapDate = mapTodayStr();   // 지도 진입 시 항상 오늘 날짜 기본
