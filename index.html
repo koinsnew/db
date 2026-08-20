@@ -1249,6 +1249,45 @@ window.promptCancelContract = function(venueId, contractIndex, cName) {
   });
 };
 
+// 통계 청약 상세내역에서 '철회' — 청약취소 처리 후 통계/일정 동기화
+window.withdrawContractFromStats = function(venueId, contractIndex, cName, brieferName) {
+  Swal.fire({
+    title: '청약 철회',
+    input: 'text',
+    inputLabel: '철회 사유를 입력해주세요',
+    inputPlaceholder: '예) 고객 변심, 청약 철회 등',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    confirmButtonText: '철회 확정',
+    cancelButtonText: '닫기',
+    inputValidator: function(value) { if (!value) { return '사유를 입력해야 합니다!'; } }
+  }).then(function(result) {
+    if (!result.isConfirmed) return;
+    window.loading(true);
+    google.script.run
+      .withSuccessHandler(function(resStr) {
+        window.loading(false);
+        var res = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
+        if (!res || !res.success) { window.toast('철회 처리 중 오류가 발생했습니다','error'); return; }
+        window.toast('청약이 철회되었습니다','success');
+        // 통계 모달 데이터 즉시 반영 (해당 계약 취소 표시)
+        var b = brieferDetailData.find(function(x){ return x.name === brieferName; });
+        if (b && b.venues) {
+          var v = b.venues.find(function(x){ return String(x.id) === String(venueId); });
+          if (v && v.contracts && v.contracts[contractIndex]) {
+            v.contracts[contractIndex].type = 'cancelled';
+            v.contracts[contractIndex].cancelReason = result.value;
+          }
+        }
+        window.openBrieferContractDetail(brieferName);   // 모달 재렌더 (삭선 + 총 청약합계 갱신)
+        window.loadVenues();                             // 일정 → 청약취소 동기화
+        window.loadStats(false);                         // 세미나팀 업적현황 총 보험료 갱신
+      })
+      .withFailureHandler(function(){ window.loading(false); window.toast('철회 처리 중 오류가 발생했습니다','error'); })
+      .processScheduledContract(venueId, contractIndex, 'cancel', result.value);
+  });
+};
+
 window.doConfirmAssignment = function(id, brieferName) {
   window.loading(true);
   if (typeof google !== 'undefined' && google.script) {
@@ -2452,7 +2491,7 @@ window.openBrieferContractDetail = function(name) {
   let allContracts = [];
   bVenues.forEach(function(v) {
      v.contracts.forEach(function(c) {
-        if (c.type === 'complete' || c.type === 'scheduled' || !c.type) {
+        if (c.type === 'complete' || c.type === 'scheduled' || c.type === 'cancelled' || !c.type) {
            allContracts.push({
               venue: v,
               contract: c
@@ -2477,24 +2516,38 @@ window.openBrieferContractDetail = function(name) {
   const listHtml = allContracts.map(function(item) {
      const c = item.contract;
      const v = item.venue;
-     totalAmt += (Number(c.amount) || 0);
-     
+     const isCancelled = c.type === 'cancelled';
      const isSched = c.type === 'scheduled';
-     const statusBadge = isSched ? `<span style="font-size:10px;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;padding:2px 4px;border-radius:4px;">예정</span>` : `<span style="font-size:10px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:2px 4px;border-radius:4px;">완료</span>`;
+     if (!isCancelled) totalAmt += (Number(c.amount) || 0);   // 철회(취소)분은 합계 제외
+     const ci = (v.contracts || []).indexOf(c);
+
+     const statusBadge = isCancelled
+        ? `<span style="font-size:10px;background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb;padding:2px 4px;border-radius:4px;">철회됨</span>`
+        : (isSched ? `<span style="font-size:10px;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;padding:2px 4px;border-radius:4px;">예정</span>` : `<span style="font-size:10px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:2px 4px;border-radius:4px;">완료</span>`);
      const dateStr = c.completedAt || c.date || v.date;
+     const amtColor = isCancelled ? '#9ca3af' : (isSched ? '#ef4444' : '#16a34a');
+     const strike = isCancelled ? 'text-decoration:line-through;opacity:0.55;' : '';
+     const safeCN = String(c.name||'').replace(/[\\']/g,'');
+     const safeBN = String(name||'').replace(/[\\']/g,'');
+     const actionHtml = isCancelled
+        ? `<span style="font-size:10px;color:#9ca3af;">철회됨${c.cancelReason ? (' · ' + c.cancelReason) : ''}</span>`
+        : `<button onclick="window.withdrawContractFromStats('${v.id}', ${ci}, '${safeCN}', '${safeBN}')" style="font-size:11px;color:#ef4444;border:1px solid #fecaca;background:#fef2f2;border-radius:6px;padding:3px 10px;font-weight:700;cursor:pointer;">철회</button>`;
 
      return `
-     <div style="padding:10px 0;border-top:1px dashed var(--border2);">
+     <div style="padding:10px 0;border-top:1px dashed var(--border2);${strike}">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
            <div style="font-size:11px;color:var(--tx2);">${dateStr}</div>
            ${statusBadge}
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;">
            <div>
               <div style="font-size:13px;font-weight:700;color:var(--tx1);">${v.businessName}</div>
               <div style="font-size:12px;color:var(--tx2);margin-top:2px;">계약자: <strong>${c.name}</strong></div>
            </div>
-           <div style="font-size:14px;font-weight:900;color:${isSched ? '#ef4444' : '#16a34a'};">${(Number(c.amount)||0).toLocaleString()}원</div>
+           <div style="text-align:right;">
+              <div style="font-size:14px;font-weight:900;color:${amtColor};">${(Number(c.amount)||0).toLocaleString()}원</div>
+              <div style="margin-top:6px;">${actionHtml}</div>
+           </div>
         </div>
      </div>
      `;
