@@ -997,6 +997,7 @@ var KAKAO_JS_KEY = '5f7844e9d97e6d3d47b03dd0ff42caac';
 
 var kakaoMapObj = null, kakaoSdkLoading = false;
 var mapMarkers = [], mapOverlays = [], mapVenuesGeo = [], geocodeCache = {};
+var mapFailedVenues = [], mapClickListener = null;
 var mapDate = null;   // 'YYYY-MM-DD' (지도는 하루 단위)
 
 function mapTodayStr(){
@@ -1095,46 +1096,126 @@ function renderMap(){
   }
 
   var geocoder = new kakao.maps.services.Geocoder();
+  var places = new kakao.maps.services.Places();
   var bounds = new kakao.maps.LatLngBounds();
   var pending = list.length;
-  var failed = 0;
+  mapFailedVenues = [];
 
   list.forEach(function(v){
-    var addr = String(v.address).trim();
-    var place = function(loc){
-      if (loc){
-        var pos = new kakao.maps.LatLng(loc.lat, loc.lng);
-        var color = mapPinColor(v);
-        var img = new kakao.maps.MarkerImage(mapPinImage(color), new kakao.maps.Size(30, 42), { offset: new kakao.maps.Point(15, 42) });
-        var marker = new kakao.maps.Marker({ position: pos, image: img, map: kakaoMapObj, title: v.businessName });
-        var geoItem = { venue: v, lat: loc.lat, lng: loc.lng, marker: marker };
-        kakao.maps.event.addListener(marker, 'click', function(){ window.onMapPinClick(geoItem); });
-        if (v.assignedBriefer && String(v.assignedBriefer).trim()){
-          var ov = new kakao.maps.CustomOverlay({
-            position: pos, yAnchor: 0, zIndex: 3,
-            content: '<div style="padding:1px 6px;background:rgba(17,24,39,.82);color:#fff;font-size:11px;font-weight:700;border-radius:6px;white-space:nowrap;">' + v.assignedBriefer + '</div>'
-          });
-          ov.setMap(kakaoMapObj); mapOverlays.push(ov);
-        }
-        mapMarkers.push(marker);
-        mapVenuesGeo.push(geoItem);
-        bounds.extend(pos);
-      } else { failed++; }
+    geocodeVenue(geocoder, places, v, function(loc){
+      if (loc){ placeVenueMarker(v, loc, bounds); }
+      else { mapFailedVenues.push(v); }
       pending--;
       if (pending === 0){
         if (mapVenuesGeo.length > 0) kakaoMapObj.setBounds(bounds);
-        if (failed > 0) window.toast(failed + '곳은 주소를 좌표로 변환하지 못했습니다.', 'info');
+        if (mapFailedVenues.length > 0) renderMapFailedNotice();
       }
-    };
-    if (geocodeCache[addr]) { place(geocodeCache[addr]); return; }
-    geocoder.addressSearch(addr, function(result, status){
-      if (status === kakao.maps.services.Status.OK && result[0]){
-        var loc = { lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) };
-        geocodeCache[addr] = loc; place(loc);
-      } else { place(null); }
     });
   });
 }
+
+// 마커+라벨 배치 (자동/수동 공통)
+function placeVenueMarker(v, loc, bounds){
+  var pos = new kakao.maps.LatLng(loc.lat, loc.lng);
+  var color = mapPinColor(v);
+  var img = new kakao.maps.MarkerImage(mapPinImage(color), new kakao.maps.Size(30, 42), { offset: new kakao.maps.Point(15, 42) });
+  var marker = new kakao.maps.Marker({ position: pos, image: img, map: kakaoMapObj, title: v.businessName });
+  var geoItem = { venue: v, lat: loc.lat, lng: loc.lng, marker: marker };
+  kakao.maps.event.addListener(marker, 'click', function(){ window.onMapPinClick(geoItem); });
+  if (v.assignedBriefer && String(v.assignedBriefer).trim()){
+    var ov = new kakao.maps.CustomOverlay({
+      position: pos, yAnchor: 0, zIndex: 3,
+      content: '<div style="padding:1px 6px;background:rgba(17,24,39,.82);color:#fff;font-size:11px;font-weight:700;border-radius:6px;white-space:nowrap;">' + v.assignedBriefer + '</div>'
+    });
+    ov.setMap(kakaoMapObj); mapOverlays.push(ov);
+  }
+  mapMarkers.push(marker);
+  mapVenuesGeo.push(geoItem);
+  if (bounds) bounds.extend(pos);
+  return geoItem;
+}
+
+// 좌표 변환 캐스케이드: 수동저장 → 캐시 → 주소검색 → 키워드(장소)검색
+function geocodeVenue(geocoder, places, v, cb){
+  var addr = String(v.address || '').trim();
+  var mkey = addr || ('id:' + v.id);
+  var manual = getManualGeo(mkey);
+  if (manual){ cb(manual); return; }
+  if (addr && geocodeCache[addr]){ cb(geocodeCache[addr]); return; }
+
+  function save(item){
+    var loc = { lat: parseFloat(item.y), lng: parseFloat(item.x) };
+    if (addr) geocodeCache[addr] = loc;
+    cb(loc);
+  }
+  if (!addr){
+    var bn = String(v.businessName || '').trim();
+    if (!bn){ cb(null); return; }
+    places.keywordSearch(bn, function(r, st){
+      if (st === kakao.maps.services.Status.OK && r[0]){ save(r[0]); } else { cb(null); }
+    });
+    return;
+  }
+  geocoder.addressSearch(addr, function(r, st){
+    if (st === kakao.maps.services.Status.OK && r[0]){ save(r[0]); return; }
+    // 주소 파싱 실패 → 장소(키워드) 검색으로 폴백 (카카오맵 검색창과 동일 방식)
+    places.keywordSearch(addr, function(r2, st2){
+      if (st2 === kakao.maps.services.Status.OK && r2[0]){ save(r2[0]); } else { cb(null); }
+    });
+  });
+}
+
+// 수동 좌표 (이 기기 localStorage에 저장)
+function getManualGeo(key){
+  try { var s = localStorage.getItem('sp_geo:' + key); if (s){ var o = JSON.parse(s); if (o && o.lat && o.lng) return { lat:o.lat, lng:o.lng }; } } catch(e){}
+  return null;
+}
+function setManualGeo(key, lat, lng){
+  try { localStorage.setItem('sp_geo:' + key, JSON.stringify({ lat:lat, lng:lng })); } catch(e){}
+}
+
+// 좌표 못 찾은 섭외지 목록 (수동 지정 안내)
+window.showMapFailed = function(){ renderMapFailedNotice(); };
+function renderMapFailedNotice(){
+  var panel = document.getElementById('mapInfoPanel');
+  if (!mapFailedVenues || mapFailedVenues.length === 0){
+    panel.innerHTML = '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">핀을 누르면 다른 섭외지까지 거리·소요시간이 표시됩니다.</div>';
+    return;
+  }
+  var rows = mapFailedVenues.map(function(v){
+    var addr = String(v.address || '').trim();
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px dashed var(--border2);">'
+      + '<div style="min-width:0;"><div style="font-size:13px;font-weight:700;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (v.businessName || '(업체명 없음)') + '</div>'
+      + '<div style="font-size:11px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (addr || '(주소 없음)') + '</div></div>'
+      + '<button onclick="window.mapSetManual(\'' + String(v.id) + '\')" style="flex-shrink:0;font-size:11px;color:#2563eb;border:1px solid #bfdbfe;background:#eff6ff;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;white-space:nowrap;">지도에서 지정</button>'
+      + '</div>';
+  }).join('');
+  panel.innerHTML = '<div style="font-size:13px;font-weight:800;color:#b45309;margin-bottom:2px;">\u26a0\ufe0f 좌표를 못 찾은 섭외지 ' + mapFailedVenues.length + '곳</div>'
+    + '<div style="font-size:11px;color:var(--tx3);margin-bottom:2px;">‘지도에서 지정’을 누르고 지도에서 실제 위치를 클릭하면 핀이 생기고 이 기기에 저장됩니다.</div>'
+    + rows;
+}
+
+// 수동 위치 지정: 지도 클릭 한 번으로 좌표 지정
+window.mapSetManual = function(venueId){
+  var v = mapFailedVenues.find(function(x){ return String(x.id) === String(venueId); });
+  if (!v){ return; }
+  if (mapClickListener){ kakao.maps.event.removeListener(kakaoMapObj, 'click', mapClickListener); mapClickListener = null; }
+  window.toast('지도에서 ‘' + (v.businessName || '') + '’ 위치를 클릭하세요', 'info');
+  document.getElementById('mapInfoPanel').innerHTML =
+    '<div style="font-size:13px;font-weight:800;color:#2563eb;text-align:center;padding:16px;">\ud83d\udccd 지도에서 ‘' + (v.businessName || '') + '’ 위치를 클릭하세요</div>';
+  mapClickListener = function(mouseEvent){
+    var latlng = mouseEvent.latLng;
+    var mkey = String(v.address || '').trim() || ('id:' + v.id);
+    setManualGeo(mkey, latlng.getLat(), latlng.getLng());
+    placeVenueMarker(v, { lat: latlng.getLat(), lng: latlng.getLng() }, null);
+    mapFailedVenues = mapFailedVenues.filter(function(x){ return String(x.id) !== String(venueId); });
+    kakao.maps.event.removeListener(kakaoMapObj, 'click', mapClickListener); mapClickListener = null;
+    window.toast('‘' + (v.businessName || '') + '’ 위치가 저장되었습니다', 'success');
+    renderMapFailedNotice();
+  };
+  kakao.maps.event.addListener(kakaoMapObj, 'click', mapClickListener);
+};
+
 
 window.onMapPinClick = function(origin){
   var panel = document.getElementById('mapInfoPanel');
@@ -1142,7 +1223,8 @@ window.onMapPinClick = function(origin){
   others.forEach(function(g){ g._dist = mapHaversineKm(origin.lat, origin.lng, g.lat, g.lng); });
   others.sort(function(a, b){ return a._dist - b._dist; });
 
-  var head = '<div style="font-size:13px;font-weight:800;color:var(--tx1);margin-bottom:6px;">📍 기준: ' + origin.venue.businessName
+  var failLink = (mapFailedVenues && mapFailedVenues.length) ? '<div style="margin-bottom:6px;"><button onclick="window.showMapFailed()" style="font-size:11px;color:#b45309;border:1px solid #fde68a;background:#fffbeb;border-radius:6px;padding:3px 8px;font-weight:700;cursor:pointer;">⚠️ 좌표 미표시 ' + mapFailedVenues.length + '곳 보기</button></div>' : '';
+  var head = failLink + '<div style="font-size:13px;font-weight:800;color:var(--tx1);margin-bottom:6px;">📍 기준: ' + origin.venue.businessName
     + ' <span style="font-size:11px;color:var(--tx3);font-weight:600;">(' + (origin.venue.time || '') + ' · ' + (origin.venue.assignedBriefer || '미배정') + ')</span></div>';
 
   if (others.length === 0){ panel.innerHTML = head + '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:12px;">이 날짜의 다른 섭외지가 없습니다.</div>'; return; }
