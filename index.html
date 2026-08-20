@@ -387,6 +387,27 @@ div:where(.swal2-container){z-index:9999!important;}
     </div>
   </div>
 
+  <div id="pg-map" class="pg" style="display:none;padding:0;">
+    <div style="padding:12px 14px 6px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <div style="font-size:18px;font-weight:900;color:var(--tx1);">🗺️ 섭외지 지도</div>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button onclick="window.mapPrevMonth()" class="btn btn-ghost" style="padding:4px 10px;font-size:14px;">◀</button>
+        <span id="mapMonthLabel" style="font-size:13px;font-weight:800;color:var(--tx1);min-width:64px;text-align:center;"></span>
+        <button onclick="window.mapNextMonth()" class="btn btn-ghost" style="padding:4px 10px;font-size:14px;">▶</button>
+      </div>
+    </div>
+    <div style="padding:0 14px 8px;display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--tx2);font-weight:600;">
+      <span style="color:#ef4444;">● ~11:59</span>
+      <span style="color:#3b82f6;">● 12:00~14:59</span>
+      <span style="color:#22c55e;">● 15:00~</span>
+      <span style="color:#111827;">● 배정됨</span>
+    </div>
+    <div id="kakaoMap" style="width:100%;height:52vh;background:#eef2f7;display:flex;align-items:center;justify-content:center;color:var(--tx3);font-size:13px;">지도를 불러오는 중…</div>
+    <div id="mapInfoPanel" style="padding:12px 14px 96px;">
+      <div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">핀을 누르면 다른 섭외지까지 거리·소요시간이 표시됩니다.</div>
+    </div>
+  </div>
+
   <nav class="bnav">
     <button class="bni" id="ni-myonly" style="display:none;" onclick="window.toggleMyOnly()">
       <span class="bni-ic" id="myonly-ic">👤</span><span style="font-size:10px;white-space:nowrap;">내일정만</span>
@@ -399,6 +420,9 @@ div:where(.swal2-container){z-index:9999!important;}
     </button>
     <button class="bni" id="ni-personal" style="display:none;" onclick="window.openPersonal()">
       <span class="bni-ic">🏖️</span><span style="font-size:10px;white-space:nowrap;">개인일정</span>
+    </button>
+    <button class="bni" id="ni-map" style="display:none;" onclick="window.goPage('map')">
+      <span class="bni-ic">🗺️</span><span style="font-size:10px;white-space:nowrap;">지도</span>
     </button>
     <button class="bni" id="ni-stats" style="display:none;" onclick="window.goPage('stats')">
       <span class="bni-ic">📊</span><span style="font-size:10px;white-space:nowrap;">통계</span>
@@ -928,6 +952,9 @@ window.afterLogin = function(u, name, pw) {
   } else {
      statBtn.style.display = 'none';
   }
+
+  // 지도: 관리자만 노출
+  document.getElementById('ni-map').style.display = window.isAdmin(u.role) ? 'flex' : 'none';
   
   window.goPage('list');
 };
@@ -946,7 +973,7 @@ window.handleLogout = function() {
 
 window.goPage = function(id) {
   // 모달(개인일정) 제외한 메인 페이지만 토글
-  ['list','input','stats'].forEach(function(p) {
+  ['list','input','stats','map'].forEach(function(p) {
     document.getElementById('pg-'+p).style.display = p===id ? 'block' : 'none';
     const ni = document.getElementById('ni-'+p);
     if (ni) {
@@ -956,6 +983,193 @@ window.goPage = function(id) {
   });
   if (id==='list')  window.loadVenues();
   if (id==='stats') window.loadStats();
+  if (id==='map')   window.loadMap();
+};
+
+// --------------------------------------------------
+//  MAP (섭외지 지도) — 관리자 전용, 카카오맵
+//  핀 색: ~11:59 빨강 / 12:00~14:59 파랑 / 15:00~ 초록 / 배정됨 검정
+//  핀 아래 배정 브리퍼 이름. 핀 클릭 시 다른 섭외지까지 거리·차로시간.
+//  ▼ 카카오 개발자(developers.kakao.com) > 내 앱 > 앱 키 > JavaScript 키로 아래 값 교체,
+//    그리고 플랫폼 > Web > 사이트 도메인에 배포 도메인(예: https://koinsnew.github.io) 등록.
+// --------------------------------------------------
+var KAKAO_JS_KEY = 'YOUR_KAKAO_JAVASCRIPT_KEY';
+
+var kakaoMapObj = null, kakaoSdkLoading = false;
+var mapMarkers = [], mapOverlays = [], mapVenuesGeo = [], geocodeCache = {};
+var mapMonth = null;
+
+function mapShiftMonth(ym, delta){
+  var p = ym.split('-');
+  var d = new Date(parseInt(p[0]), parseInt(p[1]) - 1 + delta, 1);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function mapHaversineKm(lat1, lng1, lat2, lng2){
+  var R = 6371, toR = Math.PI / 180;
+  var dLat = (lat2 - lat1) * toR, dLng = (lng2 - lng1) * toR;
+  var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*toR)*Math.cos(lat2*toR)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function mapPinColor(v){
+  if (v.assignedBriefer && String(v.assignedBriefer).trim()) return '#111827';   // 배정됨 검정
+  var mins = 24 * 60;
+  var m = String(v.time || '').match(/(\d{1,2}):(\d{2})/);
+  if (m) mins = parseInt(m[1]) * 60 + parseInt(m[2]);
+  if (mins < 12 * 60) return '#ef4444';   // ~11:59
+  if (mins < 15 * 60) return '#3b82f6';   // 12:00~14:59
+  return '#22c55e';                       // 15:00~
+}
+
+function mapPinImage(color){
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 30 42">'
+    + '<path d="M15 0C7 0 0.5 6.5 0.5 14.5 0.5 25 15 42 15 42S29.5 25 29.5 14.5C29.5 6.5 23 0 15 0z" fill="' + color + '" stroke="#ffffff" stroke-width="1.5"/>'
+    + '<circle cx="15" cy="14.5" r="5.5" fill="#ffffff"/></svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+function loadKakaoSdk(cb){
+  if (window.kakao && window.kakao.maps && window.kakao.maps.services) { cb(); return; }
+  if (kakaoSdkLoading){
+    var iv = setInterval(function(){
+      if (window.kakao && window.kakao.maps && window.kakao.maps.services){ clearInterval(iv); cb(); }
+    }, 120);
+    return;
+  }
+  kakaoSdkLoading = true;
+  var sc = document.createElement('script');
+  sc.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_JS_KEY + '&libraries=services&autoload=false';
+  sc.onload = function(){ kakao.maps.load(cb); };
+  sc.onerror = function(){
+    kakaoSdkLoading = false;
+    document.getElementById('kakaoMap').innerHTML =
+      '<div style="padding:24px;text-align:center;color:#ef4444;font-size:13px;line-height:1.6;">지도 SDK를 불러오지 못했습니다.<br>카카오 JavaScript 키와 사이트 도메인 등록을 확인해주세요.</div>';
+  };
+  document.head.appendChild(sc);
+}
+
+window.mapPrevMonth = function(){ mapMonth = mapShiftMonth(mapMonth, -1); document.getElementById('mapMonthLabel').innerText = mapMonth.replace('-', '.'); renderMap(); };
+window.mapNextMonth = function(){ mapMonth = mapShiftMonth(mapMonth, 1);  document.getElementById('mapMonthLabel').innerText = mapMonth.replace('-', '.'); renderMap(); };
+
+window.loadMap = function(){
+  if (!mapMonth) mapMonth = curMonth || (new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0'));
+  document.getElementById('mapMonthLabel').innerText = mapMonth.replace('-', '.');
+  if (KAKAO_JS_KEY === 'YOUR_KAKAO_JAVASCRIPT_KEY'){
+    document.getElementById('kakaoMap').innerHTML =
+      '<div style="padding:24px;text-align:center;color:#ef4444;font-size:13px;line-height:1.7;">카카오 지도 키가 설정되지 않았습니다.<br>index.html의 KAKAO_JS_KEY 값을 카카오 JavaScript 키로 교체하세요.</div>';
+    return;
+  }
+  loadKakaoSdk(function(){ renderMap(); });
+};
+
+function renderMap(){
+  mapMarkers.forEach(function(m){ m.setMap(null); }); mapMarkers = [];
+  mapOverlays.forEach(function(o){ o.setMap(null); }); mapOverlays = [];
+  mapVenuesGeo = [];
+  var panel = document.getElementById('mapInfoPanel');
+  panel.innerHTML = '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">핀을 누르면 다른 섭외지까지 거리·소요시간이 표시됩니다.</div>';
+
+  if (!kakaoMapObj){
+    kakaoMapObj = new kakao.maps.Map(document.getElementById('kakaoMap'), {
+      center: new kakao.maps.LatLng(37.5665, 126.9780), level: 8
+    });
+  }
+
+  var all = (typeof venues !== 'undefined' && venues) ? venues : [];
+  var list = all.filter(function(v){
+    return v.date && v.date.indexOf(mapMonth) === 0
+        && v.status !== '삭제' && v.status !== '취소' && !(String(v.status || '')).includes('취소')
+        && v.address && String(v.address).trim();
+  });
+
+  if (list.length === 0){
+    panel.innerHTML = '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">' + mapMonth.replace('-', '.') + ' 에 표시할 섭외지(주소 입력분)가 없습니다.</div>';
+    return;
+  }
+
+  var geocoder = new kakao.maps.services.Geocoder();
+  var bounds = new kakao.maps.LatLngBounds();
+  var pending = list.length;
+  var failed = 0;
+
+  list.forEach(function(v){
+    var addr = String(v.address).trim();
+    var place = function(loc){
+      if (loc){
+        var pos = new kakao.maps.LatLng(loc.lat, loc.lng);
+        var color = mapPinColor(v);
+        var img = new kakao.maps.MarkerImage(mapPinImage(color), new kakao.maps.Size(30, 42), { offset: new kakao.maps.Point(15, 42) });
+        var marker = new kakao.maps.Marker({ position: pos, image: img, map: kakaoMapObj, title: v.businessName });
+        var geoItem = { venue: v, lat: loc.lat, lng: loc.lng, marker: marker };
+        kakao.maps.event.addListener(marker, 'click', function(){ window.onMapPinClick(geoItem); });
+        if (v.assignedBriefer && String(v.assignedBriefer).trim()){
+          var ov = new kakao.maps.CustomOverlay({
+            position: pos, yAnchor: 0, zIndex: 3,
+            content: '<div style="padding:1px 6px;background:rgba(17,24,39,.82);color:#fff;font-size:11px;font-weight:700;border-radius:6px;white-space:nowrap;">' + v.assignedBriefer + '</div>'
+          });
+          ov.setMap(kakaoMapObj); mapOverlays.push(ov);
+        }
+        mapMarkers.push(marker);
+        mapVenuesGeo.push(geoItem);
+        bounds.extend(pos);
+      } else { failed++; }
+      pending--;
+      if (pending === 0){
+        if (mapVenuesGeo.length > 0) kakaoMapObj.setBounds(bounds);
+        if (failed > 0) window.toast(failed + '곳은 주소를 좌표로 변환하지 못했습니다.', 'info');
+      }
+    };
+    if (geocodeCache[addr]) { place(geocodeCache[addr]); return; }
+    geocoder.addressSearch(addr, function(result, status){
+      if (status === kakao.maps.services.Status.OK && result[0]){
+        var loc = { lat: parseFloat(result[0].y), lng: parseFloat(result[0].x) };
+        geocodeCache[addr] = loc; place(loc);
+      } else { place(null); }
+    });
+  });
+}
+
+window.onMapPinClick = function(origin){
+  var panel = document.getElementById('mapInfoPanel');
+  var others = mapVenuesGeo.filter(function(g){ return g !== origin; });
+  others.forEach(function(g){ g._dist = mapHaversineKm(origin.lat, origin.lng, g.lat, g.lng); });
+  others.sort(function(a, b){ return a._dist - b._dist; });
+
+  var head = '<div style="font-size:13px;font-weight:800;color:var(--tx1);margin-bottom:6px;">📍 기준: ' + origin.venue.businessName
+    + ' <span style="font-size:11px;color:var(--tx3);font-weight:600;">(' + (origin.venue.time || '') + ' · ' + (origin.venue.assignedBriefer || '미배정') + ')</span></div>';
+
+  if (others.length === 0){ panel.innerHTML = head + '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:12px;">이 달의 다른 섭외지가 없습니다.</div>'; return; }
+
+  var rows = others.map(function(g, i){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px dashed var(--border2);">'
+      + '<div style="min-width:0;"><div style="font-size:13px;font-weight:700;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + g.venue.businessName + '</div>'
+      + '<div style="font-size:11px;color:var(--tx3);">' + (g.venue.time || '') + ' · ' + (g.venue.assignedBriefer || '미배정') + '</div></div>'
+      + '<div style="text-align:right;flex-shrink:0;padding-left:10px;"><div style="font-size:13px;font-weight:800;color:#2563eb;">' + g._dist.toFixed(1) + 'km</div>'
+      + '<div id="mroute_' + i + '" style="font-size:11px;color:var(--tx3);">🚗 계산중…</div></div></div>';
+  }).join('');
+  panel.innerHTML = head + rows;
+
+  others.forEach(function(g, i){ window.fetchMapDriveTime(origin, g, 'mroute_' + i); });
+};
+
+window.fetchMapDriveTime = function(origin, dest, elId){
+  var showEst = function(){
+    var el = document.getElementById(elId); if (!el) return;
+    var estMin = Math.max(1, Math.round(dest._dist * 1.3 / 30 * 60));   // 직선×1.3, 시속30km 가정
+    el.innerHTML = '🚗 약 ' + estMin + '분 (추정)';
+  };
+  google.script.run
+    .withSuccessHandler(function(resStr){
+      var el = document.getElementById(elId); if (!el) return;
+      var r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
+      if (r && r.ok){
+        el.innerHTML = '🚗 ' + (r.distance / 1000).toFixed(1) + 'km · ' + Math.round(r.duration / 60) + '분';
+        el.style.color = '#111827';
+      } else { showEst(); }
+    })
+    .withFailureHandler(showEst)
+    .getDrivingRoute(origin.lng, origin.lat, dest.lng, dest.lat);
 };
 
 // --------------------------------------------------
