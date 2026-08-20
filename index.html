@@ -391,9 +391,9 @@ div:where(.swal2-container){z-index:9999!important;}
     <div style="padding:12px 14px 6px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
       <div style="font-size:18px;font-weight:900;color:var(--tx1);">🗺️ 섭외지 지도</div>
       <div style="display:flex;align-items:center;gap:4px;">
-        <button onclick="window.mapPrevMonth()" class="btn btn-ghost" style="padding:4px 10px;font-size:14px;">◀</button>
-        <span id="mapMonthLabel" style="font-size:13px;font-weight:800;color:var(--tx1);min-width:64px;text-align:center;"></span>
-        <button onclick="window.mapNextMonth()" class="btn btn-ghost" style="padding:4px 10px;font-size:14px;">▶</button>
+        <button onclick="window.mapPrevDay()" class="btn btn-ghost" style="padding:4px 10px;font-size:14px;">◀</button>
+        <input type="date" id="mapDateInput" class="inp" style="padding:4px 6px;font-size:12px;width:140px;text-align:center;" onchange="window.onMapDateChange(this.value)">
+        <button onclick="window.mapNextDay()" class="btn btn-ghost" style="padding:4px 10px;font-size:14px;">▶</button>
       </div>
     </div>
     <div style="padding:0 14px 8px;display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--tx2);font-weight:600;">
@@ -997,13 +997,18 @@ var KAKAO_JS_KEY = '5f7844e9d97e6d3d47b03dd0ff42caac';
 
 var kakaoMapObj = null, kakaoSdkLoading = false;
 var mapMarkers = [], mapOverlays = [], mapVenuesGeo = [], geocodeCache = {};
-var mapMonth = null;
+var mapDate = null;   // 'YYYY-MM-DD' (지도는 하루 단위)
 
-function mapShiftMonth(ym, delta){
-  var p = ym.split('-');
-  var d = new Date(parseInt(p[0]), parseInt(p[1]) - 1 + delta, 1);
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+function mapTodayStr(){
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
+function mapShiftDay(ds, delta){
+  var p = ds.split('-');
+  var d = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]) + delta);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function syncMapDateInput(){ var el = document.getElementById('mapDateInput'); if (el) el.value = mapDate; }
 
 function mapHaversineKm(lat1, lng1, lat2, lng2){
   var R = 6371, toR = Math.PI / 180;
@@ -1049,12 +1054,13 @@ function loadKakaoSdk(cb){
   document.head.appendChild(sc);
 }
 
-window.mapPrevMonth = function(){ mapMonth = mapShiftMonth(mapMonth, -1); document.getElementById('mapMonthLabel').innerText = mapMonth.replace('-', '.'); renderMap(); };
-window.mapNextMonth = function(){ mapMonth = mapShiftMonth(mapMonth, 1);  document.getElementById('mapMonthLabel').innerText = mapMonth.replace('-', '.'); renderMap(); };
+window.mapPrevDay = function(){ mapDate = mapShiftDay(mapDate, -1); syncMapDateInput(); renderMap(); };
+window.mapNextDay = function(){ mapDate = mapShiftDay(mapDate, 1);  syncMapDateInput(); renderMap(); };
+window.onMapDateChange = function(val){ if (!val) return; mapDate = val; renderMap(); };
 
 window.loadMap = function(){
-  if (!mapMonth) mapMonth = curMonth || (new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0'));
-  document.getElementById('mapMonthLabel').innerText = mapMonth.replace('-', '.');
+  mapDate = mapTodayStr();   // 지도 진입 시 항상 오늘 날짜 기본
+  syncMapDateInput();
   if (KAKAO_JS_KEY === 'YOUR_KAKAO_JAVASCRIPT_KEY'){
     document.getElementById('kakaoMap').innerHTML =
       '<div style="padding:24px;text-align:center;color:#ef4444;font-size:13px;line-height:1.7;">카카오 지도 키가 설정되지 않았습니다.<br>index.html의 KAKAO_JS_KEY 값을 카카오 JavaScript 키로 교체하세요.</div>';
@@ -1078,13 +1084,13 @@ function renderMap(){
 
   var all = (typeof venues !== 'undefined' && venues) ? venues : [];
   var list = all.filter(function(v){
-    return v.date && v.date.indexOf(mapMonth) === 0
+    return v.date === mapDate
         && v.status !== '삭제' && v.status !== '취소' && !(String(v.status || '')).includes('취소')
         && v.address && String(v.address).trim();
   });
 
   if (list.length === 0){
-    panel.innerHTML = '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">' + mapMonth.replace('-', '.') + ' 에 표시할 섭외지(주소 입력분)가 없습니다.</div>';
+    panel.innerHTML = '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">' + mapDate + ' 에 표시할 섭외지(주소 입력분)가 없습니다.</div>';
     return;
   }
 
@@ -1139,7 +1145,7 @@ window.onMapPinClick = function(origin){
   var head = '<div style="font-size:13px;font-weight:800;color:var(--tx1);margin-bottom:6px;">📍 기준: ' + origin.venue.businessName
     + ' <span style="font-size:11px;color:var(--tx3);font-weight:600;">(' + (origin.venue.time || '') + ' · ' + (origin.venue.assignedBriefer || '미배정') + ')</span></div>';
 
-  if (others.length === 0){ panel.innerHTML = head + '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:12px;">이 달의 다른 섭외지가 없습니다.</div>'; return; }
+  if (others.length === 0){ panel.innerHTML = head + '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:12px;">이 날짜의 다른 섭외지가 없습니다.</div>'; return; }
 
   var rows = others.map(function(g, i){
     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px dashed var(--border2);">'
