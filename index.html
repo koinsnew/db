@@ -955,8 +955,8 @@ window.afterLogin = function(u, name, pw) {
      statBtn.style.display = 'none';
   }
 
-  // 지도: 관리자만 노출
-  document.getElementById('ni-map').style.display = window.isAdmin(u.role) ? 'flex' : 'none';
+  // 지도: 관리자·섭외자 노출
+  document.getElementById('ni-map').style.display = (window.isAdmin(u.role) || u.role.includes('섭외자')) ? 'flex' : 'none';
   
   window.goPage('list');
 };
