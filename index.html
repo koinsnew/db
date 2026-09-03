@@ -410,6 +410,14 @@ div:where(.swal2-container){z-index:9999!important;}
     </div>
   </div>
 
+  <div id="pendingAssignBar" style="display:none;position:fixed;left:0;right:0;bottom:66px;z-index:45;padding:10px 14px;background:#4f46e5;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.22);align-items:center;justify-content:space-between;gap:10px;">
+    <span id="pendingAssignText" style="font-size:13px;font-weight:800;">배정 대기 0건</span>
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+      <button onclick="window.discardPendingAssign()" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">취소</button>
+      <button onclick="window.commitPendingAssign()" style="background:#fff;color:#4f46e5;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;">배정완료</button>
+    </div>
+  </div>
+
   <nav class="bnav">
     <button class="bni" id="ni-myonly" style="display:none;" onclick="window.toggleMyOnly()">
       <span class="bni-ic" id="myonly-ic">👤</span><span style="font-size:10px;white-space:nowrap;">내일정만</span>
@@ -1116,6 +1124,7 @@ function renderMap(){
     });
   }
 
+  applyPendingToVenues();
   var all = (typeof venues !== 'undefined' && venues) ? venues : [];
   var list = all.filter(function(v){
     return v.date === mapDate
@@ -1154,7 +1163,11 @@ function placeVenueMarker(v, loc, bounds){
   var img = new kakao.maps.MarkerImage(mapPinImage(color), new kakao.maps.Size(30, 42), { offset: new kakao.maps.Point(15, 42) });
   var marker = new kakao.maps.Marker({ position: pos, image: img, map: kakaoMapObj, title: v.businessName });
   var geoItem = { venue: v, lat: loc.lat, lng: loc.lng, marker: marker };
-  kakao.maps.event.addListener(marker, 'click', function(){ window.onMapPinClick(geoItem); });
+  kakao.maps.event.addListener(marker, 'click', function(){
+    var unassigned = !(v.assignedBriefer && String(v.assignedBriefer).trim());
+    if (unassigned && window.isAdmin(ME.role)) { window.openAssign(String(v.id)); }   // 지사장·본부장만 배정
+    else { window.onMapPinClick(geoItem); }
+  });
   if (v.assignedBriefer && String(v.assignedBriefer).trim()){
     var ov = new kakao.maps.CustomOverlay({
       position: pos, yAnchor: 0, zIndex: 3,
@@ -1745,6 +1758,7 @@ window.toggleMyOnly = function() {
 };
 
 window.renderList = function() {
+  applyPendingToVenues();
   const admin    = window.isAdmin(ME.role);
   const briefer  = ME.role.includes('브리퍼');
   const recruiter= ME.role.includes('섭외자');
@@ -2483,6 +2497,58 @@ window.openDetail = function(id) {
 // --------------------------------------------------
 //  ASSIGN MODAL
 // --------------------------------------------------
+// --------------------------------------------------
+//  브리퍼 배정 스테이징 — 즉시 저장하지 않고 모아서 '배정완료' 시 일괄 저장 (관리자)
+// --------------------------------------------------
+var pendingAssign = {};   // venueId -> 브리퍼명 (저장 전 임시)
+
+function applyPendingToVenues(){
+  if (typeof venues === 'undefined' || !venues) return;
+  venues.forEach(function(v){
+    var pb = pendingAssign[String(v.id)];
+    if (pb){ v.assignedBriefer = pb; v._pendingAssign = true; if (v.status === '대기중') v.status = '배정됨'; }
+  });
+}
+function mapVisible(){ var el = document.getElementById('pg-map'); return el && el.style.display !== 'none'; }
+window.renderPendingBar = function(){
+  var bar = document.getElementById('pendingAssignBar');
+  if (!bar) return;
+  var n = Object.keys(pendingAssign).length;
+  if (n > 0){ bar.style.display = 'flex'; document.getElementById('pendingAssignText').innerText = '배정 대기 ' + n + '건 · 저장 전'; }
+  else { bar.style.display = 'none'; }
+};
+window.commitPendingAssign = function(){
+  var ids = Object.keys(pendingAssign);
+  if (ids.length === 0) return;
+  window.loading(true, '배정 저장 중...');
+  var i = 0, errs = 0;
+  function next(){
+    if (i >= ids.length){
+      window.loading(false);
+      pendingAssign = {};
+      window.renderPendingBar();
+      window.toast(errs ? (errs + '건 저장 실패') : '배정이 저장되었습니다', errs ? 'error' : 'success');
+      window.loadVenues();
+      if (mapVisible()){ try { renderMap(); } catch(e){} }
+      return;
+    }
+    var id = ids[i], br = pendingAssign[id];
+    google.script.run
+      .withSuccessHandler(function(resStr){ var r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr; if (!r || !r.success) errs++; i++; next(); })
+      .withFailureHandler(function(){ errs++; i++; next(); })
+      .assignBriefer(id, br);
+  }
+  next();
+};
+window.discardPendingAssign = function(){
+  if (Object.keys(pendingAssign).length === 0) return;
+  pendingAssign = {};
+  window.renderPendingBar();
+  window.toast('배정 대기를 취소했습니다', 'info');
+  window.loadVenues();
+  if (mapVisible()){ try { renderMap(); } catch(e){} }
+};
+
 window.openAssign = function(id) {
   assignId = id;
   const sel = document.getElementById('brieferSel');
@@ -2498,15 +2564,14 @@ window.openAssign = function(id) {
 window.doAssign = function() {
   const br = document.getElementById('brieferSel').value;
   if (!br) { window.toast('브리퍼를 선택해주세요','warning'); return; }
-  window.closeM('mAssign'); window.loading(true);
-  if (typeof google !== 'undefined' && google.script) {
-    google.script.run.withSuccessHandler(function(resStr) {
-      window.loading(false);
-      const r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
-      if (r.success) { window.toast(br + '님에게 배정되었습니다', 'success'); window.loadVenues(); }
-      else window.toast('오류: '+(r.error||''),'error');
-    }).withFailureHandler(function(e) { window.loading(false); window.toast('오류: '+e,'error'); }).assignBriefer(assignId, br);
-  } else { window.loading(false); window.toast('로컬 모드','info'); }
+  window.closeM('mAssign');
+  // 즉시 저장하지 않고 대기 목록에 추가 → '배정완료' 시 일괄 저장
+  pendingAssign[String(assignId)] = br;
+  applyPendingToVenues();
+  window.renderPendingBar();
+  window.toast(br + '님 배정 예정 — 배정완료를 눌러 저장하세요', 'info');
+  try { window.renderList(); } catch(e){}
+  if (mapVisible()){ try { renderMap(); } catch(e){} }
 };
 
 // --------------------------------------------------
