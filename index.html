@@ -803,7 +803,7 @@ window.onMonthChange = function() {
   selectedCalDate = '';
   document.getElementById('stat_start').value = '';
   document.getElementById('stat_end').value = '';
-  ensureMonths([prevMonthStr(curMonth), curMonth], function(){ window.renderList(); });
+  ensureMonths([curMonth], function(){ window.renderList(); });
   const spg = document.getElementById('pg-stats');
   if (spg && spg.style.display !== 'none') window.loadStats(false);
 };
@@ -1775,7 +1775,7 @@ window.loadVenues = function(done) {
   document.getElementById('calendarGrid').innerHTML = '<div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div>';
   if (!(typeof google !== 'undefined' && google.script)) { venues = []; personalSchedules = []; extraCosts = []; window.renderList(); if (done) done(); return; }
   loadedMonths = []; venues = []; personalSchedules = []; extraCosts = [];
-  ensureMonths([prevMonthStr(curMonth), curMonth], function(err) {
+  ensureMonths([curMonth], function(err) {   // 초기엔 당월만 로딩(속도). 다른 달은 이동 시 온디맨드
     if (err) {
       document.getElementById('calendarGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--red);padding:20px;">데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';
       if (done) done(err); return;
