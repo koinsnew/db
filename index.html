@@ -706,6 +706,7 @@ var extraCosts = [];
 var curFilter = 'all';
 var myOnly = false;   // '내일정만' 필터 (브리퍼/섭외자)
 var curMonth = '';
+var loadedMonths = [];   // 로드된 월 목록 (최근 2개월 + 온디맨드)
 var curVenueId = null;
 var editVenueId = null;
 var editPersonalId = null;
@@ -802,7 +803,7 @@ window.onMonthChange = function() {
   selectedCalDate = '';
   document.getElementById('stat_start').value = '';
   document.getElementById('stat_end').value = '';
-  window.renderList();
+  ensureMonths([prevMonthStr(curMonth), curMonth], function(){ window.renderList(); });
   const spg = document.getElementById('pg-stats');
   if (spg && spg.style.display !== 'none') window.loadStats(false);
 };
@@ -1066,9 +1067,9 @@ function loadKakaoSdk(cb){
   document.head.appendChild(sc);
 }
 
-window.mapPrevDay = function(){ mapDate = mapShiftDay(mapDate, -1); syncMapDateInput(); renderMap(); };
-window.mapNextDay = function(){ mapDate = mapShiftDay(mapDate, 1);  syncMapDateInput(); renderMap(); };
-window.onMapDateChange = function(val){ if (!val) return; mapDate = val; renderMap(); };
+window.mapPrevDay = function(){ mapDate = mapShiftDay(mapDate, -1); syncMapDateInput(); renderMapEnsured(); };
+window.mapNextDay = function(){ mapDate = mapShiftDay(mapDate, 1);  syncMapDateInput(); renderMapEnsured(); };
+window.onMapDateChange = function(val){ if (!val) return; mapDate = val; renderMapEnsured(); };
 
 // 현재위치 점 이미지 (파란 점 + 반투명 원)
 function myLocDotImage(){
@@ -1108,7 +1109,7 @@ window.loadMap = function(){
       '<div style="padding:24px;text-align:center;color:#ef4444;font-size:13px;line-height:1.7;">카카오 지도 키가 설정되지 않았습니다.<br>index.html의 KAKAO_JS_KEY 값을 카카오 JavaScript 키로 교체하세요.</div>';
     return;
   }
-  loadKakaoSdk(function(){ renderMap(); });
+  loadKakaoSdk(function(){ renderMapEnsured(); });
 };
 
 function renderMap(){
@@ -1735,17 +1736,48 @@ window.setFilter = function(f, el) {
   window.renderList();
 };
 
-window.loadVenues = function() {
+// --------------------------------------------------
+//  데이터 로딩 최적화: 최근 2개월(이번달+지난달)만 로드 + 오래된 달 온디맨드 (속도/안정화)
+// --------------------------------------------------
+function safeParse(x){ try { return (typeof x === 'string') ? JSON.parse(x) : (x || null); } catch(e){ return null; } }
+function prevMonthStr(ym){ var pp = (ym || '').split('-'); if (pp.length < 2) return ym; var d = new Date(parseInt(pp[0]), parseInt(pp[1]) - 2, 1); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+function monthOf(dateStr){ return String(dateStr || '').slice(0, 7); }
+function dedupeById(arr){ var seen = {}; return (arr || []).filter(function(x){ if (!x || seen[x.id]) return false; seen[x.id] = true; return true; }); }
+
+// 필요한 월들을 서버에서 로드(아직 없는 것만) 후 병합. cb(err)
+function ensureMonths(months, cb){
+  var missing = (months || []).filter(function(m){ return m && loadedMonths.indexOf(m) < 0; });
+  if (missing.length === 0){ if (cb) cb(); return; }
+  if (!(typeof google !== 'undefined' && google.script)){ if (cb) cb(); return; }
+  google.script.run
+    .withSuccessHandler(function(resStr){
+      var res = safeParse(resStr);
+      if (res){
+        venues = dedupeById((venues || []).filter(function(v){ return missing.indexOf(monthOf(v.date)) < 0; }).concat(res.venues || []));
+        personalSchedules = dedupeById((personalSchedules || []).filter(function(x){ return missing.indexOf(monthOf(x.date)) < 0; }).concat(res.personal || []));
+        extraCosts = dedupeById((extraCosts || []).filter(function(x){ return missing.indexOf(monthOf(x.date)) < 0; }).concat(res.extraCosts || []));
+        missing.forEach(function(m){ if (loadedMonths.indexOf(m) < 0) loadedMonths.push(m); });
+        if (cb) cb();
+      } else { if (cb) cb(new Error('parse')); }
+    })
+    .withFailureHandler(function(e){ if (cb) cb(e || new Error('load')); })
+    .getAllSchedules(missing);
+}
+function renderMapEnsured(){ ensureMonths([monthOf(mapDate)], function(){ try { renderMap(); } catch(e){} }); }
+
+window.loadVenues = function(done) {
+  if (!curMonth) { var _d = new Date(); curMonth = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0'); }
   document.getElementById('calendarGrid').innerHTML = '<div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div>';
-  if (typeof google !== 'undefined' && google.script) {
-    google.script.run.withSuccessHandler(function(resStr) { 
-      const res = JSON.parse(resStr);
-      venues = res.venues;
-      personalSchedules = res.personal;
-      extraCosts = res.extraCosts || [];
-      window.renderList(); 
-    }).withFailureHandler(function(e) { document.getElementById('calendarGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--red);padding:20px;">오류: ' + e + '</div>'; }).getAllSchedules();
-  } else { venues = []; personalSchedules = []; extraCosts = []; window.renderList(); }
+  if (!(typeof google !== 'undefined' && google.script)) { venues = []; personalSchedules = []; extraCosts = []; window.renderList(); if (done) done(); return; }
+  loadedMonths = []; venues = []; personalSchedules = []; extraCosts = [];
+  ensureMonths([prevMonthStr(curMonth), curMonth], function(err) {
+    if (err) {
+      document.getElementById('calendarGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--red);padding:20px;">데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';
+      if (done) done(err); return;
+    }
+    window.renderList();
+    if (done) done();
+  });
 };
 
 window.toggleMyOnly = function() {
@@ -2528,8 +2560,7 @@ window.commitPendingAssign = function(){
       pendingAssign = {};
       window.renderPendingBar();
       window.toast(errs ? (errs + '건 저장 실패') : '배정이 저장되었습니다', errs ? 'error' : 'success');
-      window.loadVenues();
-      if (mapVisible()){ try { renderMap(); } catch(e){} }
+      window.loadVenues(function(){ if (mapVisible()){ try { renderMap(); } catch(e){} } });
       return;
     }
     var id = ids[i], br = pendingAssign[id];
@@ -2545,8 +2576,7 @@ window.discardPendingAssign = function(){
   pendingAssign = {};
   window.renderPendingBar();
   window.toast('배정 대기를 취소했습니다', 'info');
-  window.loadVenues();
-  if (mapVisible()){ try { renderMap(); } catch(e){} }
+  window.loadVenues(function(){ if (mapVisible()){ try { renderMap(); } catch(e){} } });
 };
 
 window.openAssign = function(id) {
