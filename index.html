@@ -803,7 +803,7 @@ window.onMonthChange = function() {
   selectedCalDate = '';
   document.getElementById('stat_start').value = '';
   document.getElementById('stat_end').value = '';
-  ensureMonths([curMonth], function(){ window.renderList(); });
+  window.renderList();   // 다른 달은 주별 '보기' 버튼으로 로드
   const spg = document.getElementById('pg-stats');
   if (spg && spg.style.display !== 'none') window.loadStats(false);
 };
@@ -1750,32 +1750,59 @@ function monthOf(dateStr){ return String(dateStr || '').slice(0, 7); }
 function dedupeById(arr){ var seen = {}; return (arr || []).filter(function(x){ if (!x || seen[x.id]) return false; seen[x.id] = true; return true; }); }
 
 // 필요한 월들을 서버에서 로드(아직 없는 것만) 후 병합. cb(err)
-function ensureMonths(months, cb){
-  var missing = (months || []).filter(function(m){ return m && loadedMonths.indexOf(m) < 0; });
-  if (missing.length === 0){ if (cb) cb(); return; }
+// ===== 주 단위 로딩 =====
+var loadedWeeks = {};   // weekKey(일요일 YYYY-MM-DD) -> true
+function pad2(n){ return ('0' + n).slice(-2); }
+function toISO(d){ return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+function weekKeyOf(dateStr){
+  var d = dateStr ? new Date(dateStr + 'T00:00:00') : new Date();
+  if (isNaN(d.getTime())) d = new Date();
+  d.setDate(d.getDate() - d.getDay());   // 그 주의 일요일로
+  return toISO(d);
+}
+function weekRange(weekKey){
+  var sdt = new Date(weekKey + 'T00:00:00');
+  var edt = new Date(sdt); edt.setDate(edt.getDate() + 6);
+  return { start: toISO(sdt), end: toISO(edt) };
+}
+// 한 주를 로드(이미 있으면 건너뜀). cb(err)
+function ensureWeek(weekKey, cb){
+  if (!weekKey){ if (cb) cb(); return; }
+  if (loadedWeeks[weekKey]){ if (cb) cb(); return; }
   if (!(typeof google !== 'undefined' && google.script)){ if (cb) cb(); return; }
+  var rng = weekRange(weekKey);
   google.script.run
     .withSuccessHandler(function(resStr){
       var res = safeParse(resStr);
       if (res){
-        venues = dedupeById((venues || []).filter(function(v){ return missing.indexOf(monthOf(v.date)) < 0; }).concat(res.venues || []));
-        personalSchedules = dedupeById((personalSchedules || []).filter(function(x){ return missing.indexOf(monthOf(x.date)) < 0; }).concat(res.personal || []));
-        extraCosts = dedupeById((extraCosts || []).filter(function(x){ return missing.indexOf(monthOf(x.date)) < 0; }).concat(res.extraCosts || []));
-        missing.forEach(function(m){ if (loadedMonths.indexOf(m) < 0) loadedMonths.push(m); });
+        venues = dedupeById((venues || []).concat(res.venues || []));
+        personalSchedules = dedupeById((personalSchedules || []).concat(res.personal || []));
+        extraCosts = dedupeById((extraCosts || []).concat(res.extraCosts || []));
+        loadedWeeks[weekKey] = true;
         if (cb) cb();
       } else { if (cb) cb(new Error('parse')); }
     })
     .withFailureHandler(function(e){ if (cb) cb(e || new Error('load')); })
-    .getAllSchedules(missing);
+    .getAllSchedules(null, rng.start, rng.end);
 }
-function renderMapEnsured(){ ensureMonths([monthOf(mapDate)], function(){ try { renderMap(); } catch(e){} }); }
+function loadWeeksSeq(weeks, cb){
+  var i = 0; (function next(){ if (i >= weeks.length){ if (cb) cb(); return; } ensureWeek(weeks[i], function(e){ if (e){ if (cb) cb(e); return; } i++; next(); }); })();
+}
+// 주별 '보기' 버튼에서 호출
+window.loadWeekAndRender = function(weekKey){
+  window.loading(true, '불러오는 중...');
+  ensureWeek(weekKey, function(err){ window.loading(false); if (err){ window.toast('불러오지 못했습니다','error'); return; } window.renderList(); });
+};
+function renderMapEnsured(){ ensureWeek(weekKeyOf(mapDate), function(){ try { renderMap(); } catch(e){} }); }
 
 window.loadVenues = function(done) {
   if (!curMonth) { var _d = new Date(); curMonth = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0'); }
   document.getElementById('calendarGrid').innerHTML = '<div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div>';
   if (!(typeof google !== 'undefined' && google.script)) { venues = []; personalSchedules = []; extraCosts = []; window.renderList(); if (done) done(); return; }
-  loadedMonths = []; venues = []; personalSchedules = []; extraCosts = [];
-  ensureMonths([curMonth], function(err) {   // 초기엔 당월만 로딩(속도). 다른 달은 이동 시 온디맨드
+  var weeks = Object.keys(loadedWeeks);
+  if (weeks.length === 0) { weeks = [ weekKeyOf(selectedCalDate || toISO(new Date())) ]; }   // 로그인 시 이번주만
+  loadedWeeks = {}; venues = []; personalSchedules = []; extraCosts = [];
+  loadWeeksSeq(weeks, function(err) {
     if (err) {
       document.getElementById('calendarGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--red);padding:20px;">데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';
       if (done) done(err); return;
@@ -1962,7 +1989,12 @@ window.renderCalendar = function(fullList, cardList) {
         }
       }
       
-      if (hasSelectedInWeek) {
+      var rowWeekKey = weekKeyOf(y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0'));
+      if (!loadedWeeks[rowWeekKey]) {
+        var _rng = weekRange(rowWeekKey);
+        html += `<div style="grid-column:1/-1; margin:4px 0 12px; text-align:center;"><button onclick="window.loadWeekAndRender(''+rowWeekKey+'')" style="width:100%; background:#eff6ff; color:#2563eb; border:1px dashed #93c5fd; border-radius:10px; padding:8px; font-size:12px; font-weight:800; cursor:pointer;">📅 이 주 섭외 보기 (${_rng.start.slice(5).replace('-','.')} ~ ${_rng.end.slice(5).replace('-','.')})</button></div>`;
+        hasSelectedInWeek = false;
+      } else if (hasSelectedInWeek) {
         html += `<div id="venueList" style="grid-column: 1 / -1; background:#f8fafc; border-radius:14px; padding:12px 10px; margin:6px 0 12px; border:2px solid #bfdbfe; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); animation: pgIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); overflow:hidden;"></div>`;
         hasSelectedInWeek = false; 
       }
@@ -1976,12 +2008,11 @@ window.renderCalendar = function(fullList, cardList) {
 };
 
 window.onSelectDate = function(dateStr) {
-  if (selectedCalDate === dateStr) {
-      selectedCalDate = '';
-  } else {
-      selectedCalDate = dateStr;
-  }
-  window.renderList();
+  if (selectedCalDate === dateStr) { selectedCalDate = ''; window.renderList(); return; }
+  selectedCalDate = dateStr;
+  var wk = weekKeyOf(dateStr);
+  if (!loadedWeeks[wk]) { window.loadWeekAndRender(wk); }   // 안 불린 주면 그 주 로드
+  else { window.renderList(); }
 };
 
 // --------------------------------------------------
