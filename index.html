@@ -231,7 +231,7 @@ div:where(.swal2-container){z-index:9999!important;}
   <div class="login-card">
     <div style="text-align:center;margin-bottom:36px;">
       <div class="logo">세미나 PRO</div>
-      <div class="logo-sub">HERITAGE SEMINAR SYSTEM</div>
+      <div class="logo-sub">헤리티지 마스터 본부</div>
     </div>
     <div style="margin-bottom:16px;">
       <div class="fl">이름</div>
@@ -812,21 +812,26 @@ window.loadUsers = function() {
   window.loading(true, '세미나 영업지원 프로그램에 접속중입니다...');
   isDbLoaded = false;
   if (typeof google !== 'undefined' && google.script) {
-    google.script.run
-      .withSuccessHandler(function(u) { 
-          DB = u; 
-          isDbLoaded = true; 
-          window.checkAutoLogin();
-      })
-      .withFailureHandler(function(e) { 
-         console.error(e); 
-         isDbLoaded = true; 
-         window.loading(false);
-         window.toast('데이터를 불러오지 못했습니다. 앱을 새로고침 해주세요.', 'error');
-         // 로딩 숨기고 로그인 창은 표시
-         document.getElementById('loginScreen').style.display = 'flex';
-      })
-      .getUserList();
+    var _uTries = 0;
+    var _loadUsersAttempt = function() {
+      _uTries++;
+      google.script.run
+        .withSuccessHandler(function(u) { 
+            DB = u || []; 
+            isDbLoaded = true; 
+            window.checkAutoLogin();
+        })
+        .withFailureHandler(function(e) { 
+           if (_uTries < 3) { setTimeout(_loadUsersAttempt, 1200); return; }   // 서버 콜드스타트/일시 오류 대비 재시도
+           console.error(e); 
+           isDbLoaded = true; 
+           window.loading(false);
+           window.toast('서버 연결이 지연되고 있습니다. 잠시 후 새로고침 해주세요.', 'error');
+           document.getElementById('loginScreen').style.display = 'flex';
+        })
+        .getUserList();
+    };
+    _loadUsersAttempt();
   } else {
     // Local Testing fallback
     DB = [
