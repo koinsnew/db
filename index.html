@@ -410,6 +410,14 @@ div:where(.swal2-container){z-index:9999!important;}
     </div>
   </div>
 
+  <div id="sendSelectBar" style="display:none;position:fixed;left:0;right:0;bottom:66px;z-index:44;padding:10px 14px;background:#10b981;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.22);align-items:center;justify-content:space-between;gap:10px;">
+    <span id="sendSelectText" style="font-size:13px;font-weight:800;">결과 전달 선택 0건</span>
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+      <button onclick="window.clearSendSelect()" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">취소</button>
+      <button onclick="window.commitSendSelected()" style="background:#fff;color:#10b981;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;">📨 일괄 전달</button>
+    </div>
+  </div>
+
   <div id="pendingAssignBar" style="display:none;position:fixed;left:0;right:0;bottom:66px;z-index:45;padding:10px 14px;background:#4f46e5;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.22);align-items:center;justify-content:space-between;gap:10px;">
     <span id="pendingAssignText" style="font-size:13px;font-weight:800;">배정 대기 0건</span>
     <div style="display:flex;gap:6px;flex-shrink:0;">
@@ -525,6 +533,7 @@ div:where(.swal2-container){z-index:9999!important;}
       <div style="font-size:18px;font-weight:800;color:var(--tx1);">브리퍼 배정</div>
       <button onclick="window.closeM('mAssign')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;border-radius:8px;">✕</button>
     </div>
+    <div id="assignVenueInfo" style="display:none;background:#f8fafc;border:1px solid var(--border2);border-radius:10px;padding:10px 12px;margin-bottom:16px;"></div>
     <div style="margin-bottom:20px;"><div class="fl">브리퍼 선택</div>
       <select id="brieferSel" class="inp"><option value="">-- 브리퍼 선택 --</option></select></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -2351,6 +2360,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
       }
       else if (v.status === '결과입력완료' && !v.resultSentToRecruiter) {
         btnsHtml.push(`<button onclick="event.stopPropagation();window.openResult('${v.id}')" class="btn btn-ghost" style="font-size:12px;padding:7px 12px;border-color:var(--blue);color:var(--blue);">결과 수정</button>`);
+        btnsHtml.push(`<label onclick="event.stopPropagation();" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#16a34a;cursor:pointer;padding:7px 8px;border:1px solid #bbf7d0;border-radius:8px;"><input type="checkbox" ${selectedForSend[v.id]?'checked':''} onchange="event.stopPropagation();window.toggleSendSelect('${v.id}', this.checked)" style="width:15px;height:15px;accent-color:#16a34a;"> 전달선택</label>`);
         btnsHtml.push(`<button onclick="event.stopPropagation();window.doSendRecruiter('${v.id}')" class="btn btn-green">📨 결과전달</button>`);
       }
     }
@@ -2569,6 +2579,7 @@ window.openDetail = function(id) {
 //  브리퍼 배정 스테이징 — 즉시 저장하지 않고 모아서 '배정완료' 시 일괄 저장 (관리자)
 // --------------------------------------------------
 var pendingAssign = {};   // venueId -> 브리퍼명 (저장 전 임시)
+var selectedForSend = {};   // venueId -> true (결과 일괄 전달 선택)
 
 function applyPendingToVenues(){
   if (typeof venues === 'undefined' || !venues) return;
@@ -2624,6 +2635,15 @@ window.openAssign = function(id) {
   });
   const v = venues.find(function(x) { return x.id===id; });
   if (v && v.assignedBriefer) sel.value = v.assignedBriefer;
+  var info = document.getElementById('assignVenueInfo');
+  if (info) {
+    if (v) {
+      info.style.display = 'block';
+      info.innerHTML = '<div style="font-size:15px;font-weight:800;color:var(--tx1);">' + (v.businessName || '(업체명 없음)') + '</div>'
+        + '<div style="font-size:11px;color:var(--tx3);margin-top:3px;">' + (v.date || '') + (v.time ? ' ' + v.time : '') + (v.recruiter ? ' · 섭외자 ' + v.recruiter : '') + '</div>'
+        + (v.notes ? '<div style="font-size:12px;color:var(--tx1);margin-top:8px;white-space:pre-wrap;line-height:1.5;"><span style="color:var(--tx3);font-weight:700;">비고: </span>' + v.notes + '</div>' : '<div style="font-size:12px;color:var(--tx3);margin-top:8px;">비고 없음</div>');
+    } else { info.style.display = 'none'; info.innerHTML = ''; }
+  }
   document.getElementById('mAssign').style.display = 'flex';
 };
 
@@ -3373,6 +3393,44 @@ window.doSendRecruiter = function(id) {
         .withFailureHandler(function(e) { window.loading(false); window.toast('오류: ' + e, 'error'); })
         .sendResultToRecruiter(id);
     } else { window.loading(false); window.toast('로컬 모드', 'info'); }
+  });
+};
+
+// 결과 복수 선택 + 일괄 전달
+window.toggleSendSelect = function(id, checked){
+  if (checked) selectedForSend[String(id)] = true; else delete selectedForSend[String(id)];
+  window.renderSendBar();
+};
+window.renderSendBar = function(){
+  var bar = document.getElementById('sendSelectBar'); if (!bar) return;
+  var n = Object.keys(selectedForSend).length;
+  if (n > 0){ bar.style.display = 'flex'; document.getElementById('sendSelectText').innerText = '결과 전달 선택 ' + n + '건'; }
+  else { bar.style.display = 'none'; }
+};
+window.clearSendSelect = function(){ selectedForSend = {}; window.renderSendBar(); try { window.renderList(); } catch(e){} };
+window.commitSendSelected = function(){
+  var ids = Object.keys(selectedForSend);
+  if (ids.length === 0) return;
+  Swal.fire({ title: '결과 일괄 전달', text: ids.length + '건의 섭외 결과를 각 섭외자에게 전달하시겠습니까?', icon: 'question', showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#9ca3af', confirmButtonText: '📨 전달', cancelButtonText: '취소', background:'#ffffff', color:'#111827' }).then(function(r){
+    if (!r.isConfirmed) return;
+    window.loading(true, '결과 전달 중...');
+    var i = 0, errs = 0;
+    function next(){
+      if (i >= ids.length){
+        window.loading(false);
+        var total = ids.length;
+        selectedForSend = {};
+        window.renderSendBar();
+        window.toast(errs ? (errs + '건 전달 실패') : (total + '건 결과가 전달되었습니다'), errs ? 'error' : 'success');
+        window.loadVenues();
+        return;
+      }
+      google.script.run
+        .withSuccessHandler(function(resStr){ var res = typeof resStr === 'string' ? JSON.parse(resStr) : resStr; if (!res || !res.success) errs++; i++; next(); })
+        .withFailureHandler(function(){ errs++; i++; next(); })
+        .sendResultToRecruiter(ids[i]);
+    }
+    next();
   });
 };
 
