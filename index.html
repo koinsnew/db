@@ -33,7 +33,7 @@ body{font-family:'Noto Sans KR','Malgun Gothic',sans-serif;background:var(--bg0)
 
 /* ─── FOCUS / A11Y ─── */
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px;}
-.inp:focus-visible{outline:none;}
+.inp:focus-visible{outline:2px solid var(--blue);outline-offset:1px;}
 button{font-family:inherit;}
 .tap{min-height:44px;min-width:44px;}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}}
@@ -1038,6 +1038,7 @@ window.goPage = function(id) {
         else ni.classList.remove('on');
     }
   });
+  ['list','input','stats','map'].forEach(function(p){ var n=document.getElementById('ni-'+p); if(n){ if(p===id) n.setAttribute('aria-current','page'); else n.removeAttribute('aria-current'); } });
   if (id==='list')  window.loadVenues();
   if (id==='stats') window.loadStats();
   if (id==='map')   window.loadMap();
@@ -1476,7 +1477,7 @@ window.personalCard = function(v, admin, briefer, isMyPersonal) {
             </div>`;
   }
 
-  return `<div class="vcrd" style="background-color:#fef3c7; border-color:#fcd34d; border-left:4px solid #b45309; opacity:0.95; padding: 12px 10px;">
+  return `<div class="vcrd" style="background-color:#fef3c7; border-color:#fcd34d; border-left:4px solid #b45309; padding: 12px 10px;">
     <div style="display:flex; flex-direction:column; align-items:flex-start;">
       <span class="badge" style="background:#fffbeb;color:#92400e;border:1px solid #fde68a;font-size:12px; margin-bottom:8px;">🏖️ 개인일정</span>
       <div style="width:100%; min-width:0;">
@@ -1927,11 +1928,11 @@ window.renderList = function() {
       }
   });
   
-  document.getElementById('tab-all').innerHTML = `전체 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countAll}</span>`;
-  document.getElementById('tab-wait').innerHTML = `대기중 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countWait}</span>`;
-  document.getElementById('tab-assign').innerHTML = `배정됨 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countAssign}</span>`;
-  document.getElementById('tab-sched').innerHTML = `청약예정 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countSched}</span>`;
-  document.getElementById('tab-done').innerHTML = `결과완료 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countDone}</span>`;
+  document.getElementById('tab-all').innerHTML = `전체 <span style="font-size:12px;font-weight:800;margin-left:2px;">${countAll}</span>`;
+  document.getElementById('tab-wait').innerHTML = `대기중 <span style="font-size:12px;font-weight:800;margin-left:2px;">${countWait}</span>`;
+  document.getElementById('tab-assign').innerHTML = `배정됨 <span style="font-size:12px;font-weight:800;margin-left:2px;">${countAssign}</span>`;
+  document.getElementById('tab-sched').innerHTML = `청약예정 <span style="font-size:12px;font-weight:800;margin-left:2px;">${countSched}</span>`;
+  document.getElementById('tab-done').innerHTML = `결과완료 <span style="font-size:12px;font-weight:800;margin-left:2px;">${countDone}</span>`;
 
   let cardList;
   if (curFilter === '청약예정') {
@@ -1991,7 +1992,7 @@ window.renderCalendar = function(fullList, cardList) {
              addr = addr.replace(/[0-9]/g, '*');
          }
          
-         let displayTitleRaw = `${brieferName}/${addr}`;
+         let displayTitleRaw = (admin || v.isMine) ? `${(v.time||'').slice(0,5)} ${v.businessName||addr}` : `${(v.time||'').slice(0,5)} ${brieferName}/${addr}`;
          displayTitle = displayTitleRaw;
 
          if (v.isScheduledEvent) { evClass = 'ev-sched'; displayTitle = `[예정] ${displayTitleRaw}`; }
@@ -2002,7 +2003,7 @@ window.renderCalendar = function(fullList, cardList) {
          }
          else if(v.status === '취소' || v.status.includes('취소')) evClass = 'ev-cancel';
       }
-      return `<div class="cal-ev ${evClass}">${displayTitle}</div>`;
+      return `<div class="cal-ev ${evClass}" aria-hidden="true">${displayTitle}</div>`;
     }).join('');
 
     const isSelected = selectedCalDate === dateStr ? 'selected' : '';
@@ -2070,7 +2071,7 @@ window.renderDayVenues = function(dateStr, list) {
         <div style="font-size:16px; font-weight:900; color:var(--blue); display:flex; align-items:center; gap:6px;">
             <span style="font-size:20px;">🗓️</span> ${m}월 ${d}일 타임테이블
         </div>
-        <button onclick="event.stopPropagation(); window.onSelectDate('${dateStr}')" style="background:var(--bg1); border:1px solid #c5dcf2; color:var(--blue); width:28px; height:28px; border-radius:50%; font-size:14px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 2px rgba(0,0,0,0.05);">✕</button>
+        <button aria-label="날짜 패널 닫기" class="tap" onclick="event.stopPropagation(); window.onSelectDate('${dateStr}')" style="background:var(--bg1); border:1px solid #c5dcf2; color:var(--blue); width:44px; height:44px; border-radius:50%; font-size:14px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 2px rgba(0,0,0,0.05);">✕</button>
     </div>
   `;
 
@@ -2306,7 +2307,7 @@ window.venueCardOther = function(v) {
     ? `<span>👥${v.attendees}명 <strong style="color:var(--red);">➔ ${v.actualAttendees}명</strong></span>`
     : `<span>👥${v.attendees}명</span>`;
 
-  return `<div class="vcrd" style="opacity:0.65; padding: 12px 10px; ${bgStyle}">
+  return `<div class="vcrd" style="opacity:0.85; padding: 12px 10px; ${bgStyle}">
     <div style="display:flex; flex-direction:column; align-items:flex-start;">
       <span class="badge b-wait" style="font-size:12px; margin-bottom:8px;">타일정</span>
       <div style="width:100%; min-width:0;">
@@ -2404,7 +2405,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
         if (!v.brieferConfirmed) {
           btnsHtml.push(`<button onclick="event.stopPropagation();window.doConfirmAssignment('${v.id}', '${v.assignedBriefer}')" class="btn btn-indigo">일정 확인</button>`);
         } else {
-          btnsHtml.push(`<button disabled class="btn btn-ghost" style="padding:7px 12px;font-size:12px;color:#15803d;border-color:#15803d;opacity:0.8;cursor:default;">일정 확인 완료</button>`);
+          btnsHtml.push(`<button disabled class="btn btn-ghost" style="padding:7px 12px;font-size:12px;color:#15803d;border-color:#15803d;cursor:default;">일정 확인 완료</button>`);
         }
         btnsHtml.push(`<button onclick="event.stopPropagation();window.openResult('${v.id}')" class="btn btn-sm-gold">결과 입력</button>`);
       }
@@ -3526,6 +3527,8 @@ window.closeM = function(id) {
   var overlays = document.querySelectorAll('.moverlay');
   overlays.forEach(function(el){
     el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true');
+    var _t = el.querySelector('h1,h2,h3,[style*="font-weight:900"],[style*="font-weight:800"]');
+    if (_t && _t.textContent.trim()) el.setAttribute('aria-label', _t.textContent.trim().replace(/\s+/g,' ').slice(0,40));
     new MutationObserver(function(){
       if (el.style.display && el.style.display !== 'none' && !el._opener) {
         el._opener = el._lastActive || null;
