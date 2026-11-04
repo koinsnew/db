@@ -294,6 +294,46 @@ div:where(.swal2-container){z-index:9999!important;}
   .cal-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--tx2);padding:0 4px 8px;}
   .cal-legend i{display:inline-block;width:12px;height:7px;border-radius:3px;margin-right:4px;vertical-align:middle;}
 }
+/* ─── round 4: hierarchy, size, contrast, shape cues, PC split ─── */
+.more-sep{height:1px;background:var(--border2);margin:6px 2px;flex:none;}
+.more-menu .btn-danger{margin-top:0;}
+.danger-zone{margin-top:28px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.danger-zone span{font-size:13px;color:var(--tx2);}
+.vcrd .btn{font-size:14px!important;}
+.ftab{min-height:44px;font-size:13px;}
+.srch-inp{min-height:44px;}
+.mp-yr{min-width:44px;min-height:44px;padding:0!important;border:none!important;background:transparent!important;box-shadow:none!important;display:inline-flex;align-items:center;justify-content:center;}
+.b-wait{color:#4b5563;}
+.rpill.rp-none,.rp-cancelled{color:#4b5563;}
+#todayBtn.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:800;}
+#todayBtn.flash{animation:todayPulse .55s cubic-bezier(.16,1,.3,1);}
+@keyframes todayPulse{0%{box-shadow:0 0 0 0 rgba(0,102,204,.5)}100%{box-shadow:0 0 0 12px rgba(0,102,204,0)}}
+.brand-mark{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;background:var(--blue);color:#fff;font-size:14px;}
+.hdr{border-top:3px solid var(--blue);}
+#dayPane{display:none;}
+.dayph{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:48px 20px;color:var(--tx2);font-size:14px;line-height:1.6;border:1px dashed var(--border2);border-radius:14px;background:var(--bg1);}
+.dayph i{font-size:28px;color:var(--blue);}
+.sw{display:inline-block;width:16px;height:7px;border-radius:3px;margin-right:4px;vertical-align:middle;}
+.sw-wait{background:#8a8f98;}.sw-assign{background:var(--blue);}.sw-personal{background:#b45309;}
+.sw-sched{background:repeating-linear-gradient(135deg,#15803d 0 3px,#6fb98a 3px 6px);}
+.sw-done{background:repeating-linear-gradient(90deg,#4f46e5 0 4px,#a5a1f5 4px 6px);}
+.sw-failed{background:radial-gradient(circle,#fff 1px,transparent 1.6px) 0 0/5px 5px,#c62828;}
+.sw-cancel{border:1px dashed #6b7280;}
+@media (max-width: 600px) {
+  .ev-sched{background:repeating-linear-gradient(135deg,#15803d 0 3px,#6fb98a 3px 6px)!important;}
+  .ev-done{background:repeating-linear-gradient(90deg,#4f46e5 0 4px,#a5a1f5 4px 6px)!important;}
+  .ev-failed{background:radial-gradient(circle,#fff 1px,transparent 1.6px) 0 0/5px 5px,#c62828!important;}
+  .cal-legend i{width:16px;}
+}
+@media (min-width: 1024px) {
+  .pg:not(#pg-map){max-width:1100px;margin-left:auto;margin-right:auto;width:100%;box-sizing:border-box;}
+  #pg-input{max-width:640px!important;}
+  .hdr>div{max-width:1100px;margin-left:auto;margin-right:auto;}
+  .bnav{left:50%;right:auto;width:560px;transform:translateX(-50%);border:1px solid var(--border);border-bottom:0;border-radius:16px 16px 0 0;}
+  #cal-split{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:20px;align-items:start;}
+  #cal-split .cal-wrapper{margin-bottom:0;}
+  #dayPane{display:block;position:sticky;top:84px;max-height:calc(100vh - 170px);overflow-y:auto;}
+}
 </style>
 </head>
 <body>
@@ -334,8 +374,8 @@ div:where(.swal2-container){z-index:9999!important;}
 
   <div class="hdr">
     <div style="display:flex;align-items:center;justify-content:space-between;position:relative;">
-      <div style="display:flex; flex-direction:column; flex:1; min-width:0; overflow:hidden;">
-        <div style="font-size:16px;font-weight:900;color:var(--blue);letter-spacing:-.5px;white-space:nowrap;">세미나 PRO</div>
+      <div style="display:flex; flex-direction:column; flex:1; min-width:0; overflow:hidden; padding-right:8px;">
+        <div style="font-size:16px;font-weight:900;color:var(--blue);letter-spacing:-.5px;white-space:nowrap;display:flex;align-items:center;gap:8px;"><span class="brand-mark"><i class=i-calendar></i></span>세미나 PRO</div>
         <div style="font-size:12px;color:var(--tx2);margin-top:2px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hdrInfo"></div>
       </div>
       
@@ -376,18 +416,21 @@ div:where(.swal2-container){z-index:9999!important;}
 
     <div class="srch-row">
       <div class="srch-box"><i class=i-search></i><input id="srchInp" type="search" class="srch-inp" placeholder="업체·브리퍼·주소 검색" aria-label="일정 검색" autocomplete="off" oninput="window.onSearchInput(this.value)" onkeydown="if(event.key==='Escape'){this.value='';window.onSearchInput('');}"></div>
-      <button type="button" class="btn btn-ghost tap" onclick="window.goToday()" aria-label="오늘로 이동" style="padding:0 16px;font-size:14px;">오늘</button>
+      <button type="button" id="todayBtn" aria-pressed="false" class="btn btn-ghost tap" onclick="window.goToday()" aria-label="오늘로 이동" style="padding:0 16px;font-size:14px;">오늘</button>
     </div>
     <div id="srchRes" class="srch-res" style="display:none;" role="listbox" aria-label="검색 결과"></div>
 
+    <div id="cal-split">
     <div class="cal-wrapper">
       <div class="cal-header">
         <div style="color:var(--red);">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div style="color:var(--blue);">토</div>
       </div>
       <div class="cal-legend">
-        <span><i style="background:#8a8f98"></i>대기</span><span><i style="background:var(--blue)"></i>배정</span><span><i style="background:#15803d"></i>청약예정</span><span><i style="background:#4f46e5"></i>결과완료</span><span><i style="background:#c62828"></i>진행불가</span><span><i style="border:1px dashed #6b7280"></i>취소</span><span><i style="background:#b45309"></i>개인</span>
+        <span><i class="sw sw-wait"></i>대기</span><span><i class="sw sw-assign"></i>배정</span><span><i class="sw sw-sched"></i>청약예정</span><span><i class="sw sw-done"></i>결과완료</span><span><i class="sw sw-failed"></i>진행불가</span><span><i class="sw sw-cancel"></i>취소</span><span><i class="sw sw-personal"></i>개인</span>
       </div>
       <div id="calendarGrid" class="cal-grid" role="group" aria-label="월간 달력"><div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div></div>
+    </div>
+    <aside id="dayPane" aria-label="선택한 날짜 일정"></aside>
     </div>
   </div>
 
@@ -402,20 +445,20 @@ div:where(.swal2-container){z-index:9999!important;}
     </div>
     <div class="card" id="inputCard">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-        <div><div class="fl">날짜 *</div><input type="date" id="i_date" class="inp" onchange="window.autoDay()"></div>
-        <div><div class="fl">요일</div><input type="text" id="i_day" class="inp" readonly style="background:var(--bg3);color:var(--tx2);"></div>
+        <div><label class="fl" for="i_date" style="display:block">날짜 *</label><input type="date" id="i_date" class="inp" onchange="window.autoDay()"></div>
+        <div><label class="fl" for="i_day" style="display:block">요일</label><input type="text" id="i_day" class="inp" readonly style="background:var(--bg3);color:var(--tx2);"></div>
       </div>
       <div style="margin-bottom:14px;">
-        <div class="fl">시간 *</div>
+        <label class="fl" for="i_time" style="display:block">시간 *</label>
         <input type="text" id="i_time" class="inp" placeholder="시간을 선택하세요" readonly onclick="window.openTimePicker('i_time')" style="cursor:pointer; background:var(--bg3);">
       </div>
-      <div style="margin-bottom:14px;"><div class="fl">업체명 *</div><input type="text" id="i_biz" class="inp" placeholder="업체명을 입력하세요"></div>
-      <div style="margin-bottom:14px;"><div class="fl">주소</div><input type="text" id="i_addr" class="inp" placeholder="상세 주소를 입력하세요 (선택)"></div>
+      <div style="margin-bottom:14px;"><label class="fl" for="i_biz" style="display:block">업체명 *</label><input type="text" id="i_biz" class="inp" placeholder="업체명을 입력하세요"></div>
+      <div style="margin-bottom:14px;"><label class="fl" for="i_addr" style="display:block">주소</label><input type="text" id="i_addr" class="inp" placeholder="상세 주소를 입력하세요 (선택)"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-        <div><div class="fl">섭외자</div><input type="text" id="i_rec" class="inp" readonly style="background:var(--bg3);color:var(--tx2);"></div>
-        <div><div class="fl">참석인원 *</div><input type="number" id="i_att" class="inp" placeholder="명" min="1"></div>
+        <div><label class="fl" for="i_rec" style="display:block">섭외자</label><input type="text" id="i_rec" class="inp" readonly style="background:var(--bg3);color:var(--tx2);"></div>
+        <div><label class="fl" for="i_att" style="display:block">참석인원 *</label><input type="number" id="i_att" class="inp" placeholder="명" min="1"></div>
       </div>
-      <div style="margin-bottom:24px;"><div class="fl">비고</div><textarea id="i_note" class="inp" rows="3" placeholder="추가 내용을 입력하세요"></textarea></div>
+      <div style="margin-bottom:24px;"><label class="fl" for="i_note" style="display:block">비고</label><textarea id="i_note" class="inp" rows="3" placeholder="추가 내용을 입력하세요"></textarea></div>
       <button onclick="window.submitVenue()" class="btn btn-gold btn-full"><i class=i-clipboard></i> 섭외 등록하기</button>
     </div>
   </div>
@@ -548,9 +591,9 @@ div:where(.swal2-container){z-index:9999!important;}
     <div style="font-size:18px;font-weight:800;color:var(--tx1);margin-bottom:20px;text-align:center;">월 선택</div>
     
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--bg3); padding:8px 12px; border-radius:12px; border:1px solid var(--border);">
-      <button onclick="window.mpChangeYear(-1)" class="btn btn-ghost" style="padding:6px 12px; font-size:14px; border:none; background:transparent; box-shadow:none;">◀</button>
+      <button onclick="window.mpChangeYear(-1)" class="btn btn-ghost mp-yr" aria-label="이전 해"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
       <div id="mpYear" style="font-size:16px; font-weight:900; color:var(--blue);"></div>
-      <button onclick="window.mpChangeYear(1)" class="btn btn-ghost" style="padding:6px 12px; font-size:14px; border:none; background:transparent; box-shadow:none;">▶</button>
+      <button onclick="window.mpChangeYear(1)" class="btn btn-ghost mp-yr" aria-label="다음 해"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
 
     <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;" id="mpMonthGrid">
@@ -1578,11 +1621,11 @@ window.personalCard = function(v, admin, briefer, isMyPersonal) {
     <div style="display:flex; flex-direction:column; align-items:flex-start;">
       <span class="badge" style="background:#fffbeb;color:#92400e;border:1px solid #fde68a;font-size:12px; margin-bottom:8px;"><i class=i-note></i> 개인일정</span>
       <div style="width:100%; min-width:0;">
-        <div style="font-size:16px;font-weight:900;color:#92400e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.assignedBriefer} 브리퍼</div>
+        <div style="font-size:16px;font-weight:900;color:#92400e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escH(v.assignedBriefer)} 브리퍼</div>
         <div style="margin-top:6px;">
           ${timeStr ? `<div style="font-size:13px;color:#92400e;font-weight:800;"><i class=i-clock></i> ${timeStr}</div>` : `<div style="font-size:13px;color:#92400e;font-weight:800;">⏰ 시간 미정</div>`}
         </div>
-        <div style="font-size:13px;color:#92400e;margin-top:6px;word-break:keep-all;font-weight:600;">내용: ${v.businessName}</div>
+        <div style="font-size:13px;color:#92400e;margin-top:6px;word-break:keep-all;font-weight:600;">내용: ${escH(v.businessName)}</div>
       </div>
     </div>
     ${btns}
@@ -1720,6 +1763,8 @@ window.submitEditVenue = function() {
   } else { window.loading(false); window.toast('로컬 모드','info'); }
 };
 
+var escH = function(x){ return String(x == null ? '' : x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
+var escJs = function(x){ return escH(String(x == null ? '' : x).replace(/\\/g,'\\\\').replace(/'/g,"\\'")); };
 window.deferDanger = function(id, msg, serverFn){
   var removed = (venues || []).filter(function(v){ return String(v.id) === String(id); });
   venues = (venues || []).filter(function(v){ return String(v.id) !== String(id); });
@@ -2099,6 +2144,7 @@ window.renderCalendar = function(fullList, cardList) {
   let html = '';
   let cellCount = 0;
   let hasSelectedInWeek = false;
+  const wide = !!(window.matchMedia && window.matchMedia('(min-width:1024px)').matches);
 
   for(let i=0; i<firstDay; i++) {
     html += `<div class="cal-cell" style="background:transparent;border:none;" aria-hidden="true"></div>`;
@@ -2117,7 +2163,7 @@ window.renderCalendar = function(fullList, cardList) {
       
       if (v.isPersonalEvent) {
          evClass = 'ev-personal';
-         displayTitle = `<i class=i-user></i> ${v.assignedBriefer}`;
+         displayTitle = `<i class=i-user></i> ${escH(v.assignedBriefer)}`;
       } else {
          let brieferName = v.assignedBriefer || '미배정';
          
@@ -2127,7 +2173,7 @@ window.renderCalendar = function(fullList, cardList) {
              addr = addr.replace(/[0-9]/g, '*');
          }
          
-         let displayTitleRaw = (admin || v.isMine) ? `${(v.time||'').slice(0,5)} ${brieferName} ${v.businessName||addr}` : `${(v.time||'').slice(0,5)} ${brieferName}/${addr}`;
+         let displayTitleRaw = (admin || v.isMine) ? `${(v.time||'').slice(0,5)} ${escH(brieferName)} ${escH(v.businessName||addr)}` : `${(v.time||'').slice(0,5)} ${escH(brieferName)}/${escH(addr)}`;
          displayTitle = displayTitleRaw;
 
          if (v.isScheduledEvent) { evClass = 'ev-sched'; displayTitle = `[예정] ${displayTitleRaw}`; }
@@ -2167,13 +2213,20 @@ window.renderCalendar = function(fullList, cardList) {
         var _rng = weekRange(rowWeekKey);
         html += `<div style="grid-column:1/-1; margin:4px 0 12px; text-align:center;"><button onclick="window.loadWeekAndRender('${rowWeekKey}')" style="width:100%; background:#eef5fc; color:#0052a3; border:1px dashed #9cc2e6; border-radius:10px; padding:0 8px; min-height:44px; font-size:13px; font-weight:800; cursor:pointer;">이 주 섭외 보기 (${_rng.start.slice(5).replace('-','.')} ~ ${_rng.end.slice(5).replace('-','.')})</button></div>`;
         hasSelectedInWeek = false;
-      } else if (hasSelectedInWeek) {
+      } else if (hasSelectedInWeek && !wide) {
         html += `<div id="venueList" style="grid-column: 1 / -1; background:#f8fafc; border-radius:14px; padding:12px 10px; margin:6px 0 12px; border:2px solid #c5dcf2; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); animation: pgIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); overflow:hidden;"></div>`;
         hasSelectedInWeek = false; 
       }
     }
   }
   document.getElementById('calendarGrid').innerHTML = html;
+  var _dp = document.getElementById('dayPane');
+  if (_dp) {
+    if (!wide) _dp.innerHTML = '';
+    else if (selectedCalDate && selectedCalDate.startsWith(curMonth)) _dp.innerHTML = '<div id="venueList" style="background:#f8fafc;border-radius:14px;padding:12px 10px;border:2px solid #c5dcf2;"></div>';
+    else _dp.innerHTML = '<div class="dayph"><i class=i-calendar></i><div>달력에서 날짜를 선택하면<br>그날 타임테이블이 여기에 열립니다.</div></div>';
+  }
+  window.syncTodayBtn();
 
   if(selectedCalDate && selectedCalDate.startsWith(curMonth)) {
     window.renderDayVenues(selectedCalDate, cardList);
@@ -2188,7 +2241,19 @@ window.jumpToDate = function(dateStr){
   if (!loadedWeeks[wk]) window.loadWeekAndRender(wk); else window.renderList();
   setTimeout(function(){ var el = document.querySelector('.cal-cell.selected'); if (el && el.scrollIntoView) el.scrollIntoView({block:'center',behavior:'smooth'}); }, 80);
 };
+window.syncTodayBtn = function(){
+  var b = document.getElementById('todayBtn'); if (!b) return;
+  var on = selectedCalDate === toISO(new Date());
+  b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+};
+(function(){
+  var mq = window.matchMedia ? window.matchMedia('(min-width:1024px)') : null; if (!mq) return;
+  var h = function(){ try { if (typeof ME !== 'undefined' && ME && ME.name && document.getElementById('pg-list').style.display !== 'none') window.renderList(); } catch(e){} };
+  if (mq.addEventListener) mq.addEventListener('change', h); else if (mq.addListener) mq.addListener(h);
+})();
 window.goToday = function(){
+  var tb = document.getElementById('todayBtn');
+  if (tb && tb.classList.contains('on')) { tb.classList.remove('flash'); void tb.offsetWidth; tb.classList.add('flash'); setTimeout(function(){ tb.classList.remove('flash'); }, 600); }
   var si = document.getElementById('srchInp'); if (si) { si.value=''; window.onSearchInput(''); }
   window.jumpToDate(toISO(new Date()));
 };
@@ -2493,7 +2558,7 @@ window.venueCardOther = function(v) {
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;letter-spacing:-0.5px;color:var(--tx2);margin-top:8px;">
           <div>${attText}</div>
-          ${v.assignedBriefer ? `<div><i class=i-target></i> 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
+          ${v.assignedBriefer ? `<div><i class=i-target></i> 브리퍼: <strong>${escH(v.assignedBriefer)}</strong></div>` : ''}
         </div>
       </div>
     </div>
@@ -2554,10 +2619,10 @@ window.venueCard = function(v, admin, briefer, recruiter) {
   if (v.isScheduledEvent) { formattedSchedDate = window.formatFullDate(v.targetContract.date, v.targetContract.time); }
 
   const addrHtml = v.address 
-    ? `<div style="font-size:12px;color:var(--blue);font-weight:600;margin-top:2px;cursor:pointer;" onclick="event.stopPropagation(); window.openTmap('${v.address}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${v.address}</span></div>` 
+    ? `<div style="font-size:14px;color:var(--blue);font-weight:600;margin-top:2px;cursor:pointer;" onclick="event.stopPropagation(); window.openTmap('${escJs(v.address)}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${escH(v.address)}</span></div>` 
     : '';
   const titlePrefix = v.isScheduledEvent ? '<span style="color:var(--red);font-weight:800;margin-right:4px;">[예정]</span>' : '';
-  const displayBizName = v.isScheduledEvent ? v.businessName + ' - ' + v.targetContract.name + '님' : v.businessName;
+  const displayBizName = v.isScheduledEvent ? escH(v.businessName) + ' - ' + escH(v.targetContract.name) + '님' : escH(v.businessName);
 
   let btnsHtml = [];
   let moreHtml = [];
@@ -2566,7 +2631,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
     if (admin) {
       if (v.status === '대기중') btnsHtml.push(`<button onclick="event.stopPropagation();window.openAssign('${v.id}')" class="btn btn-indigo">브리퍼 배정</button>`);
       else if (v.status === '배정됨') {
-        btnsHtml.push(`<button onclick="event.stopPropagation();window.openAssign('${v.id}')" class="btn btn-blue">재배정</button>`);
+        btnsHtml.push(`<button onclick="event.stopPropagation();window.openAssign('${v.id}')" class="btn btn-ghost">재배정</button>`);
         moreHtml.push(`<button onclick="event.stopPropagation();window.doCancelAssign('${v.id}')" class="btn btn-red">배정취소</button>`);
       }
       else if (v.status === '결과입력완료' && !v.resultSentToRecruiter) {
@@ -2578,7 +2643,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
     if (briefer && v.assignedBriefer === ME.name) {
       if (v.status === '배정됨') {
         if (!v.brieferConfirmed) {
-          btnsHtml.push(`<button onclick="event.stopPropagation();window.doConfirmAssignment('${v.id}', '${v.assignedBriefer}')" class="btn btn-indigo">일정 확인</button>`);
+          btnsHtml.push(`<button onclick="event.stopPropagation();window.doConfirmAssignment('${v.id}', '${escJs(v.assignedBriefer)}')" class="btn btn-indigo">일정 확인</button>`);
         } else {
           btnsHtml.push(`<button disabled class="btn btn-ghost" style="padding:7px 12px;font-size:12px;color:#15803d;border-color:#15803d;cursor:default;">일정 확인 완료</button>`);
         }
@@ -2594,16 +2659,15 @@ window.venueCard = function(v, admin, briefer, recruiter) {
       moreHtml.push(`<button onclick="event.stopPropagation();window.openEditVenue('${v.id}')" class="btn btn-ghost">일정 수정</button>`);
     }
     if (!isCanceled && (admin || recruiter)) {
+      if (moreHtml.length) moreHtml.push('<div class="more-sep" role="separator"></div>');
       moreHtml.push(`<button onclick="event.stopPropagation();window.doCancelVenue('${v.id}')" class="btn btn-ghost btn-danger">섭외취소</button>`);
-    }
-    if (admin) {
-      moreHtml.push(`<button onclick="event.stopPropagation();window.doRealDeleteVenue('${v.id}')" class="btn btn-ghost btn-danger">영구 삭제</button>`);
     }
   } else {
     const canAction = admin || (briefer && v.assignedBriefer === ME.name);
     if (canAction) {
-      btnsHtml.push(`<button onclick="event.stopPropagation();window.doProcessContract('${v.id}',${v.contractIndex},'complete','${v.targetContract.name}')" class="btn btn-green">청약완료</button>`);
-      moreHtml.push(`<button onclick="event.stopPropagation();window.promptCancelContract('${v.id}', ${v.contractIndex}, '${v.targetContract.name}')" class="btn btn-ghost btn-danger">청약취소</button>`);
+      btnsHtml.push(`<button onclick="event.stopPropagation();window.doProcessContract('${v.id}',${v.contractIndex},'complete','${escJs(v.targetContract.name)}')" class="btn btn-green">청약완료</button>`);
+      moreHtml.push('<div class="more-sep" role="separator"></div>');
+      moreHtml.push(`<button onclick="event.stopPropagation();window.promptCancelContract('${v.id}', ${v.contractIndex}, '${escJs(v.targetContract.name)}')" class="btn btn-ghost btn-danger">청약취소</button>`);
     }
     btnsHtml.push(`<button onclick="event.stopPropagation();window.openDetail('${v.id}')" class="btn btn-ghost" style="font-size:12px;padding:7px 12px;border-color:var(--blue);color:var(--blue);">원본 내역 확인</button>`);
   }
@@ -2624,12 +2688,12 @@ window.venueCard = function(v, admin, briefer, recruiter) {
   }
   const contNames = activeContracts.map(function(c) {
     const dateTag = c.completedAt ? ` · ${c.completedAt}` : '';
-    return `${c.name}(${(Number(c.amount)||0).toLocaleString()}원${dateTag})`;
+    return `${escH(c.name)}(${(Number(c.amount)||0).toLocaleString()}원${dateTag})`;
   }).join(', ');
   
   const cancelledNames = cancelledContracts.map(function(c) {
       let rsn = c.cancelReason ? ` <span style="font-size:12px;color:#c62828;font-weight:normal;">(사유: ${c.cancelReason})</span>` : '';
-      return `[취소] ${c.name}${rsn} (${(Number(c.amount)||0).toLocaleString()}원)`;
+      return `[취소] ${escH(c.name)}${rsn} (${(Number(c.amount)||0).toLocaleString()}원)`;
   }).join('<br>');
   
   const totalAmt = activeContracts.reduce(function(a,c) { return a+(Number(c.amount)||0); }, 0);
@@ -2644,7 +2708,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
       <div style="flex:1;padding-right:8px;min-width:0;" class="${textStrike}">
         <div style="font-size:16px;font-weight:900;color:var(--tx1);margin-bottom:6px;word-break:keep-all;">${titlePrefix}${displayBizName}${addrHtml}</div>
-        <div style="font-size:13px;color:var(--tx2);font-weight:600;">
+        <div style="font-size:14px;color:var(--tx2);font-weight:600;">
           ${v.isScheduledEvent ? `
             <div style="color:var(--red);font-size:13px;font-weight:800;"><i class=i-calendar></i> ${formattedSchedDate}</div>
           ` : `
@@ -2656,20 +2720,20 @@ window.venueCard = function(v, admin, briefer, recruiter) {
       ${window.statusBadge(v.status, v.isScheduledEvent, v.resultSentToRecruiter, v.brieferConfirmed, showConfirmedBadge)}
     </div>
     
-    <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;letter-spacing:-0.5px;color:var(--tx2);margin-bottom:${hasRes||btns?'12px':'0'};" class="${textStrike}">
-      ${admin ? `<div><i class=i-user></i> 섭외: <strong>${v.recruiter}</strong></div>` : ''}
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--tx2);margin-bottom:${hasRes||btns?'12px':'0'};" class="${textStrike}">
+      ${admin ? `<div><i class=i-user></i> 섭외: <strong>${escH(v.recruiter)}</strong></div>` : ''}
       <div>${attText}</div>
-      ${v.assignedBriefer ? `<div><i class=i-target></i> 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
+      ${v.assignedBriefer ? `<div><i class=i-target></i> 브리퍼: <strong>${escH(v.assignedBriefer)}</strong></div>` : ''}
     </div>
 
     ${(!v.isScheduledEvent && hasRes) ? `<div style="background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:${btns?'12px':'0'};border:1px solid var(--border);" class="${textStrike}">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
         ${window.resultPill(v.result)}
-        ${contNames?`<span style="font-size:13px;color:var(--tx1);font-weight:600;">${contNames}</span>`:''}
+        ${contNames?`<span style="font-size:14px;color:var(--tx1);font-weight:600;">${contNames}</span>`:''}
       </div>
-      ${cancelledNames?`<div style="font-size:12px;color:#6b7280;font-weight:600;margin-top:4px;text-decoration:line-through;">${cancelledNames}</div>`:''}
-      ${totalAmt?`<div style="font-size:12px;color:var(--blue);font-weight:800;margin-top:2px;">총 합산: ${totalAmt.toLocaleString()}원</div>`:''}
-      ${v.businessCost?`<div style="font-size:12px;color:var(--tx2);margin-top:4px;">사업비: ${Number(v.businessCost).toLocaleString()}원</div>`:''}
+      ${cancelledNames?`<div style="font-size:14px;color:#6b7280;font-weight:600;margin-top:4px;text-decoration:line-through;">${cancelledNames}</div>`:''}
+      ${totalAmt?`<div style="font-size:14px;color:var(--blue);font-weight:800;margin-top:2px;">총 합산: ${totalAmt.toLocaleString()}원</div>`:''}
+      ${v.businessCost?`<div style="font-size:14px;color:var(--tx2);margin-top:4px;">사업비: ${Number(v.businessCost).toLocaleString()}원</div>`:''}
     </div>`:''}
     ${btns?`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;border-top:1px dashed var(--border2);padding-top:12px;">${btns}</div>`:''}
   </div>`;
@@ -2703,12 +2767,12 @@ window.openDetail = function(id) {
     const compHtml = v.contracts.map(function(c, i) {
       if(c.type !== 'complete' && c.type !== undefined) return '';
       const cancelBtn = (admin || (briefer && v.assignedBriefer===ME.name)) 
-          ? `<button onclick="window.promptCancelContract('${v.id}', ${i}, '${c.name}')" style="margin-left:8px;font-size:12px;color:red;border:1px solid red;border-radius:4px;padding:2px 4px;background:#fff;">취소</button>` 
+          ? `<button onclick="window.promptCancelContract('${v.id}', ${i}, '${escJs(c.name)}')" style="margin-left:8px;font-size:12px;color:red;border:1px solid red;border-radius:4px;padding:2px 4px;background:#fff;">취소</button>` 
           : '';
       return `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;">
         <div>
-          <div style="font-size:13px;color:var(--tx1);font-weight:600;">[완료] ${c.name} ${cancelBtn}</div>
+          <div style="font-size:13px;color:var(--tx1);font-weight:600;">[완료] ${escH(c.name)} ${cancelBtn}</div>
           ${c.completedAt ? `<div style="font-size:12px;color:var(--tx3);margin-top:1px;">청약일: ${c.completedAt}</div>` : ''}
         </div>
         <span style="font-size:13px;color:var(--blue);font-weight:800;white-space:nowrap;margin-left:8px;">${(Number(c.amount)||0).toLocaleString()}원</span>
@@ -2720,7 +2784,7 @@ window.openDetail = function(id) {
       let rsn = c.cancelReason ? ` <span style="font-size:12px;color:#c62828;font-weight:normal;">(사유: ${c.cancelReason})</span>` : '';
       return `
       <div style="display:flex;justify-content:space-between;padding:4px 0;border-top:1px dashed #fecaca;">
-        <span style="font-size:13px;color:#6b7280;font-weight:600;text-decoration:line-through;">[취소] ${c.name}${rsn}</span>
+        <span style="font-size:13px;color:#6b7280;font-weight:600;text-decoration:line-through;">[취소] ${escH(c.name)}${rsn}</span>
         <span style="font-size:13px;color:#6b7280;font-weight:600;text-decoration:line-through;">${(Number(c.amount)||0).toLocaleString()}원</span>
       </div>`;
     }).join('');
@@ -2730,7 +2794,7 @@ window.openDetail = function(id) {
       return `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-top:1px dashed #fca5a5;">
         <div>
-          <div style="font-size:13px;color:#c62828;font-weight:600;">[예정] ${c.name}</div>
+          <div style="font-size:13px;color:#c62828;font-weight:600;">[예정] ${escH(c.name)}</div>
           <div style="font-size:12px;color:#c62828;font-weight:800;margin-top:2px;"><i class=i-calendar></i> ${window.formatFullDate(v.date, c.time)}</div>
         </div>
         <span style="font-size:13px;color:#c62828;font-weight:800;">${(Number(c.amount)||0).toLocaleString()}원</span>
@@ -2749,8 +2813,8 @@ window.openDetail = function(id) {
   document.getElementById('mDetailBody').innerHTML = `<div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
       <div>
-        <div style="font-size:18px;font-weight:900;color:var(--tx1);">${v.businessName}</div>
-        ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:4px;font-weight:600;cursor:pointer;" onclick="window.openTmap('${v.address}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${v.address}</span></div>` : ''}
+        <div style="font-size:18px;font-weight:900;color:var(--tx1);">${escH(v.businessName)}</div>
+        ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:4px;font-weight:600;cursor:pointer;" onclick="window.openTmap('${escJs(v.address)}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${escH(v.address)}</span></div>` : ''}
       </div>
       <button onclick="window.closeM('mDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
@@ -2766,23 +2830,27 @@ window.openDetail = function(id) {
       </div>
     </div>
     <div style="display:grid;grid-template-columns:${admin ? '1fr 1fr' : '1fr'};gap:12px;margin-bottom:16px;">
-      ${admin ? `<div class="card-sm" style="background:#f9fafb;"><div class="fl">섭외자</div><div style="font-size:14px;font-weight:800;color:var(--tx1);">${v.recruiter}</div></div>` : ''}
+      ${admin ? `<div class="card-sm" style="background:#f9fafb;"><div class="fl">섭외자</div><div style="font-size:14px;font-weight:800;color:var(--tx1);">${escH(v.recruiter)}</div></div>` : ''}
       <div class="card-sm" style="background:#f9fafb;"><div class="fl">배정 브리퍼</div>
         <div style="font-size:14px;font-weight:800;color:${v.assignedBriefer?'var(--blue)':'var(--tx3)'};">${v.assignedBriefer||'미배정'}</div>
       </div>
     </div>
     ${v.notes?`<div style="margin-bottom:16px;"><div class="fl">비고</div>
-      <div class="card-sm" style="font-size:13px;color:var(--tx2);background:#ffffff;">${v.notes}</div></div>`:''}
+      <div class="card-sm" style="font-size:13px;color:var(--tx2);background:#ffffff;">${escH(v.notes)}</div></div>`:''}
     ${hasRes?`<div style="margin-bottom:16px;"><div class="fl">결과 상세</div>
       <div class="card-sm" style="background:#f9fafb;border:1px solid #c5dcf2;">
         <div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">${window.resultPill(v.result)}</div>
         ${contHtml}
         ${v.businessCost?`<div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">사업비: ${Number(v.businessCost).toLocaleString()}원</div>`:''}
-        ${v.resultNotes?`<div style="font-size:13px;color:var(--tx2);padding-top:10px;margin-top:10px;border-top:1px dashed var(--border2);">${v.resultNotes}</div>`:''}
+        ${v.resultNotes?`<div style="font-size:13px;color:var(--tx2);padding-top:10px;margin-top:10px;border-top:1px dashed var(--border2);">${escH(v.resultNotes)}</div>`:''}
       </div></div>`:''}
     ${imgHtml}
     ${v.resultSentToRecruiter?`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:700;color:#15803d;margin-top:16px;"><i class=i-check></i> 섭외자에게 결과 전달 완료</div>`:''}
   `;
+  if (admin && !v.isScheduledEvent) {
+    document.getElementById('mDetailBody').insertAdjacentHTML('beforeend',
+      `<div class="danger-zone"><button type="button" class="btn btn-ghost btn-danger" onclick="window.closeM('mDetail'); window.doRealDeleteVenue('${escJs(v.id)}')">영구 삭제</button><span>복구할 수 없습니다. 6초 안에는 되돌릴 수 있어요.</span></div>`);
+  }
   document.getElementById('mDetail').style.display = 'flex';
 };
 
@@ -2853,7 +2921,7 @@ window.openAssign = function(id) {
   const sel = document.getElementById('brieferSel');
   sel.innerHTML = '<option value="">-- 브리퍼 선택 --</option>';
   DB.filter(function(u) { return u.role.includes('브리퍼'); }).forEach(function(b) {
-    sel.innerHTML += `<option value="${b.name}">${b.name}</option>`;
+    sel.innerHTML += `<option value="${escH(b.name)}">${escH(b.name)}</option>`;
   });
   const v = venues.find(function(x) { return x.id===id; });
   if (v && v.assignedBriefer) sel.value = v.assignedBriefer;
@@ -2959,7 +3027,7 @@ window.renderContracts = function(type) {
       ${list.length > 1 ? `<button onclick="window.removeContract('${type}',${i})" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);font-size:12px;font-weight:bold;cursor:pointer;">✕ 삭제</button>` : ''}
       <div style="margin-bottom:12px;padding-right:40px;">
         <div class="fl" style="color:${themeCol};">계약자 이름</div>
-        <input type="text" class="inp" value="${c.name}" onchange="window.updateContract('${type}',${i},'name',this.value)" placeholder="이름 입력" style="font-size:13px;padding:10px;">
+        <input type="text" class="inp" value="${escH(c.name)}" onchange="window.updateContract('${type}',${i},'name',this.value)" placeholder="이름 입력" style="font-size:13px;padding:10px;">
       </div>
       <div>
         <div class="fl" style="color:${themeCol};">계약금액 (원)</div>
@@ -3109,19 +3177,19 @@ window.loadStats = function(useCustomDate = false) {
         : s.brieferStats.map(function(b) { return `
           <div class="scrd">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-              <div style="font-size:15px;font-weight:800;color:var(--tx1);">${b.name}</div>
+              <div style="font-size:15px;font-weight:800;color:var(--tx1);">${escH(b.name)}</div>
               <div style="font-size:24px;font-weight:900;color:var(--blue);">${b.conversionRate}%</div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
-              <div onclick="window.openBrieferDetail('${b.name}')" style="text-align:center;background:var(--bg3);padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border2);">
+              <div onclick="window.openBrieferDetail('${escJs(b.name)}')" style="text-align:center;background:var(--bg3);padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border2);">
                 <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:2px;">받은 섭외 <i class=i-search style="margin-left:2px"></i></div>
                 <div style="font-size:20px;font-weight:900;color:var(--tx1);">${b.totalVenues}</div>
               </div>
-              <div onclick="window.openBrieferContractDetail('${b.name}')" style="text-align:center;background:#f0fdf4;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #bbf7d0;">
+              <div onclick="window.openBrieferContractDetail('${escJs(b.name)}')" style="text-align:center;background:#f0fdf4;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #bbf7d0;">
                 <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:2px;">청약한 섭외 <i class=i-search></i></div>
                 <div style="font-size:20px;font-weight:900;color:#15803d;">${b.withContract}</div>
               </div>
-              <div onclick="window.openBrieferCostDetail('${b.name}')" style="text-align:center;background:#fef2f2;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #fecaca;">
+              <div onclick="window.openBrieferCostDetail('${escJs(b.name)}')" style="text-align:center;background:#fef2f2;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #fecaca;">
                 <div style="font-size:12px;font-weight:700;color:#c62828;margin-bottom:2px;">사업비 <i class=i-search></i></div>
                 <div style="font-size:14px;font-weight:800;color:#c62828;margin-top:4px;">${b.businessCost>0?(b.businessCost/10000).toFixed(1)+'만':'-'}</div>
               </div>
@@ -3166,14 +3234,14 @@ window.loadStats = function(useCustomDate = false) {
           return `
           <div style="background:var(--bg1);border:1px solid var(--border);border-radius:12px;
             padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
-            <div style="font-size:14px;font-weight:800;color:var(--tx1);margin-bottom:12px;">${r.name}</div>
+            <div style="font-size:14px;font-weight:800;color:var(--tx1);margin-bottom:12px;">${escH(r.name)}</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-              <div onclick="${hasVenues ? `window.openRecruiterTotalDetail('${r.name}')` : ''}"
+              <div onclick="${hasVenues ? `window.openRecruiterTotalDetail('${escJs(r.name)}')` : ''}"
                 style="text-align:center;background:var(--bg3);padding:10px 6px;border-radius:8px;${hasVenues?'cursor:pointer;border:1.5px solid var(--border2);':''}">
                 <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:4px;">내린 섭외${hasVenues?' <i class=i-search></i>':''}</div>
                 <div style="font-size:20px;font-weight:900;color:var(--tx1);">${r.totalVenues}</div>
               </div>
-              <div onclick="${hasProg ? `window.openRecruiterDetail('${r.name}')` : ''}"
+              <div onclick="${hasProg ? `window.openRecruiterDetail('${escJs(r.name)}')` : ''}"
                 style="text-align:center;background:#f0fdf4;padding:10px 6px;border-radius:8px;${hasProg?'cursor:pointer;border:1.5px solid #bbf7d0;':''}">
                 <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:4px;">진행${hasProg?' <i class=i-search></i>':''}</div>
                 <div style="font-size:20px;font-weight:900;color:#15803d;">${r.inProgress}</div>
@@ -3263,8 +3331,8 @@ window.openBrieferContractDetail = function(name) {
         </div>
         <div style="display:flex;justify-content:space-between;align-items:flex-end;">
            <div>
-              <div style="font-size:13px;font-weight:700;color:var(--tx1);">${v.businessName}</div>
-              <div style="font-size:12px;color:var(--tx2);margin-top:2px;">계약자: <strong>${c.name}</strong></div>
+              <div style="font-size:13px;font-weight:700;color:var(--tx1);">${escH(v.businessName)}</div>
+              <div style="font-size:12px;color:var(--tx2);margin-top:2px;">계약자: <strong>${escH(c.name)}</strong></div>
            </div>
            <div style="text-align:right;">
               <div style="font-size:14px;font-weight:900;color:${amtColor};">${(Number(c.amount)||0).toLocaleString()}원</div>
@@ -3278,7 +3346,7 @@ window.openBrieferContractDetail = function(name) {
   document.getElementById('mBrieferContractDetailBody').innerHTML = `
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 청약 상세내역</div>
+      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${escH(name)} · 청약 상세내역</div>
       <button onclick="window.closeM('mBrieferContractDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div class="card-sm" style="margin-bottom:12px;background:#ffffff;max-height:60vh;overflow-y:auto;">
@@ -3328,7 +3396,7 @@ window.openBrieferDetail = function(name) {
        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;border-top:1px dashed var(--border2);">
          <div>
            <div style="color:var(--tx2);font-size:12px;">${v.date} ${v.dayOfWeek}</div>
-           <div style="font-weight:700;color:var(--tx1);margin-top:2px;">${v.businessName}</div>
+           <div style="font-weight:700;color:var(--tx1);margin-top:2px;">${escH(v.businessName)}</div>
          </div>
          <div style="font-size:12px;font-weight:800;color:var(--tx2);">${rTxt}</div>
        </div>`;
@@ -3356,7 +3424,7 @@ window.openBrieferDetail = function(name) {
   document.getElementById('mBrieferDetailBody').innerHTML = `
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 받은 섭외 상세</div>
+      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${escH(name)} · 받은 섭외 상세</div>
       <button onclick="window.closeM('mBrieferDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="max-height:70vh;overflow-y:auto;padding-right:4px;">
@@ -3382,7 +3450,7 @@ window.openBrieferCostDetail = function(name) {
     <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 0;border-top:1px dashed var(--border2);">
       <div>
         <div style="color:var(--tx2);font-size:12px;">${v.date} ${v.dayOfWeek}</div>
-        <div style="font-weight:700;color:var(--tx1);margin-top:2px;">[일정] ${v.businessName}</div>
+        <div style="font-weight:700;color:var(--tx1);margin-top:2px;">[일정] ${escH(v.businessName)}</div>
       </div>
       <div style="font-size:13px;font-weight:900;color:#c62828;">${(Number(v.businessCost)||0).toLocaleString()}원</div>
     </div>`;
@@ -3405,7 +3473,7 @@ window.openBrieferCostDetail = function(name) {
   document.getElementById('mBrieferCostDetailBody').innerHTML = `
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 사업비 상세</div>
+      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${escH(name)} · 사업비 상세</div>
       <button onclick="window.closeM('mBrieferCostDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
 
@@ -3417,7 +3485,7 @@ window.openBrieferCostDetail = function(name) {
        </div>
        <div style="display:flex; gap:8px;">
           <input type="text" id="ec_amount" class="inp" placeholder="금액" onkeyup="window.fmtNum(this)" style="flex:1;padding:8px;font-size:12px;">
-          <button onclick="window.addExtraCost('${name}')" class="btn btn-blue" style="padding:8px 16px;white-space:nowrap;">추가</button>
+          <button onclick="window.addExtraCost('${escJs(name)}')" class="btn btn-blue" style="padding:8px 16px;white-space:nowrap;">추가</button>
        </div>
     </div>
 
@@ -3463,7 +3531,7 @@ window.openRecruiterDetail = function(name) {
       totalAmt += Number(c.amount) || 0;
       totalContracts++;
       return `<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-top:1px dashed var(--border2);">
-        <span style="color:var(--tx2);">${c.completedAt || '-'}  ·  ${c.name}</span>
+        <span style="color:var(--tx2);">${c.completedAt || '-'}  ·  ${escH(c.name)}</span>
         <span style="color:var(--blue);font-weight:800;">${(Number(c.amount)||0).toLocaleString()}원</span>
       </div>`;
     }).join('');
@@ -3489,11 +3557,11 @@ window.openRecruiterDetail = function(name) {
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
         <div>
           <div style="font-size:12px;color:var(--tx3);font-weight:600;">${v.date} ${v.dayOfWeek}</div>
-          <div style="font-size:15px;font-weight:900;color:var(--tx1);">${v.businessName}</div>
-          ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:2px;cursor:pointer;" onclick="window.openTmap('${v.address}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${blindedAddr}</span></div>` : ''}
+          <div style="font-size:15px;font-weight:900;color:var(--tx1);">${escH(v.businessName)}</div>
+          ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:2px;cursor:pointer;" onclick="window.openTmap('${escJs(v.address)}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${blindedAddr}</span></div>` : ''}
         </div>
       </div>
-      ${v.assignedBriefer ? `<div style="font-size:12px;color:var(--tx2);margin-bottom:8px;"><i class=i-target></i> 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
+      ${v.assignedBriefer ? `<div style="font-size:12px;color:var(--tx2);margin-bottom:8px;"><i class=i-target></i> 브리퍼: <strong>${escH(v.assignedBriefer)}</strong></div>` : ''}
       ${bottomText}
     </div>`;
   }).join('');
@@ -3501,7 +3569,7 @@ window.openRecruiterDetail = function(name) {
   document.getElementById('mRecruiterDetailBody').innerHTML = `
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 진행 내역</div>
+      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${escH(name)} · 진행 내역</div>
       <button onclick="window.closeM('mRecruiterDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="max-height:70vh;overflow-y:auto;padding-right:4px;">
@@ -3548,7 +3616,7 @@ window.openRecruiterTotalDetail = function(name) {
        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;border-top:1px dashed var(--border2);">
          <div>
            <div style="color:var(--tx2);font-size:12px;">${v.date}</div>
-           <div style="font-weight:700;color:var(--tx1);margin-top:2px;">${v.businessName}</div>
+           <div style="font-weight:700;color:var(--tx1);margin-top:2px;">${escH(v.businessName)}</div>
          </div>
          <div style="font-size:12px;font-weight:800;color:var(--tx2);">${rTxt}</div>
        </div>`;
@@ -3576,7 +3644,7 @@ window.openRecruiterTotalDetail = function(name) {
   document.getElementById('mRecruiterTotalDetailBody').innerHTML = `
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 내린 섭외 상세</div>
+      <div style="font-size:18px;font-weight:900;color:var(--tx1);">${escH(name)} · 내린 섭외 상세</div>
       <button onclick="window.closeM('mRecruiterTotalDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="max-height:70vh;overflow-y:auto;padding-right:4px;">
@@ -3704,6 +3772,8 @@ window.closeM = function(id) {
     el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true');
     var _t = el.querySelector('h1,h2,h3,[style*="font-weight:900"],[style*="font-weight:800"]');
     if (_t && _t.textContent.trim()) el.setAttribute('aria-label', _t.textContent.trim().replace(/\s+/g,' ').slice(0,40));
+    var _am = {mDetail:'일정 상세',mRecruiterDetail:'섭외자 진행 내역',mRecruiterTotalDetail:'섭외자 섭외 상세',mBrieferDetail:'브리퍼 받은 섭외',mBrieferCostDetail:'브리퍼 사업비 상세',mBrieferContractDetail:'브리퍼 청약 상세'};
+    if (!el.getAttribute('aria-label') && _am[el.id]) el.setAttribute('aria-label', _am[el.id]);
     new MutationObserver(function(){
       if (el.style.display && el.style.display !== 'none' && !el._opener) {
         el._opener = el._lastActive || null;
