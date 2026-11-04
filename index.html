@@ -2024,7 +2024,7 @@ window.renderCalendar = function(fullList, cardList) {
              addr = addr.replace(/[0-9]/g, '*');
          }
          
-         let displayTitleRaw = (admin || v.isMine) ? `${(v.time||'').slice(0,5)} ${v.businessName||addr}` : `${(v.time||'').slice(0,5)} ${brieferName}/${addr}`;
+         let displayTitleRaw = (admin || v.isMine) ? `${(v.time||'').slice(0,5)} ${brieferName} ${v.businessName||addr}` : `${(v.time||'').slice(0,5)} ${brieferName}/${addr}`;
          displayTitle = displayTitleRaw;
 
          if (v.isScheduledEvent) { evClass = 'ev-sched'; displayTitle = `[예정] ${displayTitleRaw}`; }
