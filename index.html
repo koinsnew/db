@@ -176,7 +176,7 @@ textarea.inp{resize:none;}
 .vcrd .btn,.vcrd label,.more summary{min-height:44px;}
 .vcrd .btn{padding:8px 14px!important;font-size:13px!important;}
 .btn-danger{color:var(--red)!important;border-color:#f3b8b8!important;background:#fff5f5!important;}
-details.more{position:relative;display:inline-block;}
+details.more{position:relative;display:inline-block;align-self:flex-start;}
 details.more summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
 details.more summary::-webkit-details-marker{display:none;}
 details.more[open] summary{background:var(--bg3);}
@@ -2487,7 +2487,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
       ${totalAmt?`<div style="font-size:12px;color:var(--blue);font-weight:800;margin-top:2px;">총 합산: ${totalAmt.toLocaleString()}원</div>`:''}
       ${v.businessCost?`<div style="font-size:12px;color:var(--tx2);margin-top:4px;">사업비: ${Number(v.businessCost).toLocaleString()}원</div>`:''}
     </div>`:''}
-    ${btns?`<div style="display:flex;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--border2);padding-top:12px;">${btns}</div>`:''}
+    ${btns?`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;border-top:1px dashed var(--border2);padding-top:12px;">${btns}</div>`:''}
   </div>`;
 };
 
