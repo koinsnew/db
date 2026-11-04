@@ -886,8 +886,31 @@ window.loadUsers = function() {
 window.checkAutoLogin = function() {
   window.loading(false);
   const savedName = localStorage.getItem('sp_uname');
-  const savedPw = localStorage.getItem('sp_upw');
-  
+  const savedPw = localStorage.getItem('sp_upw');       // 구버전 호환(서버가 토큰을 발급하면 즉시 삭제됨)
+  const savedToken = localStorage.getItem('sp_utoken');
+
+  if (savedName && savedToken) {
+    document.getElementById('lname').value = savedName;
+    document.getElementById('chkAuto').checked = true;
+    window.loading(true, '로그인 확인 중...');
+    google.script.run
+      .withSuccessHandler(function(resStr){
+        window.loading(false);
+        var r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
+        if (r && r.success) { window.afterLogin(r.user, savedName, '', savedToken); return; }
+        if (r && r.expired) { localStorage.removeItem('sp_utoken'); }
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('lerr').innerText = (r && r.error) || '다시 로그인해주세요.';
+      })
+      .withFailureHandler(function(){
+        window.loading(false);   // 네트워크 오류일 때는 토큰을 지우지 않고 수동 로그인으로 넘긴다
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('lerr').innerText = '연결에 실패했습니다. 다시 시도해주세요.';
+      })
+      .loginWithToken(savedName, savedToken);
+    return;
+  }
+
   if (savedName && savedPw) {
     document.getElementById('lname').value = savedName;
     document.getElementById('lpw').value = savedPw;
@@ -938,7 +961,7 @@ window.handleLogin = function() {
       window.loading(false);
       var r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
       if (!r || !r.success) { err.innerText = (r && r.error) || '로그인에 실패했습니다.'; return; }
-      window.afterLogin(r.user, name, pw);
+      window.afterLogin(r.user, name, pw, r.token || '');
     })
     .withFailureHandler(function(e){
       window.loading(false);
@@ -949,16 +972,22 @@ window.handleLogin = function() {
 };
 
 // 인증 성공 후 앱 진입 처리
-window.afterLogin = function(u, name, pw) {
+window.afterLogin = function(u, name, pw, token) {
   ME = u;
 
-  // 자동 로그인 처리 (이 기기에만 저장)
+  // 자동 로그인 처리 (이 기기에만 저장) — 비밀번호 대신 서버가 발급한 토큰을 저장한다
   if (document.getElementById('chkAuto').checked) {
     localStorage.setItem('sp_uname', name);
-    localStorage.setItem('sp_upw', pw);
+    if (token) {
+      localStorage.setItem('sp_utoken', token);
+      localStorage.removeItem('sp_upw');
+    } else if (pw) {
+      localStorage.setItem('sp_upw', pw);   // 서버가 아직 토큰을 지원하지 않을 때만(구버전 서버) 임시 사용
+    }
   } else {
     localStorage.removeItem('sp_uname');
     localStorage.removeItem('sp_upw');
+    localStorage.removeItem('sp_utoken');
   }
 
   const now = new Date();
@@ -1017,9 +1046,12 @@ window.afterLogin = function(u, name, pw) {
 };
 
 window.handleLogout = function() {
+  var _n = localStorage.getItem('sp_uname'), _t = localStorage.getItem('sp_utoken');
+  if (_n && _t) { try { google.script.run.withSuccessHandler(function(){}).withFailureHandler(function(){}).logoutToken(_n, _t); } catch(e){} }
   ME = null;
   localStorage.removeItem('sp_uname');
   localStorage.removeItem('sp_upw');
+  localStorage.removeItem('sp_utoken');
   document.getElementById('mainApp').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('lname').value = '';
