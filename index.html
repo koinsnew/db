@@ -10,32 +10,39 @@
 <style>
 /* ─── BRIGHT THEME VARIABLES ─── */
 :root {
-  --bg0: #f3f4f6;
+  --bg0: #f5f5f7;
   --bg1: #ffffff;
   --bg2: #ffffff;
   --bg3: #f9fafb;
-  --border: #e5e7eb;
+  --border: #e0e0e5;
   --border2: #d1d5db;
-  --gold: #f59e0b;
+  --gold: #b45309;
   --indigo: #4f46e5;
-  --green: #10b981;
-  --red: #ef4444;
-  --blue: #3b82f6;
+  --green: #047857;
+  --red: #c62828;
+  --blue: #0066cc;
   --tx1: #111827;
   --tx2: #4b5563;
-  --tx3: #9ca3af;
+  --tx3: #5f6672;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tx1);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body{font-family:'Noto Sans KR','Malgun Gothic',sans-serif;background:var(--bg0);color:var(--tx1);min-height:100vh;-webkit-font-smoothing:antialiased;}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px;}
+
+/* ─── FOCUS / A11Y ─── */
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px;}
+.inp:focus-visible{outline:none;}
+button{font-family:inherit;}
+.tap{min-height:44px;min-width:44px;}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}}
 
 /* ─── INPUTS ─── */
 .inp{width:100%;background:var(--bg1);border:1px solid var(--border2);border-radius:10px;
   color:var(--tx1);padding:12px 14px;font-size:14px;font-family:'Noto Sans KR',sans-serif;
   outline:none;transition:all .2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
-.inp:focus{border-color:var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.1);}
+.inp:focus{border-color:var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,0.1);}
 .inp::placeholder{color:var(--tx3);}
 .inp option{background:var(--bg1);color:var(--tx1);}
 textarea.inp{resize:none;}
@@ -45,11 +52,11 @@ textarea.inp{resize:none;}
   font-weight:700;cursor:pointer;transition:all .18s;display:inline-flex;
   align-items:center;justify-content:center;gap:6px;white-space:nowrap;}
 .btn:active{transform:scale(.96);}
-.btn-gold{background:var(--blue);color:#fff;padding:12px 20px;font-size:14px;box-shadow:0 2px 4px rgba(59,130,246,0.2);}
-.btn-gold:hover{background:#2563eb;}
+.btn-gold{background:var(--blue);color:#fff;padding:12px 20px;font-size:14px;box-shadow:0 2px 4px rgba(0,102,204,0.2);}
+.btn-gold:hover{background:#0052a3;}
 .btn-sm-gold{background:var(--blue);color:#fff;padding:7px 14px;font-size:12px;border-radius:6px;}
 .btn-ghost{background:var(--bg1);border:1px solid var(--border2);color:var(--tx2);padding:10px 18px;font-size:13px;}
-.btn-ghost:hover{background:var(--bg3);border-color:#9ca3af;}
+.btn-ghost:hover{background:var(--bg3);border-color:#6b7280;}
 .btn-green{background:var(--green);color:#fff;padding:8px 14px;font-size:12px;border-radius:6px;}
 .btn-indigo{background:var(--indigo);color:#fff;padding:8px 14px;font-size:12px;border-radius:6px;}
 .btn-red{background:var(--bg1);border:1px solid var(--red);color:var(--red);padding:7px 12px;font-size:12px;border-radius:6px;}
@@ -75,35 +82,37 @@ textarea.inp{resize:none;}
   background: var(--blue);
   color: #fff;
   border-color: var(--blue);
-  box-shadow: 0 4px 6px rgba(59,130,246,0.3);
+  box-shadow: 0 4px 6px rgba(0,102,204,0.3);
 }
 
 /* ─── CARDS ─── */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;}
 .card-sm{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;}
 
 /* ─── BADGE ─── */
-.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px;}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.4px;}
 .b-wait{background:#f3f4f6;color:#6b7280;border:1px solid #d1d5db;}
-.b-assigned{background:#eff6ff;color:#3b82f6;border:1px solid #bfdbfe;}
+.b-assigned{background:#eef5fc;color:#0066cc;border:1px solid #c5dcf2;}
 .b-done{background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;}
 
 /* ─── RESULT PILLS ─── */
 .rpill{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
-.rp-complete{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
-.rp-scheduled{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
+.rp-complete{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+.rp-scheduled{background:#fef2f2;color:#c62828;border:1px solid #fecaca;}
 .rpill.rp-none{background:#f3f4f6;color:#4b5563;border:1px solid #d1d5db;}
-.rp-failed{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
-.rp-cancelled{background:#f3f4f6;color:#9ca3af;border:1px solid #d1d5db;text-decoration:line-through;}
+.rp-failed{background:#fef2f2;color:#c62828;border:1px solid #fecaca;}
+.rp-cancelled{background:#f3f4f6;color:#6b7280;border:1px solid #d1d5db;text-decoration:line-through;}
 
 /* ─── BOTTOM NAV ─── */
 .bnav{position:fixed;bottom:0;left:0;right:0;background:#ffffff;border-top:1px solid var(--border);
   display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 10px rgba(0,0,0,0.03);}
-.bni{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;
-  cursor:pointer;color:var(--tx3);font-size:10px;font-weight:600;border:none;background:none;
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:56px;padding:8px 2px 6px;
+  cursor:pointer;color:var(--tx3);font-size:12px;font-weight:600;border:none;background:none;
   font-family:'Noto Sans KR',sans-serif;transition:color .15s;gap:2px;}
 .bni.on{color:var(--blue);}
-.bni-ic{font-size:20px;}
+.bni-ic{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;}
+.bni-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.bni.on{font-weight:800;}
 
 /* ─── HEADER ─── */
 .hdr{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
@@ -126,13 +135,13 @@ textarea.inp{resize:none;}
 }
 
 /* ─── FIELD LABEL ─── */
-.fl{font-size:11px;font-weight:700;color:var(--tx2);letter-spacing:.5px;margin-bottom:6px;}
+.fl{font-size:12px;font-weight:700;color:var(--tx2);letter-spacing:.2px;margin-bottom:6px;}
 
 /* ─── FILTER TABS ─── */
-.ftab{padding:6px 2px;border-radius:20px;font-size:10.5px;font-weight:700;cursor:pointer;
+.ftab{padding:10px 2px;min-height:40px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;
   border:1px solid var(--border2);background:var(--bg1);color:var(--tx2);
   transition:all .15s;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;
-  box-shadow:0 1px 2px rgba(0,0,0,0.03);flex:1;text-align:center;min-width:0;letter-spacing:-0.5px;}
+  box-shadow:0 1px 2px rgba(0,0,0,0.03);flex:1;text-align:center;min-width:0;letter-spacing:-0.3px;}
 .ftab.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 
 /* ─── LOADER ─── */
@@ -142,19 +151,19 @@ textarea.inp{resize:none;}
 
 /* ─── CALENDAR STYLES ─── */
 .cal-wrapper {background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:12px 8px; box-shadow:0 2px 4px rgba(0,0,0,0.03); margin-bottom:14px; overflow-x:hidden;}
-.cal-header {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center;font-size:11px;font-weight:800;color:var(--tx3);margin-bottom:8px;}
+.cal-header {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center;font-size:12px;font-weight:800;color:var(--tx3);margin-bottom:8px;}
 .cal-grid {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;}
 .cal-cell {background:var(--bg1); min-height:80px; padding:3px; border-radius:6px; cursor:pointer; transition:all 0.15s; display:flex; flex-direction:column; border:1px solid var(--border2); min-width:0;}
-.cal-cell:active, .cal-cell.selected {background:#eff6ff; border-color:#93c5fd;}
-.cal-day {font-size:11px; font-weight:800; color:var(--tx2); margin-bottom:4px; text-align:center;}
-.cal-ev {font-size:9px; font-weight:600; padding:3px 4px; border-radius:4px; margin-bottom:3px; background:var(--bg0); color:var(--tx1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; width:100%; box-sizing:border-box;}
-.ev-wait {background:#f9fafb; color:#4b5563; border:1px solid #e5e7eb; border-left:3px solid #9ca3af;}
-.ev-assign {background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-left:3px solid #3b82f6;}
+.cal-cell:active, .cal-cell.selected {background:#eef5fc; border-color:#9cc2e6;}
+.cal-day {font-size:12px; font-weight:800; color:var(--tx2); margin-bottom:4px; text-align:center;}
+.cal-ev {font-size:12px; font-weight:600; padding:3px 4px; border-radius:4px; margin-bottom:3px; background:var(--bg0); color:var(--tx1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; width:100%; box-sizing:border-box;}
+.ev-wait {background:#f9fafb; color:#4b5563; border:1px solid #e5e7eb; border-left:3px solid #6b7280;}
+.ev-assign {background:#eef5fc; color:#0052a3; border:1px solid #c5dcf2; border-left:3px solid #0066cc;}
 .ev-done {background:#eef2ff; color:#4f46e5; border:1px solid #c7d2fe; border-left:3px solid #6366f1;}
-.ev-sched {background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; border-left:3px solid #22c55e;}
-.ev-failed {background:#fef2f2; color:#dc2626; border:1px solid #fecaca; border-left:3px solid #ef4444;}
-.ev-cancel {background:#f3f4f6; color:#9ca3af; border:1px solid #e5e7eb; text-decoration:line-through;}
-.ev-personal {background:#fef3c7; color:#d97706; border:1px solid #fde68a; border-left:3px solid #f59e0b;}
+.ev-sched {background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; border-left:3px solid #15803d;}
+.ev-failed {background:#fef2f2; color:#c62828; border:1px solid #fecaca; border-left:3px solid #c62828;}
+.ev-cancel {background:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb; text-decoration:line-through;}
+.ev-personal {background:#fef3c7; color:#92400e; border:1px solid #fde68a; border-left:3px solid #b45309;}
 
 /* ─── VENUE CARD ─── */
 .vcrd{background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:12px 10px;
@@ -163,14 +172,26 @@ textarea.inp{resize:none;}
 .vcrd.has-res{border-left:3px solid var(--indigo);}
 .canceled-text {text-decoration:line-through; opacity:0.5;}
 
+/* ─── CARD ACTIONS ─── */
+.vcrd .btn,.vcrd label,.more summary{min-height:44px;}
+.vcrd .btn{padding:8px 14px!important;font-size:13px!important;}
+.btn-danger{color:var(--red)!important;border-color:#f3b8b8!important;background:#fff5f5!important;}
+details.more{position:relative;display:inline-block;}
+details.more summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+details.more summary::-webkit-details-marker{display:none;}
+details.more[open] summary{background:var(--bg3);}
+.more-menu{display:flex;flex-direction:column;gap:6px;margin-top:6px;min-width:150px;padding:8px;background:var(--bg1);border:1px solid var(--border2);border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.10);}
+.more-menu .btn{justify-content:flex-start;width:100%;}
+.more-menu .btn-danger{margin-top:4px;}
+
 /* ─── PHOTO GRID ─── */
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 .pitem{aspect-ratio:1;background:var(--bg3);border-radius:8px;overflow:hidden;
   position:relative;cursor:pointer;border:1px solid var(--border);}
 .pitem img{width:100%;height:100%;object-fit:cover;}
 .prmv{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);
-  color:#fff;border:none;border-radius:50%;width:20px;height:20px;
-  font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  color:#fff;border:none;border-radius:50%;width:28px;height:28px;
+  font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
 /* ─── RESULT BTN ─── */
 .rbtn{padding:12px 8px;border-radius:10px;border:1.5px solid var(--border2);
@@ -180,42 +201,38 @@ textarea.inp{resize:none;}
 /* ─── STAT CARD ─── */
 .scrd{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;box-shadow:0 2px 4px rgba(0,0,0,0.03);}
 .pbar{background:var(--bg0);border-radius:4px;height:6px;overflow:hidden;margin-top:10px;}
-.pfill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--indigo));transition:width 1s ease;}
+.pfill{height:100%;border-radius:4px;background:var(--blue);transition:width 1s ease;}
 
 /* ─── LOGIN ─── */
 .login-bg{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  padding:20px;background:#f3f4f6;}
+  padding:20px;background:var(--bg0);}
 .login-card{background:#ffffff;border:1px solid var(--border);border-radius:24px;
   padding:40px 32px;width:100%;max-width:360px;
   box-shadow:0 20px 25px -5px rgba(0,0,0,0.05),0 10px 10px -5px rgba(0,0,0,0.02);}
-.logo{font-size:30px;font-weight:900;color:var(--blue);letter-spacing:-1px;}
-.logo-sub{font-size:11px;letter-spacing:2px;color:var(--tx3);margin-top:4px;}
+.logo{font-size:30px;font-weight:900;color:var(--blue);letter-spacing:0;}
+.logo-sub{font-size:12px;letter-spacing:1px;color:var(--tx3);margin-top:4px;}
 
 .swal2-popup{font-family:'Noto Sans KR',sans-serif!important;border-radius:14px!important;}
 div:where(.swal2-container){z-index:9999!important;}
 
-/* 모바일 캘린더 글씨 극한 축소 및 줄바꿈 허용, 달력 높이 확대 */
+/* 달력: 색 막대 + 건수 (모바일 5.5px 글자 제거) — 상세는 아래 타임테이블 */
+.cal-day{display:flex;align-items:center;justify-content:center;gap:3px;}
+.cal-n{display:none;}
+.cal-legend{display:none;}
 @media (max-width: 600px) {
-  .cal-ev { 
-    font-size: 5.5px;                
-    padding: 0.5px 1px;              
-    margin-bottom: 1px; 
-    letter-spacing: -0.4px;          
-    line-height: 1.05;               
-    border-left-width: 1px;
-    white-space: normal;            
-    word-break: break-all;          
-    overflow: visible;
-    -webkit-text-size-adjust: none; 
-  }
-  .cal-cell { 
-    min-height: 11.5vh;              
-    padding: 2px 1px; 
-  }
-  .cal-day { 
-    font-size: 8px;                  
-    margin-bottom: 2px; 
-  }
+  .cal-cell{min-height:64px;padding:3px 2px;}
+  .cal-day{font-size:12px;justify-content:space-between;padding:0 2px;margin-bottom:3px;}
+  .cal-n{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:var(--blue);color:#fff;font-size:12px;font-weight:800;line-height:1;}
+  .cal-ev{font-size:0!important;height:7px;padding:0!important;margin-bottom:2px!important;border-radius:3px;border:0!important;overflow:hidden;}
+  .ev-wait{background:#8a8f98!important;}
+  .ev-assign{background:var(--blue)!important;}
+  .ev-done{background:#4f46e5!important;}
+  .ev-sched{background:#15803d!important;}
+  .ev-failed{background:#c62828!important;}
+  .ev-cancel{background:transparent!important;border:1px dashed #6b7280!important;height:7px;}
+  .ev-personal{background:#b45309!important;}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--tx2);padding:8px 4px 0;}
+  .cal-legend i{display:inline-block;width:12px;height:7px;border-radius:3px;margin-right:4px;vertical-align:middle;}
 }
 </style>
 </head>
@@ -234,22 +251,22 @@ div:where(.swal2-container){z-index:9999!important;}
       <div class="logo-sub">헤리티지 마스터 본부</div>
     </div>
     <div style="margin-bottom:16px;">
-      <div class="fl">이름</div>
-      <input id="lname" type="text" class="inp" placeholder="이름을 입력하세요" autocomplete="off"
+      <label class="fl" for="lname" style="display:block">이름</label>
+      <input id="lname" aria-label="이름" autocapitalize="off" type="text" class="inp" placeholder="이름을 입력하세요" autocomplete="off"
         onkeypress="if(event.key==='Enter')window.handleLogin()">
     </div>
     <div style="margin-bottom:28px;">
-      <div class="fl">비밀번호</div>
-      <input id="lpw" type="password" class="inp" placeholder="비밀번호" autocomplete="off"
+      <label class="fl" for="lpw" style="display:block">비밀번호</label>
+      <input id="lpw" aria-label="비밀번호" type="password" class="inp" placeholder="비밀번호" autocomplete="off"
         onkeypress="if(event.key==='Enter')window.handleLogin()">
       <div style="margin-top:10px;text-align:left;">
-        <label style="font-size:12px;color:var(--tx2);cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
-          <input type="checkbox" id="chkAuto" style="width:14px;height:14px;accent-color:var(--blue);"> 자동 로그인
+        <label style="font-size:13px;color:var(--tx2);cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:44px;">
+          <input type="checkbox" id="chkAuto" style="width:20px;height:20px;accent-color:var(--blue);"> 자동 로그인
         </label>
       </div>
     </div>
     <button onclick="window.handleLogin()" class="btn btn-gold btn-full">접속하기</button>
-    <p id="lerr" style="color:var(--red);font-size:12px;text-align:center;margin-top:14px;min-height:16px;"></p>
+    <p id="lerr" role="alert" style="color:var(--red);font-size:13px;text-align:center;margin-top:14px;min-height:16px;"></p>
   </div>
 </div>
 
@@ -259,30 +276,30 @@ div:where(.swal2-container){z-index:9999!important;}
     <div style="display:flex;align-items:center;justify-content:space-between;position:relative;">
       <div style="display:flex; flex-direction:column; flex:1; min-width:0; overflow:hidden;">
         <div style="font-size:16px;font-weight:900;color:var(--blue);letter-spacing:-.5px;white-space:nowrap;">세미나 PRO</div>
-        <div style="font-size:10px;color:var(--tx2);margin-top:2px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hdrInfo"></div>
+        <div style="font-size:12px;color:var(--tx2);margin-top:2px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hdrInfo"></div>
       </div>
       
       <div style="position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); text-align:center; white-space:nowrap; pointer-events:none;" id="hdrTodayBar" class="hidden sm:block">
-        <span id="todayTextContainer" style="font-size:13.5px; font-weight:800; color:var(--tx1); background:rgba(59,130,246,0.06); padding:6px 12px; border-radius:20px; border:1px solid rgba(59,130,246,0.15); letter-spacing:-0.3px;"></span>
+        <span id="todayTextContainer" style="font-size:13.5px; font-weight:800; color:var(--tx1); background:rgba(0,102,204,0.06); padding:6px 12px; border-radius:20px; border:1px solid rgba(0,102,204,0.15); letter-spacing:-0.3px;"></span>
       </div>
 
       <div style="display:flex; align-items:center; gap:5px; flex-shrink:0; z-index:10;">
-        <button onclick="window.loadVenues()" style="background:var(--bg1);border:1px solid var(--border2);color:var(--tx1);padding:5px 7px;border-radius:8px;font-size:11px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.05);white-space:nowrap;">🔄</button>
+        <button onclick="window.loadVenues()" aria-label="새로고침" class="tap" style="background:var(--bg1);border:1px solid var(--border2);color:var(--tx1);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg></button>
         
         <button onclick="window.openMonthPicker()" id="monthSelBtn"
           style="background:var(--bg1);border:1px solid var(--border2);color:var(--tx1);
-          padding:5px 8px;border-radius:8px;font-size:11.5px;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,0.05);white-space:nowrap;display:flex;align-items:center;gap:4px;font-family:'Noto Sans KR',sans-serif;">
+          padding:0 10px;min-height:44px;border-radius:10px;font-size:13px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:4px;font-family:'Noto Sans KR',sans-serif;" aria-label="월 선택">
           <span id="monthSelText"></span>
-          <span style="font-size:11px;">🗓️</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
         </button>
 
         <button onclick="window.handleLogout()"
-          style="background:var(--bg3);border:1px solid var(--border2);color:var(--tx2);padding:5px 7px;
-          border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">로그아웃</button>
+          class="tap" style="background:var(--bg3);border:1px solid var(--border2);color:var(--tx2);padding:0 10px;
+          border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">로그아웃</button>
       </div>
     </div>
     <div class="block sm:hidden text-center mt-2" style="pointer-events:none;">
-       <span id="todayTextContainerMobile" style="font-size:12px; font-weight:800; color:var(--tx1); background:rgba(59,130,246,0.06); padding:4px 10px; border-radius:20px; border:1px solid rgba(59,130,246,0.15); letter-spacing:-0.4px;"></span>
+       <span id="todayTextContainerMobile" style="font-size:12px; font-weight:800; color:var(--tx1); background:rgba(0,102,204,0.06); padding:4px 10px; border-radius:20px; border:1px solid rgba(0,102,204,0.15); letter-spacing:-0.4px;"></span>
     </div>
   </div>
 
@@ -301,7 +318,10 @@ div:where(.swal2-container){z-index:9999!important;}
       <div class="cal-header">
         <div style="color:var(--red);">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div style="color:var(--blue);">토</div>
       </div>
-      <div id="calendarGrid" class="cal-grid"><div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div></div>
+      <div id="calendarGrid" class="cal-grid" role="group" aria-label="월간 달력"><div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div></div>
+      <div class="cal-legend" aria-hidden="false">
+        <span><i style="background:#8a8f98"></i>대기</span><span><i style="background:var(--blue)"></i>배정</span><span><i style="background:#15803d"></i>청약예정</span><span><i style="background:#4f46e5"></i>결과완료</span><span><i style="background:#c62828"></i>진행불가</span><span><i style="border:1px dashed #6b7280"></i>취소</span><span><i style="background:#b45309"></i>개인</span>
+      </div>
     </div>
   </div>
 
@@ -342,25 +362,25 @@ div:where(.swal2-container){z-index:9999!important;}
     
     <div id="adminStatFilter" style="display:none; margin-bottom:16px;">
       <div style="display:flex; align-items:center; gap:2px; background:var(--bg1); padding:4px 6px; border-radius:10px; border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,0.02); width:100%; box-sizing:border-box;">
-        <input type="date" id="stat_start" class="inp" style="padding:4px; font-size:10px; flex:1; min-width:0; letter-spacing:-1px; text-align:center;">
-        <span style="font-size:11px; font-weight:800; color:var(--tx2); margin:0 1px;">~</span>
-        <input type="date" id="stat_end" class="inp" style="padding:4px; font-size:10px; flex:1; min-width:0; letter-spacing:-1px; text-align:center;">
-        <button onclick="window.loadStats(true)" class="btn btn-blue" style="padding:6px 8px; font-size:11px; flex-shrink:0; white-space:nowrap; margin-left:2px;">조회</button>
-        <button onclick="window.resetStatFilter()" class="btn btn-ghost" style="padding:6px 8px; font-size:11px; flex-shrink:0; white-space:nowrap; margin-left:2px;">초기화</button>
+        <input type="date" id="stat_start" class="inp" style="padding:4px; font-size:12px; flex:1; min-width:0; letter-spacing:0; text-align:center;">
+        <span style="font-size:12px; font-weight:800; color:var(--tx2); margin:0 1px;">~</span>
+        <input type="date" id="stat_end" class="inp" style="padding:4px; font-size:12px; flex:1; min-width:0; letter-spacing:0; text-align:center;">
+        <button onclick="window.loadStats(true)" class="btn btn-blue" style="padding:6px 8px; font-size:12px; flex-shrink:0; white-space:nowrap; margin-left:2px;">조회</button>
+        <button onclick="window.resetStatFilter()" class="btn btn-ghost" style="padding:6px 8px; font-size:12px; flex-shrink:0; white-space:nowrap; margin-left:2px;">초기화</button>
       </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px;">
       <div class="card-sm" style="text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.03);background:#ffffff;">
-        <div style="font-size:10px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 섭외</div>
+        <div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 섭외</div>
         <div style="font-size:26px;font-weight:900;color:var(--blue);" id="sTotal">0</div>
       </div>
       <div class="card-sm" style="text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.03);background:#ffffff;">
-        <div style="font-size:10px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 건수</div>
+        <div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 건수</div>
         <div style="font-size:26px;font-weight:900;color:var(--green);" id="sContract">0</div>
       </div>
       <div class="card-sm" style="text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.03);background:#ffffff;">
-        <div style="font-size:10px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 보험료</div>
+        <div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 보험료</div>
         <div style="font-size:14px;font-weight:900;color:var(--indigo);margin-top:6px;" id="sAmount">0원</div>
       </div>
     </div>
@@ -392,14 +412,14 @@ div:where(.swal2-container){z-index:9999!important;}
       <div style="font-size:clamp(13px,4vw,18px);font-weight:900;color:var(--tx1);white-space:nowrap;flex-shrink:0;">🗺️ 섭외지 지도</div>
       <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
         <button onclick="window.mapPrevDay()" class="btn btn-ghost" style="padding:4px 7px;font-size:13px;">◀</button>
-        <input type="date" id="mapDateInput" class="inp" style="padding:4px 4px;font-size:11px;width:126px;text-align:center;" onchange="window.onMapDateChange(this.value)">
+        <input type="date" id="mapDateInput" class="inp" style="padding:4px 4px;font-size:12px;width:126px;text-align:center;" onchange="window.onMapDateChange(this.value)">
         <button onclick="window.mapNextDay()" class="btn btn-ghost" style="padding:4px 7px;font-size:13px;">▶</button>
       </div>
     </div>
-    <div style="padding:0 14px 8px;display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--tx2);font-weight:600;">
-      <span style="color:#ef4444;">● ~11:59</span>
-      <span style="color:#3b82f6;">● 12:00~14:59</span>
-      <span style="color:#22c55e;">● 15:00~</span>
+    <div style="padding:0 14px 8px;display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--tx2);font-weight:600;">
+      <span style="color:#c62828;">● ~11:59</span>
+      <span style="color:#0066cc;">● 12:00~14:59</span>
+      <span style="color:#15803d;">● 15:00~</span>
     </div>
     <div style="position:relative;">
       <div id="kakaoMap" style="width:100%;height:52vh;background:#eef2f7;display:flex;align-items:center;justify-content:center;color:var(--tx3);font-size:13px;">지도를 불러오는 중…</div>
@@ -410,40 +430,40 @@ div:where(.swal2-container){z-index:9999!important;}
     </div>
   </div>
 
-  <div id="sendSelectBar" style="display:none;position:fixed;left:0;right:0;bottom:66px;z-index:44;padding:10px 14px;background:#10b981;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.22);align-items:center;justify-content:space-between;gap:10px;">
-    <span id="sendSelectText" style="font-size:13px;font-weight:800;">결과 전달 선택 0건</span>
+  <div id="sendSelectBar" style="display:none;position:fixed;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom,0px));z-index:44;padding:8px 14px;background:#047857;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.22);align-items:center;justify-content:space-between;gap:10px;">
+    <span id="sendSelectText" style="font-size:14px;font-weight:800;">결과 전달 선택 0건</span>
     <div style="display:flex;gap:6px;flex-shrink:0;">
-      <button onclick="window.clearSendSelect()" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">취소</button>
-      <button onclick="window.commitSendSelected()" style="background:#fff;color:#10b981;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;">📨 일괄 전달</button>
+      <button onclick="window.clearSendSelect()" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:0 14px;min-height:44px;font-size:13px;font-weight:700;cursor:pointer;">취소</button>
+      <button onclick="window.commitSendSelected()" style="background:#fff;color:#047857;border:none;border-radius:8px;padding:0 14px;min-height:44px;font-size:13px;font-weight:800;cursor:pointer;">일괄 전달</button>
     </div>
   </div>
 
-  <div id="pendingAssignBar" style="display:none;position:fixed;left:0;right:0;bottom:66px;z-index:45;padding:10px 14px;background:#4f46e5;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.22);align-items:center;justify-content:space-between;gap:10px;">
-    <span id="pendingAssignText" style="font-size:13px;font-weight:800;">배정 대기 0건</span>
+  <div id="pendingAssignBar" style="display:none;position:fixed;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom,0px));z-index:45;padding:8px 14px;background:#4f46e5;color:#fff;box-shadow:0 -2px 12px rgba(0,0,0,.22);align-items:center;justify-content:space-between;gap:10px;">
+    <span id="pendingAssignText" style="font-size:14px;font-weight:800;">배정 대기 0건</span>
     <div style="display:flex;gap:6px;flex-shrink:0;">
-      <button onclick="window.discardPendingAssign()" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">취소</button>
-      <button onclick="window.commitPendingAssign()" style="background:#fff;color:#4f46e5;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer;">배정완료</button>
+      <button onclick="window.discardPendingAssign()" style="background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:8px;padding:0 14px;min-height:44px;font-size:13px;font-weight:700;cursor:pointer;">취소</button>
+      <button onclick="window.commitPendingAssign()" style="background:#fff;color:#4f46e5;border:none;border-radius:8px;padding:0 14px;min-height:44px;font-size:13px;font-weight:800;cursor:pointer;">배정완료</button>
     </div>
   </div>
 
-  <nav class="bnav">
+  <nav class="bnav" aria-label="주 메뉴">
     <button class="bni" id="ni-myonly" style="display:none;" onclick="window.toggleMyOnly()">
-      <span class="bni-ic" id="myonly-ic">👤</span><span style="font-size:10px;white-space:nowrap;">내일정만</span>
+      <span class="bni-ic" id="myonly-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span><span style="font-size:12px;white-space:nowrap;">내일정만</span>
     </button>
     <button class="bni on" id="ni-list" onclick="window.goPage('list')">
-      <span class="bni-ic">📅</span><span style="font-size:10px;white-space:nowrap;">일정</span>
+      <span class="bni-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><span style="font-size:12px;white-space:nowrap;">일정</span>
     </button>
     <button class="bni" id="ni-input" style="display:none;" onclick="window.goPage('input')">
-      <span class="bni-ic">➕</span><span style="font-size:10px;white-space:nowrap;">섭외입력</span>
+      <span class="bni-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span><span style="font-size:12px;white-space:nowrap;">섭외입력</span>
     </button>
     <button class="bni" id="ni-personal" style="display:none;" onclick="window.openPersonal()">
-      <span class="bni-ic">🏖️</span><span style="font-size:10px;white-space:nowrap;">개인일정</span>
+      <span class="bni-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg></span><span style="font-size:12px;white-space:nowrap;">개인일정</span>
     </button>
     <button class="bni" id="ni-map" style="display:none;" onclick="window.goPage('map')">
-      <span class="bni-ic">🗺️</span><span style="font-size:10px;white-space:nowrap;">지도</span>
+      <span class="bni-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span style="font-size:12px;white-space:nowrap;">지도</span>
     </button>
     <button class="bni" id="ni-stats" style="display:none;" onclick="window.goPage('stats')">
-      <span class="bni-ic">📊</span><span style="font-size:10px;white-space:nowrap;">통계</span>
+      <span class="bni-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-7"/></svg></span><span style="font-size:12px;white-space:nowrap;">통계</span>
     </button>
   </nav>
 </div>
@@ -485,7 +505,7 @@ div:where(.swal2-container){z-index:9999!important;}
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:800;color:var(--tx1);" id="p_modal_title">개인 일정 등록</div>
-      <button onclick="window.closeM('mPersonal')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;border-radius:8px;">✕</button>
+      <button onclick="window.closeM('mPersonal')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <div><div class="fl">날짜 *</div><input type="date" id="p_date" class="inp"></div>
@@ -504,7 +524,7 @@ div:where(.swal2-container){z-index:9999!important;}
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:800;color:var(--tx1);">일정 수정</div>
-      <button onclick="window.closeM('mEditVenue')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;border-radius:8px;">✕</button>
+      <button onclick="window.closeM('mEditVenue')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <div><div class="fl">날짜 *</div><input type="date" id="e_date" class="inp" onchange="window.autoEditDay()"></div>
@@ -531,7 +551,7 @@ div:where(.swal2-container){z-index:9999!important;}
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:800;color:var(--tx1);">브리퍼 배정</div>
-      <button onclick="window.closeM('mAssign')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;border-radius:8px;">✕</button>
+      <button onclick="window.closeM('mAssign')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div id="assignVenueInfo" style="display:none;background:#f8fafc;border:1px solid var(--border2);border-radius:10px;padding:10px 12px;margin-bottom:16px;"></div>
     <div style="margin-bottom:20px;"><div class="fl">브리퍼 선택</div>
@@ -548,7 +568,7 @@ div:where(.swal2-container){z-index:9999!important;}
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:800;color:var(--tx1);">결과 입력</div>
-      <button onclick="window.closeM('mResult')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;border-radius:8px;">✕</button>
+      <button onclick="window.closeM('mResult')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
 
     <div style="margin-bottom:20px;">
@@ -563,16 +583,16 @@ div:where(.swal2-container){z-index:9999!important;}
 
     <div id="compArea" style="display:none; background:#f0fdf4; border:2px solid #bbf7d0; border-radius:12px; padding:16px; margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="fl" style="margin:0;color:#16a34a;font-size:13px;">✅ 청약완료 인원</div>
-        <button onclick="window.addCompContract()" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;color:#16a34a;border-color:#16a34a;background:#ffffff;">+ 인원 추가</button>
+        <div class="fl" style="margin:0;color:#15803d;font-size:13px;">✅ 청약완료 인원</div>
+        <button onclick="window.addCompContract()" class="btn btn-ghost" style="padding:4px 8px;font-size:12px;color:#15803d;border-color:#15803d;background:#ffffff;">+ 인원 추가</button>
       </div>
       <div id="compList"></div>
     </div>
 
     <div id="schedArea" style="display:none; background:#fef2f2; border:2px solid #fecaca; border-radius:12px; padding:16px; margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="fl" style="margin:0;color:#ef4444;font-size:13px;">📅 청약예정 인원</div>
-        <button onclick="window.addSchedContract()" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;color:#ef4444;border-color:#ef4444;background:#ffffff;">+ 인원 추가</button>
+        <div class="fl" style="margin:0;color:#c62828;font-size:13px;">📅 청약예정 인원</div>
+        <button onclick="window.addSchedContract()" class="btn btn-ghost" style="padding:4px 8px;font-size:12px;color:#c62828;border-color:#c62828;background:#ffffff;">+ 인원 추가</button>
       </div>
       <div id="schedList"></div>
     </div>
@@ -738,7 +758,7 @@ var mpSelectedMonth = 5;
 //  INIT
 // --------------------------------------------------
 window.onload = function() {
-  console.log('%c세미나 PRO build 2026-08-20 · 통계 청약 철회 기능 포함', 'color:#2563eb;font-weight:bold;');
+  console.log('%c세미나 PRO build 2026-08-20 · 통계 청약 철회 기능 포함', 'color:#0052a3;font-weight:bold;');
   const now = new Date();
   const y = now.getFullYear();
   const m = String(now.getMonth()+1).padStart(2,'0');
@@ -948,7 +968,8 @@ window.afterLogin = function(u, name, pw) {
   _myBtn.style.display = _canMyOnly ? 'flex' : 'none';
   _myBtn.classList.remove('on');
   var _myIc = document.getElementById('myonly-ic');
-  if (_myIc) _myIc.textContent = '👤';
+  if (_myIc) _myIc.innerHTML = myOnlyIcon(false);
+  _myBtn.setAttribute('aria-pressed','false');
   
   // 개인일정 하단 네비게이션 표시
   if (window.isAdmin(u.role) || u.role.includes('브리퍼')) {
@@ -1049,9 +1070,9 @@ function mapPinColor(v){
   var mins = 24 * 60;
   var m = String(v.time || '').match(/(\d{1,2}):(\d{2})/);
   if (m) mins = parseInt(m[1]) * 60 + parseInt(m[2]);
-  if (mins < 12 * 60) return '#ef4444';   // ~11:59
-  if (mins < 15 * 60) return '#3b82f6';   // 12:00~14:59
-  return '#22c55e';                       // 15:00~
+  if (mins < 12 * 60) return '#c62828';   // ~11:59
+  if (mins < 15 * 60) return '#0066cc';   // 12:00~14:59
+  return '#15803d';                       // 15:00~
 }
 
 function mapPinImage(color){
@@ -1076,7 +1097,7 @@ function loadKakaoSdk(cb){
   sc.onerror = function(){
     kakaoSdkLoading = false;
     document.getElementById('kakaoMap').innerHTML =
-      '<div style="padding:24px;text-align:center;color:#ef4444;font-size:13px;line-height:1.6;">지도 SDK를 불러오지 못했습니다.<br>카카오 JavaScript 키와 사이트 도메인 등록을 확인해주세요.</div>';
+      '<div style="padding:24px;text-align:center;color:#c62828;font-size:13px;line-height:1.6;">지도 SDK를 불러오지 못했습니다.<br>카카오 JavaScript 키와 사이트 도메인 등록을 확인해주세요.</div>';
   };
   document.head.appendChild(sc);
 }
@@ -1088,8 +1109,8 @@ window.onMapDateChange = function(val){ if (!val) return; mapDate = val; renderM
 // 현재위치 점 이미지 (파란 점 + 반투명 원)
 function myLocDotImage(){
   var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">'
-    + '<circle cx="12" cy="12" r="11" fill="#2563eb" fill-opacity="0.22"/>'
-    + '<circle cx="12" cy="12" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"/></svg>';
+    + '<circle cx="12" cy="12" r="11" fill="#0052a3" fill-opacity="0.22"/>'
+    + '<circle cx="12" cy="12" r="5" fill="#0052a3" stroke="#ffffff" stroke-width="2"/></svg>';
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
@@ -1105,7 +1126,7 @@ window.mapMyLocation = function(){
     var img = new kakao.maps.MarkerImage(myLocDotImage(), new kakao.maps.Size(24, 24), { offset: new kakao.maps.Point(12, 12) });
     myLocMarker = new kakao.maps.Marker({ position: latlng, image: img, map: kakaoMapObj, zIndex: 10 });
     myLocOverlay = new kakao.maps.CustomOverlay({ position: latlng, yAnchor: 0, zIndex: 11,
-      content: '<div style="padding:1px 6px;background:#2563eb;color:#fff;font-size:11px;font-weight:700;border-radius:6px;white-space:nowrap;">현재위치</div>' });
+      content: '<div style="padding:1px 6px;background:#0052a3;color:#fff;font-size:12px;font-weight:700;border-radius:6px;white-space:nowrap;">현재위치</div>' });
     myLocOverlay.setMap(kakaoMapObj);
     kakaoMapObj.setCenter(latlng);
     kakaoMapObj.setLevel(6);
@@ -1120,7 +1141,7 @@ window.loadMap = function(){
   syncMapDateInput();
   if (KAKAO_JS_KEY === 'YOUR_KAKAO_JAVASCRIPT_KEY'){
     document.getElementById('kakaoMap').innerHTML =
-      '<div style="padding:24px;text-align:center;color:#ef4444;font-size:13px;line-height:1.7;">카카오 지도 키가 설정되지 않았습니다.<br>index.html의 KAKAO_JS_KEY 값을 카카오 JavaScript 키로 교체하세요.</div>';
+      '<div style="padding:24px;text-align:center;color:#c62828;font-size:13px;line-height:1.7;">카카오 지도 키가 설정되지 않았습니다.<br>index.html의 KAKAO_JS_KEY 값을 카카오 JavaScript 키로 교체하세요.</div>';
     return;
   }
   loadKakaoSdk(function(){ renderMapEnsured(); });
@@ -1186,7 +1207,7 @@ function placeVenueMarker(v, loc, bounds){
   if (v.assignedBriefer && String(v.assignedBriefer).trim()){
     var ov = new kakao.maps.CustomOverlay({
       position: pos, yAnchor: 0, zIndex: 3,
-      content: '<div style="padding:1px 6px;background:rgba(17,24,39,.82);color:#fff;font-size:11px;font-weight:700;border-radius:6px;white-space:nowrap;">' + v.assignedBriefer + '</div>'
+      content: '<div style="padding:1px 6px;background:rgba(17,24,39,.82);color:#fff;font-size:12px;font-weight:700;border-radius:6px;white-space:nowrap;">' + v.assignedBriefer + '</div>'
     });
     ov.setMap(kakaoMapObj); mapOverlays.push(ov);
   }
@@ -1247,12 +1268,12 @@ function renderMapFailedNotice(){
     var addr = String(v.address || '').trim();
     return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px dashed var(--border2);">'
       + '<div style="min-width:0;"><div style="font-size:13px;font-weight:700;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (v.businessName || '(업체명 없음)') + '</div>'
-      + '<div style="font-size:11px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (addr || '(주소 없음)') + '</div></div>'
-      + '<button onclick="window.mapSetManual(\'' + String(v.id) + '\')" style="flex-shrink:0;font-size:11px;color:#2563eb;border:1px solid #bfdbfe;background:#eff6ff;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;white-space:nowrap;">지도에서 지정</button>'
+      + '<div style="font-size:12px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (addr || '(주소 없음)') + '</div></div>'
+      + '<button onclick="window.mapSetManual(\'' + String(v.id) + '\')" style="flex-shrink:0;font-size:12px;color:#0052a3;border:1px solid #c5dcf2;background:#eef5fc;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;white-space:nowrap;">지도에서 지정</button>'
       + '</div>';
   }).join('');
   panel.innerHTML = '<div style="font-size:13px;font-weight:800;color:#b45309;margin-bottom:2px;">\u26a0\ufe0f 좌표를 못 찾은 섭외지 ' + mapFailedVenues.length + '곳</div>'
-    + '<div style="font-size:11px;color:var(--tx3);margin-bottom:2px;">‘지도에서 지정’을 누르고 지도에서 실제 위치를 클릭하면 핀이 생기고 이 기기에 저장됩니다.</div>'
+    + '<div style="font-size:12px;color:var(--tx3);margin-bottom:2px;">‘지도에서 지정’을 누르고 지도에서 실제 위치를 클릭하면 핀이 생기고 이 기기에 저장됩니다.</div>'
     + rows;
 }
 
@@ -1263,7 +1284,7 @@ window.mapSetManual = function(venueId){
   if (mapClickListener){ kakao.maps.event.removeListener(kakaoMapObj, 'click', mapClickListener); mapClickListener = null; }
   window.toast('지도에서 ‘' + (v.businessName || '') + '’ 위치를 클릭하세요', 'info');
   document.getElementById('mapInfoPanel').innerHTML =
-    '<div style="font-size:13px;font-weight:800;color:#2563eb;text-align:center;padding:16px;">\ud83d\udccd 지도에서 ‘' + (v.businessName || '') + '’ 위치를 클릭하세요</div>';
+    '<div style="font-size:13px;font-weight:800;color:#0052a3;text-align:center;padding:16px;">\ud83d\udccd 지도에서 ‘' + (v.businessName || '') + '’ 위치를 클릭하세요</div>';
   mapClickListener = function(mouseEvent){
     var latlng = mouseEvent.latLng;
     var mkey = String(v.address || '').trim() || ('id:' + v.id);
@@ -1284,18 +1305,18 @@ window.onMapPinClick = function(origin){
   others.forEach(function(g){ g._dist = mapHaversineKm(origin.lat, origin.lng, g.lat, g.lng); });
   others.sort(function(a, b){ return a._dist - b._dist; });
 
-  var failLink = (mapFailedVenues && mapFailedVenues.length) ? '<div style="margin-bottom:6px;"><button onclick="window.showMapFailed()" style="font-size:11px;color:#b45309;border:1px solid #fde68a;background:#fffbeb;border-radius:6px;padding:3px 8px;font-weight:700;cursor:pointer;">⚠️ 좌표 미표시 ' + mapFailedVenues.length + '곳 보기</button></div>' : '';
+  var failLink = (mapFailedVenues && mapFailedVenues.length) ? '<div style="margin-bottom:6px;"><button onclick="window.showMapFailed()" style="font-size:12px;color:#b45309;border:1px solid #fde68a;background:#fffbeb;border-radius:6px;padding:3px 8px;font-weight:700;cursor:pointer;">⚠️ 좌표 미표시 ' + mapFailedVenues.length + '곳 보기</button></div>' : '';
   var head = failLink + '<div style="font-size:13px;font-weight:800;color:var(--tx1);margin-bottom:6px;">📍 기준: ' + origin.venue.businessName
-    + ' <span style="font-size:11px;color:var(--tx3);font-weight:600;">(' + (origin.venue.time || '') + ' · ' + (origin.venue.assignedBriefer || '미배정') + ')</span></div>';
+    + ' <span style="font-size:12px;color:var(--tx3);font-weight:600;">(' + (origin.venue.time || '') + ' · ' + (origin.venue.assignedBriefer || '미배정') + ')</span></div>';
 
   if (others.length === 0){ panel.innerHTML = head + '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:12px;">이 날짜의 다른 섭외지가 없습니다.</div>'; scrollMapPanelIntoView(); return; }
 
   var rows = others.map(function(g, i){
     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px dashed var(--border2);">'
       + '<div style="min-width:0;"><div style="font-size:13px;font-weight:700;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + g.venue.businessName + '</div>'
-      + '<div style="font-size:11px;color:var(--tx3);">' + (g.venue.time || '') + ' · ' + (g.venue.assignedBriefer || '미배정') + '</div></div>'
-      + '<div style="text-align:right;flex-shrink:0;padding-left:10px;"><div style="font-size:13px;font-weight:800;color:#2563eb;">' + g._dist.toFixed(1) + 'km</div>'
-      + '<div id="mroute_' + i + '" style="font-size:11px;color:var(--tx3);">🚗 계산중…</div></div></div>';
+      + '<div style="font-size:12px;color:var(--tx3);">' + (g.venue.time || '') + ' · ' + (g.venue.assignedBriefer || '미배정') + '</div></div>'
+      + '<div style="text-align:right;flex-shrink:0;padding-left:10px;"><div style="font-size:13px;font-weight:800;color:#0052a3;">' + g._dist.toFixed(1) + 'km</div>'
+      + '<div id="mroute_' + i + '" style="font-size:12px;color:var(--tx3);">🚗 계산중…</div></div></div>';
   }).join('');
   panel.innerHTML = head + rows;
   scrollMapPanelIntoView();
@@ -1418,7 +1439,7 @@ window.submitPersonal = function() {
 
 window.deletePersonal = function(id) {
   Swal.fire({ title:'일정 삭제', text:'이 개인 일정을 삭제하시겠습니까?',
-    icon:'warning', showCancelButton:true, confirmButtonColor:'#ef4444', cancelButtonColor:'#9ca3af',
+    icon:'warning', showCancelButton:true, confirmButtonColor:'#c62828', cancelButtonColor:'#6b7280',
     confirmButtonText:'삭제', cancelButtonText:'닫기', background:'#ffffff', color:'#111827'
   }).then(function(r) {
     if (!r.isConfirmed) return;
@@ -1439,18 +1460,18 @@ window.personalCard = function(v, admin, briefer, isMyPersonal) {
   let btns = '';
   if (admin || isMyPersonal) {
     btns = `<div style="border-top:1px dashed #fcd34d;padding-top:10px;margin-top:10px;text-align:right;">
-              <button onclick="event.stopPropagation();window.editPersonal('${v.id}')" class="btn btn-ghost" style="padding:4px 10px;font-size:11px;color:#3b82f6;border-color:#bfdbfe;background:#eff6ff;margin-right:6px;">수정</button>
-              <button onclick="event.stopPropagation();window.deletePersonal('${v.id}')" class="btn btn-ghost" style="padding:4px 10px;font-size:11px;color:#d97706;border-color:#fcd34d;background:#fffbeb;">삭제</button>
+              <button onclick="event.stopPropagation();window.editPersonal('${v.id}')" class="btn btn-ghost" style="padding:4px 10px;font-size:12px;color:#0066cc;border-color:#c5dcf2;background:#eef5fc;margin-right:6px;">수정</button>
+              <button onclick="event.stopPropagation();window.deletePersonal('${v.id}')" class="btn btn-ghost" style="padding:4px 10px;font-size:12px;color:#92400e;border-color:#fcd34d;background:#fffbeb;">삭제</button>
             </div>`;
   }
 
-  return `<div class="vcrd" style="background-color:#fef3c7; border-color:#fcd34d; border-left:4px solid #f59e0b; opacity:0.95; padding: 12px 10px;">
+  return `<div class="vcrd" style="background-color:#fef3c7; border-color:#fcd34d; border-left:4px solid #b45309; opacity:0.95; padding: 12px 10px;">
     <div style="display:flex; flex-direction:column; align-items:flex-start;">
-      <span class="badge" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;font-size:10px; margin-bottom:8px;">🏖️ 개인일정</span>
+      <span class="badge" style="background:#fffbeb;color:#92400e;border:1px solid #fde68a;font-size:12px; margin-bottom:8px;">🏖️ 개인일정</span>
       <div style="width:100%; min-width:0;">
         <div style="font-size:16px;font-weight:900;color:#92400e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.assignedBriefer} 브리퍼</div>
         <div style="margin-top:6px;">
-          ${timeStr ? `<div style="font-size:13px;color:#d97706;font-weight:800;">🕒 ${timeStr}</div>` : `<div style="font-size:13px;color:#d97706;font-weight:800;">⏰ 시간 미정</div>`}
+          ${timeStr ? `<div style="font-size:13px;color:#92400e;font-weight:800;">🕒 ${timeStr}</div>` : `<div style="font-size:13px;color:#92400e;font-weight:800;">⏰ 시간 미정</div>`}
         </div>
         <div style="font-size:13px;color:#92400e;margin-top:6px;word-break:keep-all;font-weight:600;">내용: ${v.businessName}</div>
       </div>
@@ -1554,7 +1575,7 @@ window.submitEditVenue = function() {
 
 window.doCancelVenue = function(id) {
   Swal.fire({ title:'섭외 취소', text:'이 섭외를 정말 취소하시겠습니까?',
-    icon:'warning', showCancelButton:true, confirmButtonColor:'#ef4444', cancelButtonColor:'#9ca3af',
+    icon:'warning', showCancelButton:true, confirmButtonColor:'#c62828', cancelButtonColor:'#6b7280',
     confirmButtonText:'섭외취소', cancelButtonText:'닫기', background:'#ffffff', color:'#111827'
   }).then(function(r) {
     if (!r.isConfirmed) return;
@@ -1570,7 +1591,7 @@ window.doCancelVenue = function(id) {
 
 window.doRealDeleteVenue = function(id) {
   Swal.fire({ title:'일정 영구 삭제', text:'이 일정을 데이터에서 완전히 삭제하시겠습니까? (복구 불가)',
-    icon:'error', showCancelButton:true, confirmButtonColor:'#ef4444', cancelButtonColor:'#9ca3af',
+    icon:'error', showCancelButton:true, confirmButtonColor:'#c62828', cancelButtonColor:'#6b7280',
     confirmButtonText:'삭제', cancelButtonText:'취소', background:'#ffffff', color:'#111827'
   }).then(function(r) {
     if (!r.isConfirmed) return;
@@ -1611,7 +1632,7 @@ window.promptCancelContract = function(venueId, contractIndex, cName) {
     inputLabel: '취소 사유를 입력해주세요',
     inputPlaceholder: '예) 고객 변심, 일정 연기 등',
     showCancelButton: true,
-    confirmButtonColor: '#ef4444',
+    confirmButtonColor: '#c62828',
     confirmButtonText: '취소 확정',
     cancelButtonText: '닫기',
     inputValidator: function(value) {
@@ -1632,7 +1653,7 @@ window.withdrawContractFromStats = function(venueId, contractIndex, cName, brief
     inputLabel: '철회 사유를 입력해주세요',
     inputPlaceholder: '예) 고객 변심, 청약 철회 등',
     showCancelButton: true,
-    confirmButtonColor: '#ef4444',
+    confirmButtonColor: '#c62828',
     confirmButtonText: '철회 확정',
     cancelButtonText: '닫기',
     inputValidator: function(value) { if (!value) { return '사유를 입력해야 합니다!'; } }
@@ -1715,7 +1736,7 @@ window.deleteExtraCost = function(id) {
     text: '이 지출 내역을 삭제하시겠습니까?',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#ef4444',
+    confirmButtonColor: '#c62828',
     cancelButtonText: '닫기',
     confirmButtonText: '삭제'
   }).then((result) => {
@@ -1821,12 +1842,16 @@ window.loadVenues = function(done) {
   });
 };
 
+function myOnlyIcon(on){
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"'+(on?' style="fill:currentColor"':'')+'><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>';
+}
 window.toggleMyOnly = function() {
   myOnly = !myOnly;
   var btn = document.getElementById('ni-myonly');
   if (btn) btn.classList.toggle('on', myOnly);
   var ic = document.getElementById('myonly-ic');
-  if (ic) ic.textContent = myOnly ? '✅' : '👤';   // 켜지면 ✅, 꺼지면 👤
+  if (ic) ic.innerHTML = myOnlyIcon(myOnly);   // 켜지면 채움, 꺼지면 선
+  if (btn) btn.setAttribute('aria-pressed', myOnly ? 'true' : 'false');
   window.renderList();
 };
 
@@ -1900,11 +1925,11 @@ window.renderList = function() {
       }
   });
   
-  document.getElementById('tab-all').innerHTML = `전체 <span style="font-size:9px;opacity:0.8;margin-left:1px;">${countAll}</span>`;
-  document.getElementById('tab-wait').innerHTML = `대기중 <span style="font-size:9px;opacity:0.8;margin-left:1px;">${countWait}</span>`;
-  document.getElementById('tab-assign').innerHTML = `배정됨 <span style="font-size:9px;opacity:0.8;margin-left:1px;">${countAssign}</span>`;
-  document.getElementById('tab-sched').innerHTML = `청약예정 <span style="font-size:9px;opacity:0.8;margin-left:1px;">${countSched}</span>`;
-  document.getElementById('tab-done').innerHTML = `결과완료 <span style="font-size:9px;opacity:0.8;margin-left:1px;">${countDone}</span>`;
+  document.getElementById('tab-all').innerHTML = `전체 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countAll}</span>`;
+  document.getElementById('tab-wait').innerHTML = `대기중 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countWait}</span>`;
+  document.getElementById('tab-assign').innerHTML = `배정됨 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countAssign}</span>`;
+  document.getElementById('tab-sched').innerHTML = `청약예정 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countSched}</span>`;
+  document.getElementById('tab-done').innerHTML = `결과완료 <span style="font-size:12px;opacity:0.8;margin-left:1px;">${countDone}</span>`;
 
   let cardList;
   if (curFilter === '청약예정') {
@@ -1938,7 +1963,7 @@ window.renderCalendar = function(fullList, cardList) {
   let hasSelectedInWeek = false;
 
   for(let i=0; i<firstDay; i++) {
-    html += `<div class="cal-cell" style="background:transparent;border:none;"></div>`;
+    html += `<div class="cal-cell" style="background:transparent;border:none;" aria-hidden="true"></div>`;
     cellCount++;
   }
 
@@ -1983,8 +2008,9 @@ window.renderCalendar = function(fullList, cardList) {
     if (new Date(y, m - 1, d).getDay() === 0) dayColor = 'color:var(--red);';
     else if (new Date(y, m - 1, d).getDay() === 6) dayColor = 'color:var(--blue);';
 
-    html += `<div class="cal-cell ${isSelected}" onclick="window.onSelectDate('${dateStr}')">
-      <div class="cal-day" style="${dayColor}">${d}</div>
+    var _n = dayVenues.length;
+    html += `<div class="cal-cell ${isSelected}" role="button" tabindex="0" aria-label="${m}월 ${d}일 ${_n}건" onclick="window.onSelectDate('${dateStr}')">
+      <div class="cal-day" style="${dayColor}"><span>${d}</span>${_n ? '<span class="cal-n">'+_n+'</span>' : ''}</div>
       <div style="flex:1;display:flex;flex-direction:column;gap:2px;">${evHtml}</div>
     </div>`;
     cellCount++;
@@ -2001,10 +2027,10 @@ window.renderCalendar = function(fullList, cardList) {
       var rowWeekKey = weekKeyOf(y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0'));
       if (!loadedWeeks[rowWeekKey]) {
         var _rng = weekRange(rowWeekKey);
-        html += `<div style="grid-column:1/-1; margin:4px 0 12px; text-align:center;"><button onclick="window.loadWeekAndRender(''+rowWeekKey+'')" style="width:100%; background:#eff6ff; color:#2563eb; border:1px dashed #93c5fd; border-radius:10px; padding:8px; font-size:12px; font-weight:800; cursor:pointer;">📅 이 주 섭외 보기 (${_rng.start.slice(5).replace('-','.')} ~ ${_rng.end.slice(5).replace('-','.')})</button></div>`;
+        html += `<div style="grid-column:1/-1; margin:4px 0 12px; text-align:center;"><button onclick="window.loadWeekAndRender('${rowWeekKey}')" style="width:100%; background:#eef5fc; color:#0052a3; border:1px dashed #9cc2e6; border-radius:10px; padding:0 8px; min-height:44px; font-size:13px; font-weight:800; cursor:pointer;">이 주 섭외 보기 (${_rng.start.slice(5).replace('-','.')} ~ ${_rng.end.slice(5).replace('-','.')})</button></div>`;
         hasSelectedInWeek = false;
       } else if (hasSelectedInWeek) {
-        html += `<div id="venueList" style="grid-column: 1 / -1; background:#f8fafc; border-radius:14px; padding:12px 10px; margin:6px 0 12px; border:2px solid #bfdbfe; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); animation: pgIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); overflow:hidden;"></div>`;
+        html += `<div id="venueList" style="grid-column: 1 / -1; background:#f8fafc; border-radius:14px; padding:12px 10px; margin:6px 0 12px; border:2px solid #c5dcf2; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); animation: pgIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); overflow:hidden;"></div>`;
         hasSelectedInWeek = false; 
       }
     }
@@ -2038,11 +2064,11 @@ window.renderDayVenues = function(dateStr, list) {
   const y = parseInt(yStr), m = parseInt(mStr), d = parseInt(dStr);
   
   const headerHtml = `
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px dashed #93c5fd;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px dashed #9cc2e6;">
         <div style="font-size:16px; font-weight:900; color:var(--blue); display:flex; align-items:center; gap:6px;">
             <span style="font-size:20px;">🗓️</span> ${m}월 ${d}일 타임테이블
         </div>
-        <button onclick="event.stopPropagation(); window.onSelectDate('${dateStr}')" style="background:var(--bg1); border:1px solid #bfdbfe; color:var(--blue); width:28px; height:28px; border-radius:50%; font-size:14px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 2px rgba(0,0,0,0.05);">✕</button>
+        <button onclick="event.stopPropagation(); window.onSelectDate('${dateStr}')" style="background:var(--bg1); border:1px solid #c5dcf2; color:var(--blue); width:28px; height:28px; border-radius:50%; font-size:14px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 2px rgba(0,0,0,0.05);">✕</button>
     </div>
   `;
 
@@ -2079,7 +2105,7 @@ window.renderDayVenues = function(dateStr, list) {
                   <div style="height:150px; background:repeating-linear-gradient(45deg, #f1f5f9, #f1f5f9 10px, #ffffff 10px, #ffffff 20px); border:1px dashed var(--border2); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--tx3); font-size:12px; font-weight:700;">
                       <div style="font-size:24px; margin-bottom:8px;">📭</div>
                       <div>☕ 전일 빈 시간</div>
-                      <div style="font-size:10px; font-weight:600; margin-top:4px;">12시간 (08:00 ~ 20:00)</div>
+                      <div style="font-size:12px; font-weight:600; margin-top:4px;">12시간 (08:00 ~ 20:00)</div>
                   </div>
               </div>
            </div>
@@ -2166,7 +2192,7 @@ window.renderDayVenues = function(dateStr, list) {
                 <div style="flex:1; padding-left:6px; padding-bottom:12px;">
                     <div style="height:${h}px; background:repeating-linear-gradient(45deg, #f1f5f9, #f1f5f9 10px, #ffffff 10px, #ffffff 20px); border:1px dashed var(--border2); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--tx3); font-size:12px; font-weight:700; box-shadow:inset 0 1px 3px rgba(0,0,0,0.02);">
                         <div>☕ 빈 시간</div>
-                        <div style="font-size:10px; font-weight:600; margin-top:4px;">${formatDuration(blk.gap)} (${formatMins(blk.start)} ~ ${formatMins(blk.end)})</div>
+                        <div style="font-size:12px; font-weight:600; margin-top:4px;">${formatDuration(blk.gap)} (${formatMins(blk.start)} ~ ${formatMins(blk.end)})</div>
                     </div>
                 </div>
              </div>`;
@@ -2207,8 +2233,8 @@ window.renderDayVenues = function(dateStr, list) {
 };
 
 window.statusBadge = function(s, isSched, isSent, isConfirmed, showConfirmed) {
-  if (isSched) return `<span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">📅 청약예정</span>`;
-  if (s === '결과입력완료' && isSent) return '<span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">결과전달완료</span>';
+  if (isSched) return `<span class="badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">📅 청약예정</span>`;
+  if (s === '결과입력완료' && isSent) return '<span class="badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">결과전달완료</span>';
   
   let displayS = s;
   let badgeClass = 'b-wait';
@@ -2219,14 +2245,14 @@ window.statusBadge = function(s, isSched, isSent, isConfirmed, showConfirmed) {
   } else if (s === '배정됨') {
       if (isConfirmed && showConfirmed) {
           displayS = '일정확인완료';
-          customStyle = 'background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;';
+          customStyle = 'background:#eef5fc;color:#0052a3;border:1px solid #c5dcf2;';
       } else {
           badgeClass = 'b-assigned';
       }
   } else if (s === '결과입력완료') {
       badgeClass = 'b-done';
   } else if (s === '취소' || s.includes('취소')) {
-      customStyle = 'background:#fef2f2;color:#dc2626;border:1px solid #fecaca;';
+      customStyle = 'background:#fef2f2;color:#c62828;border:1px solid #fecaca;';
   }
   
   if (customStyle) {
@@ -2254,19 +2280,19 @@ window.venueCardOther = function(v) {
   
   let bgStyle = '';
   if (v.status === '취소' || v.status.includes('취소')) {
-      bgStyle = 'background-color:#f3f4f6; border-color:#e5e7eb; border-left:3px solid #9ca3af;';
+      bgStyle = 'background-color:#f3f4f6; border-color:#e5e7eb; border-left:3px solid #6b7280;';
   } else if (isSched) {
-      bgStyle = 'background-color:#f0fdf4; border-color:#bbf7d0; border-left:3px solid #22c55e;';
+      bgStyle = 'background-color:#f0fdf4; border-color:#bbf7d0; border-left:3px solid #15803d;';
   } else if (v.status === '결과입력완료') {
       if (v.result && v.result.includes('진행불가')) {
-          bgStyle = 'background-color:#fef2f2; border-color:#fecaca; border-left:3px solid #ef4444;';
+          bgStyle = 'background-color:#fef2f2; border-color:#fecaca; border-left:3px solid #c62828;';
       } else {
           bgStyle = 'background-color:#eef2ff; border-color:#c7d2fe; border-left:3px solid #6366f1;';
       }
   } else if (v.status === '배정됨') {
-      bgStyle = 'background-color:#eff6ff; border-color:#bfdbfe; border-left:3px solid #3b82f6;';
+      bgStyle = 'background-color:#eef5fc; border-color:#c5dcf2; border-left:3px solid #0066cc;';
   } else {
-      bgStyle = 'background-color:#f9fafb; border-color:#e5e7eb; border-left:3px solid #9ca3af;';
+      bgStyle = 'background-color:#f9fafb; border-color:#e5e7eb; border-left:3px solid #6b7280;';
   }
 
   const titlePrefix = isSched ? '<span style="color:var(--red);font-weight:800;margin-right:4px;">[예정]</span>' : '';
@@ -2288,14 +2314,14 @@ window.venueCardOther = function(v) {
 
   return `<div class="vcrd" style="opacity:0.65; padding: 12px 10px; ${bgStyle}">
     <div style="display:flex; flex-direction:column; align-items:flex-start;">
-      <span class="badge b-wait" style="font-size:10px; margin-bottom:8px;">타일정</span>
+      <span class="badge b-wait" style="font-size:12px; margin-bottom:8px;">타일정</span>
       <div style="width:100%; min-width:0;">
         <div style="font-size:14px;font-weight:800;color:var(--tx2);word-break:keep-all;">${titlePrefix}📍 ${addrHtml}</div>
         <div style="margin-top:6px;">
           ${displayDate}
           <div style="font-size:13px;color:var(--blue);font-weight:700;">🕒 ${timeStr}</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;font-size:11.5px;letter-spacing:-0.5px;color:var(--tx2);margin-top:8px;">
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;letter-spacing:-0.5px;color:var(--tx2);margin-top:8px;">
           <div>${attText}</div>
           ${v.assignedBriefer ? `<div>🎯 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
         </div>
@@ -2322,19 +2348,19 @@ window.venueCard = function(v, admin, briefer, recruiter) {
   
   let bgStyle = '';
   if (isCanceled) {
-      bgStyle = 'background-color:#f3f4f6; border-color:#e5e7eb; border-left:3px solid #9ca3af;';
+      bgStyle = 'background-color:#f3f4f6; border-color:#e5e7eb; border-left:3px solid #6b7280;';
   } else if (v.isScheduledEvent) {
-      bgStyle = 'background-color:#f0fdf4; border-color:#bbf7d0; border-left:3px solid #22c55e;';
+      bgStyle = 'background-color:#f0fdf4; border-color:#bbf7d0; border-left:3px solid #15803d;';
   } else if (v.status === '결과입력완료') {
       if (v.result && v.result.includes('진행불가')) {
-          bgStyle = 'background-color:#fef2f2; border-color:#fecaca; border-left:3px solid #ef4444;';
+          bgStyle = 'background-color:#fef2f2; border-color:#fecaca; border-left:3px solid #c62828;';
       } else {
           bgStyle = 'background-color:#eef2ff; border-color:#c7d2fe; border-left:3px solid #6366f1;';
       }
   } else if (v.status === '배정됨') {
-      bgStyle = 'background-color:#eff6ff; border-color:#bfdbfe; border-left:3px solid #3b82f6;';
+      bgStyle = 'background-color:#eef5fc; border-color:#c5dcf2; border-left:3px solid #0066cc;';
   } else {
-      bgStyle = 'background-color:#f9fafb; border-color:#e5e7eb; border-left:3px solid #9ca3af;';
+      bgStyle = 'background-color:#f9fafb; border-color:#e5e7eb; border-left:3px solid #6b7280;';
   }
 
   let timeStr = v.time;
@@ -2350,26 +2376,27 @@ window.venueCard = function(v, admin, briefer, recruiter) {
   const displayBizName = v.isScheduledEvent ? v.businessName + ' - ' + v.targetContract.name + '님' : v.businessName;
 
   let btnsHtml = [];
+  let moreHtml = [];
 
   if (!v.isScheduledEvent) {
     if (admin) {
       if (v.status === '대기중') btnsHtml.push(`<button onclick="event.stopPropagation();window.openAssign('${v.id}')" class="btn btn-indigo">브리퍼 배정</button>`);
       else if (v.status === '배정됨') {
         btnsHtml.push(`<button onclick="event.stopPropagation();window.openAssign('${v.id}')" class="btn btn-blue">재배정</button>`);
-        btnsHtml.push(`<button onclick="event.stopPropagation();window.doCancelAssign('${v.id}')" class="btn btn-red">배정취소</button>`);
+        moreHtml.push(`<button onclick="event.stopPropagation();window.doCancelAssign('${v.id}')" class="btn btn-red">배정취소</button>`);
       }
       else if (v.status === '결과입력완료' && !v.resultSentToRecruiter) {
-        btnsHtml.push(`<button onclick="event.stopPropagation();window.openResult('${v.id}')" class="btn btn-ghost" style="font-size:12px;padding:7px 12px;border-color:var(--blue);color:var(--blue);">결과 수정</button>`);
-        btnsHtml.push(`<label onclick="event.stopPropagation();" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#16a34a;cursor:pointer;padding:7px 8px;border:1px solid #bbf7d0;border-radius:8px;"><input type="checkbox" ${selectedForSend[v.id]?'checked':''} onchange="event.stopPropagation();window.toggleSendSelect('${v.id}', this.checked)" style="width:15px;height:15px;accent-color:#16a34a;"> 전달선택</label>`);
-        btnsHtml.push(`<button onclick="event.stopPropagation();window.doSendRecruiter('${v.id}')" class="btn btn-green">📨 결과전달</button>`);
+        moreHtml.push(`<button onclick="event.stopPropagation();window.openResult('${v.id}')" class="btn btn-ghost">결과 수정</button>`);
+        btnsHtml.push(`<label onclick="event.stopPropagation();" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#15803d;cursor:pointer;padding:7px 8px;border:1px solid #bbf7d0;border-radius:8px;"><input type="checkbox" ${selectedForSend[v.id]?'checked':''} onchange="event.stopPropagation();window.toggleSendSelect('${v.id}', this.checked)" style="width:15px;height:15px;accent-color:#15803d;"> 전달선택</label>`);
+        btnsHtml.push(`<button onclick="event.stopPropagation();window.doSendRecruiter('${v.id}')" class="btn btn-green">결과전달</button>`);
       }
     }
     if (briefer && v.assignedBriefer === ME.name) {
       if (v.status === '배정됨') {
         if (!v.brieferConfirmed) {
-          btnsHtml.push(`<button onclick="event.stopPropagation();window.doConfirmAssignment('${v.id}', '${v.assignedBriefer}')" class="btn btn-indigo" style="padding:7px 12px;font-size:12px;">✅ 일정 확인</button>`);
+          btnsHtml.push(`<button onclick="event.stopPropagation();window.doConfirmAssignment('${v.id}', '${v.assignedBriefer}')" class="btn btn-indigo">일정 확인</button>`);
         } else {
-          btnsHtml.push(`<button disabled class="btn btn-ghost" style="padding:7px 12px;font-size:12px;color:#16a34a;border-color:#16a34a;opacity:0.8;cursor:default;">✔️ 일정 확인 완료</button>`);
+          btnsHtml.push(`<button disabled class="btn btn-ghost" style="padding:7px 12px;font-size:12px;color:#15803d;border-color:#15803d;opacity:0.8;cursor:default;">일정 확인 완료</button>`);
         }
         btnsHtml.push(`<button onclick="event.stopPropagation();window.openResult('${v.id}')" class="btn btn-sm-gold">결과 입력</button>`);
       }
@@ -2377,26 +2404,29 @@ window.venueCard = function(v, admin, briefer, recruiter) {
     }
 
     if (!isCanceled && (admin || (briefer && v.assignedBriefer === ME.name))) {
-      btnsHtml.push(`<button onclick="event.stopPropagation();window.openEditVenue('${v.id}')" class="btn btn-ghost" style="padding:7px 12px;font-size:12px;">📅 연기</button>`);
+      moreHtml.push(`<button onclick="event.stopPropagation();window.openEditVenue('${v.id}')" class="btn btn-ghost">일정 연기</button>`);
     }
     if (!admin && recruiter && v.recruiter === ME.name && (v.status === '대기중' || v.status === '배정됨') && !isCanceled) {
-      btnsHtml.push(`<button onclick="event.stopPropagation();window.openEditVenue('${v.id}')" class="btn btn-ghost" style="padding:7px 12px;font-size:12px;">일정 수정</button>`);
+      moreHtml.push(`<button onclick="event.stopPropagation();window.openEditVenue('${v.id}')" class="btn btn-ghost">일정 수정</button>`);
     }
     if (!isCanceled && (admin || recruiter)) {
-      btnsHtml.push(`<button onclick="event.stopPropagation();window.doCancelVenue('${v.id}')" class="btn btn-ghost" style="padding:7px 12px;font-size:12px;color:#dc2626;border-color:#fecaca;background:#fef2f2;">섭외취소</button>`);
+      moreHtml.push(`<button onclick="event.stopPropagation();window.doCancelVenue('${v.id}')" class="btn btn-ghost btn-danger">섭외취소</button>`);
     }
     if (admin) {
-      btnsHtml.push(`<button onclick="event.stopPropagation();window.doRealDeleteVenue('${v.id}')" class="btn btn-ghost" style="padding:7px 12px;font-size:12px;color:#ef4444;border-color:#fecaca;background:#fef2f2;">🗑️ 삭제</button>`);
+      moreHtml.push(`<button onclick="event.stopPropagation();window.doRealDeleteVenue('${v.id}')" class="btn btn-ghost btn-danger">영구 삭제</button>`);
     }
   } else {
     const canAction = admin || (briefer && v.assignedBriefer === ME.name);
     if (canAction) {
-      btnsHtml.push(`<button onclick="event.stopPropagation();window.doProcessContract('${v.id}',${v.contractIndex},'complete','${v.targetContract.name}')" class="btn btn-green" style="padding:7px 12px;font-size:12px;">✅ 청약완료</button>`);
-      btnsHtml.push(`<button onclick="event.stopPropagation();window.promptCancelContract('${v.id}', ${v.contractIndex}, '${v.targetContract.name}')" class="btn btn-red" style="padding:7px 12px;font-size:12px;background:#fef2f2;">❌ 청약취소</button>`);
+      btnsHtml.push(`<button onclick="event.stopPropagation();window.doProcessContract('${v.id}',${v.contractIndex},'complete','${v.targetContract.name}')" class="btn btn-green">청약완료</button>`);
+      moreHtml.push(`<button onclick="event.stopPropagation();window.promptCancelContract('${v.id}', ${v.contractIndex}, '${v.targetContract.name}')" class="btn btn-ghost btn-danger">청약취소</button>`);
     }
     btnsHtml.push(`<button onclick="event.stopPropagation();window.openDetail('${v.id}')" class="btn btn-ghost" style="font-size:12px;padding:7px 12px;border-color:var(--blue);color:var(--blue);">원본 내역 확인</button>`);
   }
 
+  if (moreHtml.length) {
+    btnsHtml.push(`<details class="more" onclick="event.stopPropagation();"><summary class="btn btn-ghost" aria-label="더보기 메뉴">더보기</summary><div class="more-menu">${moreHtml.join('')}</div></details>`);
+  }
   let btns = btnsHtml.join('');
 
   let activeContracts = [], cancelledContracts = [];
@@ -2414,7 +2444,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
   }).join(', ');
   
   const cancelledNames = cancelledContracts.map(function(c) {
-      let rsn = c.cancelReason ? ` <span style="font-size:11px;color:#ef4444;font-weight:normal;">(사유: ${c.cancelReason})</span>` : '';
+      let rsn = c.cancelReason ? ` <span style="font-size:12px;color:#c62828;font-weight:normal;">(사유: ${c.cancelReason})</span>` : '';
       return `[취소] ${c.name}${rsn} (${(Number(c.amount)||0).toLocaleString()}원)`;
   }).join('<br>');
   
@@ -2442,7 +2472,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
       ${window.statusBadge(v.status, v.isScheduledEvent, v.resultSentToRecruiter, v.brieferConfirmed, showConfirmedBadge)}
     </div>
     
-    <div style="display:flex;flex-direction:column;gap:4px;font-size:11.5px;letter-spacing:-0.5px;color:var(--tx2);margin-bottom:${hasRes||btns?'12px':'0'};" class="${textStrike}">
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;letter-spacing:-0.5px;color:var(--tx2);margin-bottom:${hasRes||btns?'12px':'0'};" class="${textStrike}">
       ${admin ? `<div>👤 섭외: <strong>${v.recruiter}</strong></div>` : ''}
       <div>${attText}</div>
       ${v.assignedBriefer ? `<div>🎯 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
@@ -2453,9 +2483,9 @@ window.venueCard = function(v, admin, briefer, recruiter) {
         ${window.resultPill(v.result)}
         ${contNames?`<span style="font-size:13px;color:var(--tx1);font-weight:600;">${contNames}</span>`:''}
       </div>
-      ${cancelledNames?`<div style="font-size:12px;color:#9ca3af;font-weight:600;margin-top:4px;text-decoration:line-through;">${cancelledNames}</div>`:''}
+      ${cancelledNames?`<div style="font-size:12px;color:#6b7280;font-weight:600;margin-top:4px;text-decoration:line-through;">${cancelledNames}</div>`:''}
       ${totalAmt?`<div style="font-size:12px;color:var(--blue);font-weight:800;margin-top:2px;">총 합산: ${totalAmt.toLocaleString()}원</div>`:''}
-      ${v.businessCost?`<div style="font-size:11px;color:var(--tx2);margin-top:4px;">사업비: ${Number(v.businessCost).toLocaleString()}원</div>`:''}
+      ${v.businessCost?`<div style="font-size:12px;color:var(--tx2);margin-top:4px;">사업비: ${Number(v.businessCost).toLocaleString()}원</div>`:''}
     </div>`:''}
     ${btns?`<div style="display:flex;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--border2);padding-top:12px;">${btns}</div>`:''}
   </div>`;
@@ -2489,13 +2519,13 @@ window.openDetail = function(id) {
     const compHtml = v.contracts.map(function(c, i) {
       if(c.type !== 'complete' && c.type !== undefined) return '';
       const cancelBtn = (admin || (briefer && v.assignedBriefer===ME.name)) 
-          ? `<button onclick="window.promptCancelContract('${v.id}', ${i}, '${c.name}')" style="margin-left:8px;font-size:10px;color:red;border:1px solid red;border-radius:4px;padding:2px 4px;background:#fff;">취소</button>` 
+          ? `<button onclick="window.promptCancelContract('${v.id}', ${i}, '${c.name}')" style="margin-left:8px;font-size:12px;color:red;border:1px solid red;border-radius:4px;padding:2px 4px;background:#fff;">취소</button>` 
           : '';
       return `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;">
         <div>
           <div style="font-size:13px;color:var(--tx1);font-weight:600;">[완료] ${c.name} ${cancelBtn}</div>
-          ${c.completedAt ? `<div style="font-size:10px;color:var(--tx3);margin-top:1px;">청약일: ${c.completedAt}</div>` : ''}
+          ${c.completedAt ? `<div style="font-size:12px;color:var(--tx3);margin-top:1px;">청약일: ${c.completedAt}</div>` : ''}
         </div>
         <span style="font-size:13px;color:var(--blue);font-weight:800;white-space:nowrap;margin-left:8px;">${(Number(c.amount)||0).toLocaleString()}원</span>
       </div>`;
@@ -2503,11 +2533,11 @@ window.openDetail = function(id) {
 
     const cancelledHtml = v.contracts.map(function(c, i) {
       if(c.type !== 'cancelled') return '';
-      let rsn = c.cancelReason ? ` <span style="font-size:11px;color:#ef4444;font-weight:normal;">(사유: ${c.cancelReason})</span>` : '';
+      let rsn = c.cancelReason ? ` <span style="font-size:12px;color:#c62828;font-weight:normal;">(사유: ${c.cancelReason})</span>` : '';
       return `
       <div style="display:flex;justify-content:space-between;padding:4px 0;border-top:1px dashed #fecaca;">
-        <span style="font-size:13px;color:#9ca3af;font-weight:600;text-decoration:line-through;">[취소] ${c.name}${rsn}</span>
-        <span style="font-size:13px;color:#9ca3af;font-weight:600;text-decoration:line-through;">${(Number(c.amount)||0).toLocaleString()}원</span>
+        <span style="font-size:13px;color:#6b7280;font-weight:600;text-decoration:line-through;">[취소] ${c.name}${rsn}</span>
+        <span style="font-size:13px;color:#6b7280;font-weight:600;text-decoration:line-through;">${(Number(c.amount)||0).toLocaleString()}원</span>
       </div>`;
     }).join('');
 
@@ -2516,10 +2546,10 @@ window.openDetail = function(id) {
       return `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-top:1px dashed #fca5a5;">
         <div>
-          <div style="font-size:13px;color:#ef4444;font-weight:600;">[예정] ${c.name}</div>
-          <div style="font-size:11px;color:#ef4444;font-weight:800;margin-top:2px;">📅 ${window.formatFullDate(v.date, c.time)}</div>
+          <div style="font-size:13px;color:#c62828;font-weight:600;">[예정] ${c.name}</div>
+          <div style="font-size:12px;color:#c62828;font-weight:800;margin-top:2px;">📅 ${window.formatFullDate(v.date, c.time)}</div>
         </div>
-        <span style="font-size:13px;color:#ef4444;font-weight:800;">${(Number(c.amount)||0).toLocaleString()}원</span>
+        <span style="font-size:13px;color:#c62828;font-weight:800;">${(Number(c.amount)||0).toLocaleString()}원</span>
       </div>`;
     }).join('');
 
@@ -2538,16 +2568,16 @@ window.openDetail = function(id) {
         <div style="font-size:18px;font-weight:900;color:var(--tx1);">${v.businessName}</div>
         ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:4px;font-weight:600;cursor:pointer;" onclick="window.openTmap('${v.address}')">📍 <span style="text-decoration:underline;text-underline-offset:2px;">${v.address}</span></div>` : ''}
       </div>
-      <button onclick="window.closeM('mDetail')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;border-radius:8px;">✕</button>
+      <button onclick="window.closeM('mDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
       <div class="card-sm" style="text-align:center;background:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
-        <div style="font-size:11px;font-weight:700;color:var(--tx3);margin-bottom:6px;">원본 일정</div>
+        <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:6px;">원본 일정</div>
         <div style="font-size:13px;font-weight:800;color:var(--tx1);">${v.date} ${v.dayOfWeek}</div>
         <div style="font-size:15px;color:var(--blue);font-weight:900;margin-top:4px;">${timeStr}</div>
       </div>
       <div class="card-sm" style="text-align:center;background:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
-        <div style="font-size:11px;font-weight:700;color:var(--tx3);margin-bottom:6px;">참석인원 (예정➔참여)</div>
+        <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:6px;">참석인원 (예정➔참여)</div>
         <div style="font-size:20px;font-weight:900;color:var(--blue);line-height:1;">${attText}</div>
       </div>
     </div>
@@ -2560,14 +2590,14 @@ window.openDetail = function(id) {
     ${v.notes?`<div style="margin-bottom:16px;"><div class="fl">비고</div>
       <div class="card-sm" style="font-size:13px;color:var(--tx2);background:#ffffff;">${v.notes}</div></div>`:''}
     ${hasRes?`<div style="margin-bottom:16px;"><div class="fl">결과 상세</div>
-      <div class="card-sm" style="background:#f9fafb;border:1px solid #bfdbfe;">
+      <div class="card-sm" style="background:#f9fafb;border:1px solid #c5dcf2;">
         <div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">${window.resultPill(v.result)}</div>
         ${contHtml}
         ${v.businessCost?`<div style="font-size:12px;color:var(--tx2);margin-bottom:4px;">사업비: ${Number(v.businessCost).toLocaleString()}원</div>`:''}
         ${v.resultNotes?`<div style="font-size:13px;color:var(--tx2);padding-top:10px;margin-top:10px;border-top:1px dashed var(--border2);">${v.resultNotes}</div>`:''}
       </div></div>`:''}
     ${imgHtml}
-    ${v.resultSentToRecruiter?`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:700;color:#16a34a;margin-top:16px;">✅ 섭외자에게 결과 전달 완료</div>`:''}
+    ${v.resultSentToRecruiter?`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:700;color:#15803d;margin-top:16px;">✅ 섭외자에게 결과 전달 완료</div>`:''}
   `;
   document.getElementById('mDetail').style.display = 'flex';
 };
@@ -2595,6 +2625,14 @@ window.renderPendingBar = function(){
   var n = Object.keys(pendingAssign).length;
   if (n > 0){ bar.style.display = 'flex'; document.getElementById('pendingAssignText').innerText = '배정 대기 ' + n + '건 · 저장 전'; }
   else { bar.style.display = 'none'; }
+  window.layoutBars();
+};
+window.layoutBars = function(){
+  var a = document.getElementById('pendingAssignBar'), b = document.getElementById('sendSelectBar');
+  var aOn = a && a.style.display !== 'none', bOn = b && b.style.display !== 'none';
+  if (b) b.style.bottom = (aOn && bOn) ? 'calc(' + (60 + a.offsetHeight) + 'px + env(safe-area-inset-bottom,0px))' : 'calc(60px + env(safe-area-inset-bottom,0px))';
+  var pad = (aOn ? a.offsetHeight : 0) + (bOn ? b.offsetHeight : 0);
+  var m = document.getElementById('mainApp'); if (m) m.style.paddingBottom = (84 + pad) + 'px';
 };
 window.commitPendingAssign = function(){
   var ids = Object.keys(pendingAssign);
@@ -2640,7 +2678,7 @@ window.openAssign = function(id) {
     if (v) {
       info.style.display = 'block';
       info.innerHTML = '<div style="font-size:15px;font-weight:800;color:var(--tx1);">' + (v.businessName || '(업체명 없음)') + '</div>'
-        + '<div style="font-size:11px;color:var(--tx3);margin-top:3px;">' + (v.date || '') + (v.time ? ' ' + v.time : '') + (v.recruiter ? ' · 섭외자 ' + v.recruiter : '') + '</div>'
+        + '<div style="font-size:12px;color:var(--tx3);margin-top:3px;">' + (v.date || '') + (v.time ? ' ' + v.time : '') + (v.recruiter ? ' · 섭외자 ' + v.recruiter : '') + '</div>'
         + (v.notes ? '<div style="font-size:12px;color:var(--tx1);margin-top:8px;white-space:pre-wrap;line-height:1.5;"><span style="color:var(--tx3);font-weight:700;">비고: </span>' + v.notes + '</div>' : '<div style="font-size:12px;color:var(--tx3);margin-top:8px;">비고 없음</div>');
     } else { info.style.display = 'none'; info.innerHTML = ''; }
   }
@@ -2663,7 +2701,7 @@ window.doAssign = function() {
 // --------------------------------------------------
 //  RESULT MODAL
 // --------------------------------------------------
-const RCOLORS = {'청약완료':'#10b981','청약예정':'#ef4444','청약없음':'#6b7280','진행불가':'#ef4444'};
+const RCOLORS = {'청약완료':'#047857','청약예정':'#c62828','청약없음':'#6b7280','진행불가':'#c62828'};
 const RBTNIDS = {'청약완료':'rb-complete','청약예정':'rb-scheduled','청약없음':'rb-none','진행불가':'rb-failed'};
 
 window.openResult = function(id) {
@@ -2715,7 +2753,7 @@ window.applyResultUI = function() {
 window.renderContracts = function(type) {
   const containerId = type === 'comp' ? 'compList' : 'schedList';
   const list = type === 'comp' ? compContracts : schedContracts;
-  const themeCol = type === 'comp' ? '#16a34a' : '#ef4444';
+  const themeCol = type === 'comp' ? '#15803d' : '#c62828';
 
   document.getElementById(containerId).innerHTML = list.map(function(c, i) {
     let dateHtml = '';
@@ -2892,16 +2930,16 @@ window.loadStats = function(useCustomDate = false) {
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
               <div onclick="window.openBrieferDetail('${b.name}')" style="text-align:center;background:var(--bg3);padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border2);">
-                <div style="font-size:10px;font-weight:700;color:var(--tx3);margin-bottom:2px;">받은 섭외 🔍</div>
+                <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:2px;">받은 섭외 🔍</div>
                 <div style="font-size:20px;font-weight:900;color:var(--tx1);">${b.totalVenues}</div>
               </div>
               <div onclick="window.openBrieferContractDetail('${b.name}')" style="text-align:center;background:#f0fdf4;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #bbf7d0;">
-                <div style="font-size:10px;font-weight:700;color:#16a34a;margin-bottom:2px;">청약한 섭외 🔍</div>
-                <div style="font-size:20px;font-weight:900;color:#16a34a;">${b.withContract}</div>
+                <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:2px;">청약한 섭외 🔍</div>
+                <div style="font-size:20px;font-weight:900;color:#15803d;">${b.withContract}</div>
               </div>
               <div onclick="window.openBrieferCostDetail('${b.name}')" style="text-align:center;background:#fef2f2;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #fecaca;">
-                <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:2px;">사업비 🔍</div>
-                <div style="font-size:14px;font-weight:800;color:#dc2626;margin-top:4px;">${b.businessCost>0?(b.businessCost/10000).toFixed(1)+'만':'-'}</div>
+                <div style="font-size:12px;font-weight:700;color:#c62828;margin-bottom:2px;">사업비 🔍</div>
+                <div style="font-size:14px;font-weight:800;color:#c62828;margin-top:4px;">${b.businessCost>0?(b.businessCost/10000).toFixed(1)+'만':'-'}</div>
               </div>
             </div>
             <div class="pbar"><div class="pfill" style="width:${Math.min(b.conversionRate,100)}%"></div></div>
@@ -2926,7 +2964,7 @@ window.loadStats = function(useCustomDate = false) {
                 </div>
                 <div style="font-size:15px;font-weight:900;color:var(--red);">${(Number(c.amount)||0).toLocaleString()}원</div>
               </div>
-              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tx2);margin-top:4px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--tx2);margin-top:4px;">
                 ${recruiterInfo}
                 <span>브리퍼: <strong>${c.briefer || '미배정'}</strong></span>
               </div>
@@ -2948,19 +2986,19 @@ window.loadStats = function(useCustomDate = false) {
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
               <div onclick="${hasVenues ? `window.openRecruiterTotalDetail('${r.name}')` : ''}"
                 style="text-align:center;background:var(--bg3);padding:10px 6px;border-radius:8px;${hasVenues?'cursor:pointer;border:1.5px solid var(--border2);':''}">
-                <div style="font-size:10px;font-weight:700;color:var(--tx3);margin-bottom:4px;">내린 섭외${hasVenues?' 🔍':''}</div>
+                <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:4px;">내린 섭외${hasVenues?' 🔍':''}</div>
                 <div style="font-size:20px;font-weight:900;color:var(--tx1);">${r.totalVenues}</div>
               </div>
               <div onclick="${hasProg ? `window.openRecruiterDetail('${r.name}')` : ''}"
                 style="text-align:center;background:#f0fdf4;padding:10px 6px;border-radius:8px;${hasProg?'cursor:pointer;border:1.5px solid #bbf7d0;':''}">
-                <div style="font-size:10px;font-weight:700;color:#16a34a;margin-bottom:4px;">진행${hasProg?' 🔍':''}</div>
-                <div style="font-size:20px;font-weight:900;color:#16a34a;">${r.inProgress}</div>
-                <div style="font-size:10px;color:#16a34a;font-weight:600;">(${progPct}%)</div>
+                <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:4px;">진행${hasProg?' 🔍':''}</div>
+                <div style="font-size:20px;font-weight:900;color:#15803d;">${r.inProgress}</div>
+                <div style="font-size:12px;color:#15803d;font-weight:600;">(${progPct}%)</div>
               </div>
               <div style="text-align:center;background:#fef2f2;padding:10px 6px;border-radius:8px;">
-                <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:4px;">불가</div>
-                <div style="font-size:20px;font-weight:900;color:#dc2626;">${r.failed}</div>
-                <div style="font-size:10px;color:#dc2626;font-weight:600;">(${failPct}%)</div>
+                <div style="font-size:12px;font-weight:700;color:#c62828;margin-bottom:4px;">불가</div>
+                <div style="font-size:20px;font-weight:900;color:#c62828;">${r.failed}</div>
+                <div style="font-size:12px;color:#c62828;font-weight:600;">(${failPct}%)</div>
               </div>
             </div>
           </div>`;
@@ -3020,21 +3058,21 @@ window.openBrieferContractDetail = function(name) {
      const ci = (v.contracts || []).indexOf(c);
 
      const statusBadge = isCancelled
-        ? `<span style="font-size:10px;background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb;padding:2px 4px;border-radius:4px;">철회됨</span>`
-        : (isSched ? `<span style="font-size:10px;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;padding:2px 4px;border-radius:4px;">예정</span>` : `<span style="font-size:10px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:2px 4px;border-radius:4px;">완료</span>`);
+        ? `<span style="font-size:12px;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;padding:2px 4px;border-radius:4px;">철회됨</span>`
+        : (isSched ? `<span style="font-size:12px;background:#fef2f2;color:#c62828;border:1px solid #fecaca;padding:2px 4px;border-radius:4px;">예정</span>` : `<span style="font-size:12px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:2px 4px;border-radius:4px;">완료</span>`);
      const dateStr = c.completedAt || c.date || v.date;
-     const amtColor = isCancelled ? '#9ca3af' : (isSched ? '#ef4444' : '#16a34a');
+     const amtColor = isCancelled ? '#6b7280' : (isSched ? '#c62828' : '#15803d');
      const strike = isCancelled ? 'text-decoration:line-through;opacity:0.55;' : '';
      const safeCN = String(c.name||'').replace(/[\\']/g,'');
      const safeBN = String(name||'').replace(/[\\']/g,'');
      const actionHtml = isCancelled
-        ? `<span style="font-size:10px;color:#9ca3af;">철회됨${c.cancelReason ? (' · ' + c.cancelReason) : ''}</span>`
-        : `<button onclick="window.withdrawContractFromStats('${v.id}', ${ci}, '${safeCN}', '${safeBN}')" style="font-size:11px;color:#ef4444;border:1px solid #fecaca;background:#fef2f2;border-radius:6px;padding:3px 10px;font-weight:700;cursor:pointer;">철회</button>`;
+        ? `<span style="font-size:12px;color:#6b7280;">철회됨${c.cancelReason ? (' · ' + c.cancelReason) : ''}</span>`
+        : `<button onclick="window.withdrawContractFromStats('${v.id}', ${ci}, '${safeCN}', '${safeBN}')" style="font-size:12px;color:#c62828;border:1px solid #fecaca;background:#fef2f2;border-radius:6px;padding:3px 10px;font-weight:700;cursor:pointer;">철회</button>`;
 
      return `
      <div style="padding:10px 0;border-top:1px dashed var(--border2);${strike}">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-           <div style="font-size:11px;color:var(--tx2);">${dateStr}</div>
+           <div style="font-size:12px;color:var(--tx2);">${dateStr}</div>
            ${statusBadge}
         </div>
         <div style="display:flex;justify-content:space-between;align-items:flex-end;">
@@ -3055,15 +3093,15 @@ window.openBrieferContractDetail = function(name) {
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 청약 상세내역</div>
-      <button onclick="window.closeM('mBrieferContractDetail')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;">✕</button>
+      <button onclick="window.closeM('mBrieferContractDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div class="card-sm" style="margin-bottom:12px;background:#ffffff;max-height:60vh;overflow-y:auto;">
        ${listHtml}
     </div>
-    <div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:12px;padding:16px;margin-top:8px;
+    <div style="background:#eef5fc;border:2px solid #c5dcf2;border-radius:12px;padding:16px;margin-top:8px;
       display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:14px;font-weight:800;color:#2563eb;">총 청약 합계</div>
-      <div style="font-size:20px;font-weight:900;color:#2563eb;">${totalAmt.toLocaleString()}원</div>
+      <div style="font-size:14px;font-weight:800;color:#0052a3;">총 청약 합계</div>
+      <div style="font-size:20px;font-weight:900;color:#0052a3;">${totalAmt.toLocaleString()}원</div>
     </div>`;
   
   document.getElementById('mBrieferContractDetail').style.display = 'flex';
@@ -3092,7 +3130,7 @@ window.openBrieferDetail = function(name) {
   const catInProgress = valid.filter(v => !v.result || (!v.result.includes('청약완료') && !v.result.includes('청약예정') && !v.result.includes('청약없음') && !v.result.includes('진행불가')));
 
   const genList = function(list) {
-    if(list.length === 0) return '<div style="font-size:11px;color:var(--tx3);text-align:center;padding:10px 0;">목록이 없습니다</div>';
+    if(list.length === 0) return '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:10px 0;">목록이 없습니다</div>';
     return list.map(function(v) {
        let rTxt = '';
        if(v.status === '삭제') rTxt = '삭제됨';
@@ -3103,7 +3141,7 @@ window.openBrieferDetail = function(name) {
        return `
        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;border-top:1px dashed var(--border2);">
          <div>
-           <div style="color:var(--tx2);font-size:11px;">${v.date} ${v.dayOfWeek}</div>
+           <div style="color:var(--tx2);font-size:12px;">${v.date} ${v.dayOfWeek}</div>
            <div style="font-weight:700;color:var(--tx1);margin-top:2px;">${v.businessName}</div>
          </div>
          <div style="font-size:12px;font-weight:800;color:var(--tx2);">${rTxt}</div>
@@ -3112,12 +3150,12 @@ window.openBrieferDetail = function(name) {
   };
 
   const sectionsHtml = [
-     { title: '진행 중', data: catInProgress, col: '#2563eb', bg: '#eff6ff', bc: '#bfdbfe' },
-     { title: '청약있음', data: catContract, col: '#16a34a', bg: '#f0fdf4', bc: '#bbf7d0' },
+     { title: '진행 중', data: catInProgress, col: '#0052a3', bg: '#eef5fc', bc: '#c5dcf2' },
+     { title: '청약있음', data: catContract, col: '#15803d', bg: '#f0fdf4', bc: '#bbf7d0' },
      { title: '청약없음', data: catNoContract, col: '#4b5563', bg: '#f3f4f6', bc: '#e5e7eb' },
-     { title: '진행불가', data: catFailed, col: '#dc2626', bg: '#fef2f2', bc: '#fecaca' },
-     { title: '섭외취소', data: catCanceled, col: '#9ca3af', bg: '#f9fafb', bc: '#e5e7eb' },
-     { title: '삭제', data: catDeleted, col: '#ef4444', bg: '#fef2f2', bc: '#fecaca' }
+     { title: '진행불가', data: catFailed, col: '#c62828', bg: '#fef2f2', bc: '#fecaca' },
+     { title: '섭외취소', data: catCanceled, col: '#6b7280', bg: '#f9fafb', bc: '#e5e7eb' },
+     { title: '삭제', data: catDeleted, col: '#c62828', bg: '#fef2f2', bc: '#fecaca' }
   ].map(sec => `
      <div class="card-sm" style="margin-bottom:12px;background:${sec.bg};border-color:${sec.bc};">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -3133,7 +3171,7 @@ window.openBrieferDetail = function(name) {
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 받은 섭외 상세</div>
-      <button onclick="window.closeM('mBrieferDetail')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;">✕</button>
+      <button onclick="window.closeM('mBrieferDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="max-height:70vh;overflow-y:auto;padding-right:4px;">
        ${sectionsHtml}
@@ -3157,10 +3195,10 @@ window.openBrieferCostDetail = function(name) {
     return `
     <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 0;border-top:1px dashed var(--border2);">
       <div>
-        <div style="color:var(--tx2);font-size:11px;">${v.date} ${v.dayOfWeek}</div>
+        <div style="color:var(--tx2);font-size:12px;">${v.date} ${v.dayOfWeek}</div>
         <div style="font-weight:700;color:var(--tx1);margin-top:2px;">[일정] ${v.businessName}</div>
       </div>
-      <div style="font-size:13px;font-weight:900;color:#dc2626;">${(Number(v.businessCost)||0).toLocaleString()}원</div>
+      <div style="font-size:13px;font-weight:900;color:#c62828;">${(Number(v.businessCost)||0).toLocaleString()}원</div>
     </div>`;
   }).join('');
 
@@ -3168,11 +3206,11 @@ window.openBrieferCostDetail = function(name) {
     return `
     <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 0;border-top:1px dashed var(--border2);position:relative;">
       <div>
-        <div style="color:var(--tx2);font-size:11px;">${e.date}</div>
+        <div style="color:var(--tx2);font-size:12px;">${e.date}</div>
         <div style="font-weight:700;color:var(--tx1);margin-top:2px;">[추가] ${e.memo}</div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <div style="font-size:13px;font-weight:900;color:#dc2626;">${(Number(e.amount)||0).toLocaleString()}원</div>
+        <div style="font-size:13px;font-weight:900;color:#c62828;">${(Number(e.amount)||0).toLocaleString()}원</div>
         <button onclick="window.deleteExtraCost('${e.id}')" style="background:none;border:none;color:var(--red);font-size:12px;font-weight:bold;cursor:pointer;padding:4px;">✕</button>
       </div>
     </div>`;
@@ -3182,7 +3220,7 @@ window.openBrieferCostDetail = function(name) {
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 사업비 상세</div>
-      <button onclick="window.closeM('mBrieferCostDetail')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;">✕</button>
+      <button onclick="window.closeM('mBrieferCostDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
 
     <div style="margin-bottom:20px;padding:14px;background:#f9fafb;border-radius:12px;border:1px solid var(--border);">
@@ -3199,14 +3237,14 @@ window.openBrieferCostDetail = function(name) {
 
     <div class="card-sm" style="margin-bottom:12px;background:#fef2f2;border-color:#fecaca;max-height:40vh;overflow-y:auto;">
        <div style="background:#ffffff;padding:4px 10px;border-radius:8px;">
-          ${(bVenues.length > 0 || bExtra.length > 0) ? venueListHtml + extraListHtml : '<div style="font-size:11px;color:var(--tx3);text-align:center;padding:10px 0;">사용된 사업비가 없습니다</div>'}
+          ${(bVenues.length > 0 || bExtra.length > 0) ? venueListHtml + extraListHtml : '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:10px 0;">사용된 사업비가 없습니다</div>'}
        </div>
     </div>
 
     <div style="background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:16px;margin-top:8px;
       display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:14px;font-weight:800;color:#dc2626;">총 사업비 합계</div>
-      <div style="font-size:20px;font-weight:900;color:#dc2626;">${totalCost.toLocaleString()}원</div>
+      <div style="font-size:14px;font-weight:800;color:#c62828;">총 사업비 합계</div>
+      <div style="font-size:20px;font-weight:900;color:#c62828;">${totalCost.toLocaleString()}원</div>
     </div>`;
   
   // 날짜 기본값 세팅
@@ -3266,7 +3304,7 @@ window.openRecruiterDetail = function(name) {
         <div>
           <div style="font-size:12px;color:var(--tx3);font-weight:600;">${v.date} ${v.dayOfWeek}</div>
           <div style="font-size:15px;font-weight:900;color:var(--tx1);">${v.businessName}</div>
-          ${v.address ? `<div style="font-size:11px;color:var(--blue);margin-top:2px;cursor:pointer;" onclick="window.openTmap('${v.address}')">📍 <span style="text-decoration:underline;text-underline-offset:2px;">${blindedAddr}</span></div>` : ''}
+          ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:2px;cursor:pointer;" onclick="window.openTmap('${v.address}')">📍 <span style="text-decoration:underline;text-underline-offset:2px;">${blindedAddr}</span></div>` : ''}
         </div>
       </div>
       ${v.assignedBriefer ? `<div style="font-size:12px;color:var(--tx2);margin-bottom:8px;">🎯 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
@@ -3278,15 +3316,15 @@ window.openRecruiterDetail = function(name) {
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 진행 내역</div>
-      <button onclick="window.closeM('mRecruiterDetail')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;">✕</button>
+      <button onclick="window.closeM('mRecruiterDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="max-height:70vh;overflow-y:auto;padding-right:4px;">
        ${venueHtml}
     </div>
-    <div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:12px;padding:16px;margin-top:8px;
+    <div style="background:#eef5fc;border:2px solid #c5dcf2;border-radius:12px;padding:16px;margin-top:8px;
       display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:14px;font-weight:800;color:#2563eb;">총 ${totalContracts}건</div>
-      <div style="font-size:20px;font-weight:900;color:#2563eb;">${totalAmt.toLocaleString()}원</div>
+      <div style="font-size:14px;font-weight:800;color:#0052a3;">총 ${totalContracts}건</div>
+      <div style="font-size:20px;font-weight:900;color:#0052a3;">${totalAmt.toLocaleString()}원</div>
     </div>`;
   document.getElementById('mRecruiterDetail').style.display = 'flex';
 };
@@ -3312,7 +3350,7 @@ window.openRecruiterTotalDetail = function(name) {
   const catInProgress = valid.filter(v => !v.result || (!v.result.includes('청약완료') && !v.result.includes('청약예정') && !v.result.includes('청약없음') && !v.result.includes('진행불가')));
 
   const genList = function(list) {
-    if(list.length === 0) return '<div style="font-size:11px;color:var(--tx3);text-align:center;padding:10px 0;">목록이 없습니다</div>';
+    if(list.length === 0) return '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:10px 0;">목록이 없습니다</div>';
     return list.map(function(v) {
        let rTxt = '';
        if(v.status === '삭제') rTxt = '삭제됨';
@@ -3323,7 +3361,7 @@ window.openRecruiterTotalDetail = function(name) {
        return `
        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;border-top:1px dashed var(--border2);">
          <div>
-           <div style="color:var(--tx2);font-size:11px;">${v.date}</div>
+           <div style="color:var(--tx2);font-size:12px;">${v.date}</div>
            <div style="font-weight:700;color:var(--tx1);margin-top:2px;">${v.businessName}</div>
          </div>
          <div style="font-size:12px;font-weight:800;color:var(--tx2);">${rTxt}</div>
@@ -3332,12 +3370,12 @@ window.openRecruiterTotalDetail = function(name) {
   };
 
   const sectionsHtml = [
-     { title: '진행 중', data: catInProgress, col: '#2563eb', bg: '#eff6ff', bc: '#bfdbfe' },
-     { title: '청약있음', data: catContract, col: '#16a34a', bg: '#f0fdf4', bc: '#bbf7d0' },
+     { title: '진행 중', data: catInProgress, col: '#0052a3', bg: '#eef5fc', bc: '#c5dcf2' },
+     { title: '청약있음', data: catContract, col: '#15803d', bg: '#f0fdf4', bc: '#bbf7d0' },
      { title: '청약없음', data: catNoContract, col: '#4b5563', bg: '#f3f4f6', bc: '#e5e7eb' },
-     { title: '진행불가', data: catFailed, col: '#dc2626', bg: '#fef2f2', bc: '#fecaca' },
-     { title: '섭외취소', data: catCanceled, col: '#9ca3af', bg: '#f9fafb', bc: '#e5e7eb' },
-     { title: '삭제', data: catDeleted, col: '#ef4444', bg: '#fef2f2', bc: '#fecaca' }
+     { title: '진행불가', data: catFailed, col: '#c62828', bg: '#fef2f2', bc: '#fecaca' },
+     { title: '섭외취소', data: catCanceled, col: '#6b7280', bg: '#f9fafb', bc: '#e5e7eb' },
+     { title: '삭제', data: catDeleted, col: '#c62828', bg: '#fef2f2', bc: '#fecaca' }
   ].map(sec => `
      <div class="card-sm" style="margin-bottom:12px;background:${sec.bg};border-color:${sec.bc};">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -3353,7 +3391,7 @@ window.openRecruiterTotalDetail = function(name) {
     <div class="mhandle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <div style="font-size:18px;font-weight:900;color:var(--tx1);">${name} · 내린 섭외 상세</div>
-      <button onclick="window.closeM('mRecruiterTotalDetail')" class="btn btn-ghost" style="padding:6px 12px;font-size:12px;">✕</button>
+      <button onclick="window.closeM('mRecruiterTotalDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
     <div style="max-height:70vh;overflow-y:auto;padding-right:4px;">
        ${sectionsHtml}
@@ -3373,8 +3411,8 @@ window.doSendRecruiter = function(id) {
     text: bizName + ' 섭외 결과를 섭외자에게 메일로 발송하시겠습니까?',
     icon: 'question',
     showCancelButton: true,
-    confirmButtonColor: '#10b981',
-    cancelButtonColor: '#9ca3af',
+    confirmButtonColor: '#047857',
+    cancelButtonColor: '#6b7280',
     confirmButtonText: '📨 전달하기',
     cancelButtonText: '취소',
     background: '#ffffff',
@@ -3406,12 +3444,13 @@ window.renderSendBar = function(){
   var n = Object.keys(selectedForSend).length;
   if (n > 0){ bar.style.display = 'flex'; document.getElementById('sendSelectText').innerText = '결과 전달 선택 ' + n + '건'; }
   else { bar.style.display = 'none'; }
+  if (window.layoutBars) window.layoutBars();
 };
 window.clearSendSelect = function(){ selectedForSend = {}; window.renderSendBar(); try { window.renderList(); } catch(e){} };
 window.commitSendSelected = function(){
   var ids = Object.keys(selectedForSend);
   if (ids.length === 0) return;
-  Swal.fire({ title: '결과 일괄 전달', text: ids.length + '건의 섭외 결과를 각 섭외자에게 전달하시겠습니까?', icon: 'question', showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#9ca3af', confirmButtonText: '📨 전달', cancelButtonText: '취소', background:'#ffffff', color:'#111827' }).then(function(r){
+  Swal.fire({ title: '결과 일괄 전달', text: ids.length + '건의 섭외 결과를 각 섭외자에게 전달하시겠습니까?', icon: 'question', showCancelButton: true, confirmButtonColor: '#047857', cancelButtonColor: '#6b7280', confirmButtonText: '📨 전달', cancelButtonText: '취소', background:'#ffffff', color:'#111827' }).then(function(r){
     if (!r.isConfirmed) return;
     window.loading(true, '결과 전달 중...');
     var i = 0, errs = 0;
@@ -3443,8 +3482,8 @@ window.doCancelAssign = function(id) {
     text: '브리퍼 배정을 취소하시겠습니까?',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#ef4444',
-    cancelButtonColor: '#9ca3af',
+    confirmButtonColor: '#c62828',
+    cancelButtonColor: '#6b7280',
     confirmButtonText: '배정 취소',
     cancelButtonText: '닫기',
     background: '#ffffff',
@@ -3467,7 +3506,39 @@ window.doCancelAssign = function(id) {
 // --------------------------------------------------
 //  UTILS
 // --------------------------------------------------
-window.closeM = function(id) { document.getElementById(id).style.display='none'; };
+window.closeM = function(id) {
+  var el = document.getElementById(id);
+  el.style.display = 'none';
+  if (el._opener && document.contains(el._opener)) { try { el._opener.focus(); } catch(e){} }
+  el._opener = null;
+};
+(function initA11y(){
+  var overlays = document.querySelectorAll('.moverlay');
+  overlays.forEach(function(el){
+    el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true');
+    new MutationObserver(function(){
+      if (el.style.display && el.style.display !== 'none' && !el._opener) {
+        el._opener = el._lastActive || null;
+        var f = el.querySelector('input:not([readonly]):not([type=hidden]),textarea,select,button');
+        if (f) { try { f.focus({preventScroll:true}); } catch(e){} }
+      }
+    }).observe(el,{attributes:true,attributeFilter:['style']});
+  });
+  document.addEventListener('focusin', function(e){
+    if (!e.target.closest || e.target.closest('.moverlay')) return;
+    overlays.forEach(function(el){ el._lastActive = e.target; });
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      var open = Array.prototype.filter.call(overlays, function(el){ return el.style.display && el.style.display !== 'none'; });
+      if (open.length) { window.closeM(open[open.length-1].id); e.preventDefault(); return; }
+      if (window.Swal && Swal.isVisible && Swal.isVisible()) return;
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.getAttribute && e.target.getAttribute('role') === 'button' && e.target.classList.contains('cal-cell')) {
+      e.preventDefault(); e.target.click();
+    }
+  });
+})();
 window.loading = function(show, text) { 
   const el = document.getElementById('loading');
   if (text) document.getElementById('loadingText').innerText = text;
@@ -3480,7 +3551,7 @@ window.fmtNum = function(inp) {
 };
 window.toast = function(msg, icon) {
   if (!icon) icon = 'info';
-  const colors = {success:'#10b981',error:'#ef4444',warning:'#f59e0b',info:'#3b82f6'};
+  const colors = {success:'#047857',error:'#c62828',warning:'#b45309',info:'#0066cc'};
   Swal.mixin({ toast:true, position:'top', showConfirmButton:false, timer:2400,
     background:'#ffffff', color:'#111827', iconColor:colors[icon] || '#888'
   }).fire({ icon: icon, title: msg });
