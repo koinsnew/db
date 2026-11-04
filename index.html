@@ -334,6 +334,21 @@ div:where(.swal2-container){z-index:9999!important;}
   #cal-split .cal-wrapper{margin-bottom:0;}
   #dayPane{display:block;position:sticky;top:84px;max-height:calc(100vh - 170px);overflow-y:auto;}
 }
+/* ─── round 5 ─── */
+.hdr-l #hdrInfo{max-width:11em;}
+.hdr-l>div:first-child{flex-shrink:0;}
+.ftab{flex:1 1 auto;padding:0 10px;white-space:nowrap;}
+.ce-a{display:block;font-weight:500;opacity:.85;}
+@media (max-width:600px){ .ce-t,.ce-a{font-size:0;} }
+@media (min-width:601px){
+  .cal-ev{white-space:normal;font-size:11px;line-height:1.25;padding:3px 4px;word-break:keep-all;}
+  .ce-t{display:block;font-weight:700;}
+  .ce-a{font-size:11px;}
+}
+@media (min-width:1024px){
+  .pg:not(#pg-map){max-width:1280px;}
+  #cal-split{grid-template-columns:minmax(0,1fr) 340px;gap:16px;}
+}
 </style>
 </head>
 <body>
@@ -373,8 +388,8 @@ div:where(.swal2-container){z-index:9999!important;}
 <div id="mainApp" style="display:none;padding-bottom:72px;">
 
   <div class="hdr">
-    <div style="display:flex;align-items:center;justify-content:space-between;position:relative;">
-      <div style="display:flex; flex-direction:column; flex:1; min-width:0; overflow:hidden; padding-right:8px;">
+    <div class="hdr-row" style="display:flex;align-items:center;justify-content:space-between;position:relative;flex-wrap:wrap;row-gap:8px;">
+      <div class="hdr-l" style="display:flex; flex-direction:column; flex:1 0 auto; min-width:0; padding-right:8px;">
         <div style="font-size:16px;font-weight:900;color:var(--blue);letter-spacing:-.5px;white-space:nowrap;display:flex;align-items:center;gap:8px;"><span class="brand-mark"><i class=i-calendar></i></span>세미나 PRO</div>
         <div style="font-size:12px;color:var(--tx2);margin-top:2px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="hdrInfo"></div>
       </div>
@@ -405,7 +420,7 @@ div:where(.swal2-container){z-index:9999!important;}
 
   <div id="pg-list" class="pg" style="display:none;padding:14px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <div style="display:flex; gap:3px; flex-wrap:nowrap; overflow-x:hidden; padding-bottom:4px; flex:1;">
+      <div class="ftabs" style="display:flex; gap:4px; flex-wrap:wrap; padding-bottom:4px; flex:1;">
         <button class="ftab on" id="tab-all" onclick="window.setFilter('all',this)">전체</button>
         <button class="ftab" id="tab-wait" onclick="window.setFilter('대기중',this)">대기중</button>
         <button class="ftab" id="tab-assign" onclick="window.setFilter('배정됨',this)">배정됨</button>
@@ -2140,6 +2155,9 @@ window.renderCalendar = function(fullList, cardList) {
     if(!vByDate[v.date]) vByDate[v.date] = [];
     vByDate[v.date].push(v);
   });
+  Object.keys(vByDate).forEach(function(k){
+    vByDate[k].sort(function(a,b){ return String(a.time||'99:99').slice(0,5).localeCompare(String(b.time||'99:99').slice(0,5)); });
+  });
 
   let html = '';
   let cellCount = 0;
@@ -2173,7 +2191,8 @@ window.renderCalendar = function(fullList, cardList) {
              addr = addr.replace(/[0-9]/g, '*');
          }
          
-         let displayTitleRaw = (admin || v.isMine) ? `${(v.time||'').slice(0,5)} ${escH(brieferName)} ${escH(v.businessName||addr)}` : `${(v.time||'').slice(0,5)} ${escH(brieferName)}/${escH(addr)}`;
+         var _short = (v.address ? addr : (admin || v.isMine ? (v.businessName || addr) : addr)).split(/\s+/).slice(0, v.address ? 2 : 9).join(' ');
+         let displayTitleRaw = `<span class="ce-t">${(v.time||'').slice(0,5)} ${escH(brieferName)}</span><span class="ce-a">${escH(_short)}</span>`;
          displayTitle = displayTitleRaw;
 
          if (v.isScheduledEvent) { evClass = 'ev-sched'; displayTitle = `[예정] ${displayTitleRaw}`; }
