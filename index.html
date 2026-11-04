@@ -4,10 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes">
 <title>세미나 PRO</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
+/* ─── BASE RESET (Tailwind CDN 제거 후 동일 동작 유지) ─── */
+*,::before,::after{border-width:0;border-style:solid;border-color:#e5e7eb;}
+html{line-height:1.5;-webkit-text-size-adjust:100%;tab-size:4;}
+body{margin:0;line-height:inherit;}
+h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit;}
+blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0;}
+a{color:inherit;text-decoration:inherit;}
+b,strong{font-weight:bolder;}
+table{text-indent:0;border-color:inherit;border-collapse:collapse;}
+button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0;}
+button,select{text-transform:none;}
+button,[type=button],[type=reset],[type=submit]{-webkit-appearance:button;background-color:transparent;background-image:none;}
+ol,ul,menu{list-style:none;margin:0;padding:0;}
+textarea{resize:vertical;}
+button,[role=button]{cursor:pointer;}
+:disabled{cursor:default;}
+img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle;}
+img,video{max-width:100%;height:auto;}
+[hidden]{display:none;}
+.block{display:block;}.hidden{display:none;}.mt-2{margin-top:.5rem;}.text-center{text-align:center;}
+@media (min-width:640px){.sm\:block{display:block;}.sm\:hidden{display:none;}}
+
 /* ─── BRIGHT THEME VARIABLES ─── */
 :root {
   --bg0: #f5f5f7;
@@ -37,6 +58,38 @@ body{font-family:'Noto Sans KR','Malgun Gothic',sans-serif;background:var(--bg0)
 button{font-family:inherit;}
 .tap{min-height:44px;min-width:44px;}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}}
+
+/* ─── ICONS (선 아이콘, 글자색을 따름) ─── */
+i[class^="i-"]{display:inline-block;width:1.05em;height:1.05em;vertical-align:-0.17em;background:currentColor;font-style:normal;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat;}
+i.i-pin{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E");}
+i.i-calendar{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15.5' rx='2.5'/%3E%3Cpath d='M3.5 10h17M8 3v4M16 3v4'/%3E%3C/svg%3E");}
+i.i-clock{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");}
+i.i-users{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='8' r='3.5'/%3E%3Cpath d='M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6'/%3E%3Ccircle cx='17' cy='9' r='2.5'/%3E%3Cpath d='M17 14c2.8 0 4.5 1.9 4.5 4.5'/%3E%3C/svg%3E");}
+i.i-target{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3C/svg%3E");}
+i.i-user{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7'/%3E%3C/svg%3E");}
+i.i-search{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E");}
+i.i-check{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.7 2.7L16 9.5'/%3E%3C/svg%3E");}
+i.i-xcircle{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9 9l6 6M15 9l-6 6'/%3E%3C/svg%3E");}
+i.i-minus{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");}
+i.i-camera{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8h3l1.5-2h7L17 8h3v11H4z'/%3E%3Ccircle cx='12' cy='13' r='3.5'/%3E%3C/svg%3E");}
+i.i-alert{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l10 18H2z'/%3E%3Cpath d='M12 10v5M12 18h.01'/%3E%3C/svg%3E");}
+i.i-car{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 16v2m14-2v2M3.5 12l2-5h13l2 5v4h-17z'/%3E%3Ccircle cx='7.5' cy='14' r='1'/%3E%3Ccircle cx='16.5' cy='14' r='1'/%3E%3C/svg%3E");}
+i.i-clipboard{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='4' width='12' height='17' rx='2'/%3E%3Cpath d='M9 4h6v3H9zM9 11h6M9 15h4'/%3E%3C/svg%3E");}
+i.i-map{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14'/%3E%3C/svg%3E");}
+i.i-save{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6'/%3E%3C/svg%3E");}
+i.i-note{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='4' width='16' height='16' rx='3'/%3E%3Cpath d='M8 9h8M8 13h5'/%3E%3C/svg%3E");}
+.srch-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+.srch-box{flex:1;min-width:0;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;background:var(--bg1);border:1px solid var(--border2);border-radius:10px;color:var(--tx2);}
+.srch-box:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,102,204,.25);}
+.srch-inp{flex:1;min-width:0;border:0;outline:none;background:transparent;font-size:14px;color:var(--tx1);min-height:40px;}
+.srch-inp::placeholder{color:var(--tx3);}
+.srch-res{margin:-4px 0 10px;background:var(--bg1);border:1px solid var(--border2);border-radius:12px;overflow:hidden;}
+.srch-item{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:8px 12px;border-top:1px solid var(--border);background:transparent;text-align:left;font-size:13px;color:var(--tx1);}
+.srch-item:first-child{border-top:0;}
+.srch-item:hover,.srch-item:focus-visible{background:var(--bg3);}
+.srch-item .d{font-weight:800;color:var(--blue);white-space:nowrap;}
+.srch-item .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.srch-hint{padding:8px 12px;font-size:12px;color:var(--tx2);border-top:1px solid var(--border);background:var(--bg3);}
 
 /* ─── INPUTS ─── */
 .inp{width:100%;background:var(--bg1);border:1px solid var(--border2);border-radius:10px;
@@ -238,7 +291,7 @@ div:where(.swal2-container){z-index:9999!important;}
   .ev-failed{background:#c62828!important;}
   .ev-cancel{background:transparent!important;border:1px dashed #6b7280!important;height:7px;}
   .ev-personal{background:#b45309!important;}
-  .cal-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--tx2);padding:8px 4px 0;}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--tx2);padding:0 4px 8px;}
   .cal-legend i{display:inline-block;width:12px;height:7px;border-radius:3px;margin-right:4px;vertical-align:middle;}
 }
 </style>
@@ -321,14 +374,20 @@ div:where(.swal2-container){z-index:9999!important;}
       </div>
     </div>
 
+    <div class="srch-row">
+      <div class="srch-box"><i class=i-search></i><input id="srchInp" type="search" class="srch-inp" placeholder="업체·브리퍼·주소 검색" aria-label="일정 검색" autocomplete="off" oninput="window.onSearchInput(this.value)" onkeydown="if(event.key==='Escape'){this.value='';window.onSearchInput('');}"></div>
+      <button type="button" class="btn btn-ghost tap" onclick="window.goToday()" aria-label="오늘로 이동" style="padding:0 16px;font-size:14px;">오늘</button>
+    </div>
+    <div id="srchRes" class="srch-res" style="display:none;" role="listbox" aria-label="검색 결과"></div>
+
     <div class="cal-wrapper">
       <div class="cal-header">
         <div style="color:var(--red);">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div style="color:var(--blue);">토</div>
       </div>
-      <div id="calendarGrid" class="cal-grid" role="group" aria-label="월간 달력"><div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div></div>
-      <div class="cal-legend" aria-hidden="false">
+      <div class="cal-legend">
         <span><i style="background:#8a8f98"></i>대기</span><span><i style="background:var(--blue)"></i>배정</span><span><i style="background:#15803d"></i>청약예정</span><span><i style="background:#4f46e5"></i>결과완료</span><span><i style="background:#c62828"></i>진행불가</span><span><i style="border:1px dashed #6b7280"></i>취소</span><span><i style="background:#b45309"></i>개인</span>
       </div>
+      <div id="calendarGrid" class="cal-grid" role="group" aria-label="월간 달력"><div style="grid-column:1/-1;display:flex;justify-content:center;padding:30px;"><div class="ld"></div></div></div>
     </div>
   </div>
 
@@ -337,7 +396,11 @@ div:where(.swal2-container){z-index:9999!important;}
       <div style="font-size:20px;font-weight:900;color:var(--tx1);">섭외 입력</div>
       <div style="font-size:12px;color:var(--tx2);margin-top:3px;">새로운 섭외장소를 등록합니다</div>
     </div>
-    <div class="card">
+    <div id="draftNote" style="display:none;margin-bottom:10px;padding:8px 12px;border:1px solid #c5dcf2;background:#eef5fc;border-radius:10px;font-size:13px;color:var(--tx1);align-items:center;justify-content:space-between;gap:8px;">
+      <span>임시 저장된 내용을 불러왔습니다.</span>
+      <button type="button" class="btn btn-ghost" style="min-height:36px;padding:0 12px;font-size:13px;" onclick="window.discardDraft()">지우기</button>
+    </div>
+    <div class="card" id="inputCard">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
         <div><div class="fl">날짜 *</div><input type="date" id="i_date" class="inp" onchange="window.autoDay()"></div>
         <div><div class="fl">요일</div><input type="text" id="i_day" class="inp" readonly style="background:var(--bg3);color:var(--tx2);"></div>
@@ -353,7 +416,7 @@ div:where(.swal2-container){z-index:9999!important;}
         <div><div class="fl">참석인원 *</div><input type="number" id="i_att" class="inp" placeholder="명" min="1"></div>
       </div>
       <div style="margin-bottom:24px;"><div class="fl">비고</div><textarea id="i_note" class="inp" rows="3" placeholder="추가 내용을 입력하세요"></textarea></div>
-      <button onclick="window.submitVenue()" class="btn btn-gold btn-full">📋 섭외 등록하기</button>
+      <button onclick="window.submitVenue()" class="btn btn-gold btn-full"><i class=i-clipboard></i> 섭외 등록하기</button>
     </div>
   </div>
 
@@ -420,7 +483,7 @@ div:where(.swal2-container){z-index:9999!important;}
 
   <div id="pg-map" class="pg" style="display:none;padding:0;">
     <div style="padding:12px 14px 6px;display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:nowrap;">
-      <div style="font-size:clamp(13px,4vw,18px);font-weight:900;color:var(--tx1);white-space:nowrap;flex-shrink:0;">🗺️ 섭외지 지도</div>
+      <div style="font-size:clamp(13px,4vw,18px);font-weight:900;color:var(--tx1);white-space:nowrap;flex-shrink:0;"><i class=i-map></i> 섭외지 지도</div>
       <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
         <button onclick="window.mapPrevDay()" class="btn btn-ghost tap" aria-label="전날" style="padding:4px 10px;font-size:14px;">◀</button>
         <input type="date" id="mapDateInput" class="inp" aria-label="지도 날짜" style="padding:4px 4px;min-height:44px;font-size:13px;width:126px;text-align:center;" onchange="window.onMapDateChange(this.value)">
@@ -434,7 +497,7 @@ div:where(.swal2-container){z-index:9999!important;}
     </div>
     <div style="position:relative;">
       <div id="kakaoMap" style="width:100%;height:52vh;background:#eef2f7;display:flex;align-items:center;justify-content:center;color:var(--tx3);font-size:13px;">지도를 불러오는 중…</div>
-      <button id="mapMyLocBtn" onclick="window.mapMyLocation()" style="position:absolute;right:12px;bottom:12px;z-index:20;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:800;color:var(--tx1);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;display:flex;align-items:center;gap:5px;">📍 현재위치</button>
+      <button id="mapMyLocBtn" onclick="window.mapMyLocation()" style="position:absolute;right:12px;bottom:12px;z-index:20;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:800;color:var(--tx1);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;display:flex;align-items:center;gap:5px;"><i class=i-pin></i> 현재위치</button>
     </div>
     <div id="mapInfoPanel" style="padding:12px 14px 96px;">
       <div style="font-size:12px;color:var(--tx3);text-align:center;padding:18px;">핀을 누르면 다른 섭외지까지 거리·소요시간이 표시됩니다.</div>
@@ -549,7 +612,7 @@ div:where(.swal2-container){z-index:9999!important;}
     <div style="margin-bottom:14px;"><div class="fl">주소</div><input type="text" id="e_addr" class="inp"></div>
     <div style="margin-bottom:14px;"><div class="fl">참석인원 *</div><input type="number" id="e_att" class="inp" min="1"></div>
     <div style="margin-bottom:24px;"><div class="fl">비고</div><textarea id="e_note" class="inp" rows="3"></textarea></div>
-    <button onclick="window.submitEditVenue()" class="btn btn-blue btn-full">💾 수정 저장하기</button>
+    <button onclick="window.submitEditVenue()" class="btn btn-blue btn-full"><i class=i-save></i> 수정 저장하기</button>
   </div>
 </div>
 
@@ -585,16 +648,16 @@ div:where(.swal2-container){z-index:9999!important;}
     <div style="margin-bottom:20px;">
       <div class="fl">결과 선택 (중복 가능) *</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <button class="rbtn" onclick="window.toggleResult('청약완료')" id="rb-complete">✅ 청약완료</button>
-        <button class="rbtn" onclick="window.toggleResult('청약예정')" id="rb-scheduled">📅 청약예정</button>
-        <button class="rbtn" onclick="window.toggleResult('청약없음')" id="rb-none">➖ 청약없음</button>
-        <button class="rbtn" onclick="window.toggleResult('진행불가')" id="rb-failed">❌ 진행불가</button>
+        <button class="rbtn" onclick="window.toggleResult('청약완료')" id="rb-complete"><i class=i-check></i> 청약완료</button>
+        <button class="rbtn" onclick="window.toggleResult('청약예정')" id="rb-scheduled"><i class=i-calendar></i> 청약예정</button>
+        <button class="rbtn" onclick="window.toggleResult('청약없음')" id="rb-none"><i class=i-minus></i> 청약없음</button>
+        <button class="rbtn" onclick="window.toggleResult('진행불가')" id="rb-failed"><i class=i-xcircle></i> 진행불가</button>
       </div>
     </div>
 
     <div id="compArea" style="display:none; background:#f0fdf4; border:2px solid #bbf7d0; border-radius:12px; padding:16px; margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="fl" style="margin:0;color:#15803d;font-size:13px;">✅ 청약완료 인원</div>
+        <div class="fl" style="margin:0;color:#15803d;font-size:13px;"><i class=i-check></i> 청약완료 인원</div>
         <button onclick="window.addCompContract()" class="btn btn-ghost" style="padding:4px 8px;font-size:12px;color:#15803d;border-color:#15803d;background:#ffffff;">+ 인원 추가</button>
       </div>
       <div id="compList"></div>
@@ -602,7 +665,7 @@ div:where(.swal2-container){z-index:9999!important;}
 
     <div id="schedArea" style="display:none; background:#fef2f2; border:2px solid #fecaca; border-radius:12px; padding:16px; margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="fl" style="margin:0;color:#c62828;font-size:13px;">📅 청약예정 인원</div>
+        <div class="fl" style="margin:0;color:#c62828;font-size:13px;"><i class=i-calendar></i> 청약예정 인원</div>
         <button onclick="window.addSchedContract()" class="btn btn-ghost" style="padding:4px 8px;font-size:12px;color:#c62828;border-color:#c62828;background:#ffffff;">+ 인원 추가</button>
       </div>
       <div id="schedList"></div>
@@ -619,7 +682,7 @@ div:where(.swal2-container){z-index:9999!important;}
     <div style="margin-bottom:24px;">
       <div class="fl">사진 첨부 <span style="font-weight:400;color:var(--tx3);">(최대 10장)</span></div>
       <input type="file" id="photoInput" accept="image/*" multiple style="display:none;" onchange="window.addPhotos(event)">
-      <button onclick="document.getElementById('photoInput').click()" class="btn btn-ghost btn-full" style="margin-bottom:10px;">📷 사진 추가</button>
+      <button onclick="document.getElementById('photoInput').click()" class="btn btn-ghost btn-full" style="margin-bottom:10px;"><i class=i-camera></i> 사진 추가</button>
       <div id="photoGrid" class="pgrid"></div>
     </div>
 
@@ -1071,6 +1134,7 @@ window.goPage = function(id) {
     }
   });
   ['list','input','stats','map'].forEach(function(p){ var n=document.getElementById('ni-'+p); if(n){ if(p===id) n.setAttribute('aria-current','page'); else n.removeAttribute('aria-current'); } });
+  if (id==='input') window.restoreDraft();
   if (id==='list')  window.loadVenues();
   if (id==='stats') window.loadStats();
   if (id==='map')   window.loadMap();
@@ -1349,8 +1413,8 @@ window.onMapPinClick = function(origin){
   others.forEach(function(g){ g._dist = mapHaversineKm(origin.lat, origin.lng, g.lat, g.lng); });
   others.sort(function(a, b){ return a._dist - b._dist; });
 
-  var failLink = (mapFailedVenues && mapFailedVenues.length) ? '<div style="margin-bottom:6px;"><button onclick="window.showMapFailed()" style="font-size:12px;color:#b45309;border:1px solid #fde68a;background:#fffbeb;border-radius:6px;padding:3px 8px;font-weight:700;cursor:pointer;">⚠️ 좌표 미표시 ' + mapFailedVenues.length + '곳 보기</button></div>' : '';
-  var head = failLink + '<div style="font-size:13px;font-weight:800;color:var(--tx1);margin-bottom:6px;">📍 기준: ' + origin.venue.businessName
+  var failLink = (mapFailedVenues && mapFailedVenues.length) ? '<div style="margin-bottom:6px;"><button onclick="window.showMapFailed()" style="font-size:12px;color:#b45309;border:1px solid #fde68a;background:#fffbeb;border-radius:6px;padding:3px 8px;font-weight:700;cursor:pointer;"><i class=i-alert></i> 좌표 미표시 ' + mapFailedVenues.length + '곳 보기</button></div>' : '';
+  var head = failLink + '<div style="font-size:13px;font-weight:800;color:var(--tx1);margin-bottom:6px;"><i class=i-pin></i> 기준: ' + origin.venue.businessName
     + ' <span style="font-size:12px;color:var(--tx3);font-weight:600;">(' + (origin.venue.time || '') + ' · ' + (origin.venue.assignedBriefer || '미배정') + ')</span></div>';
 
   if (others.length === 0){ panel.innerHTML = head + '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:12px;">이 날짜의 다른 섭외지가 없습니다.</div>'; scrollMapPanelIntoView(); return; }
@@ -1360,7 +1424,7 @@ window.onMapPinClick = function(origin){
       + '<div style="min-width:0;"><div style="font-size:13px;font-weight:700;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + g.venue.businessName + '</div>'
       + '<div style="font-size:12px;color:var(--tx3);">' + (g.venue.time || '') + ' · ' + (g.venue.assignedBriefer || '미배정') + '</div></div>'
       + '<div style="text-align:right;flex-shrink:0;padding-left:10px;"><div style="font-size:13px;font-weight:800;color:#0052a3;">' + g._dist.toFixed(1) + 'km</div>'
-      + '<div id="mroute_' + i + '" style="font-size:12px;color:var(--tx3);">🚗 계산중…</div></div></div>';
+      + '<div id="mroute_' + i + '" style="font-size:12px;color:var(--tx3);"><i class=i-car></i> 계산중…</div></div></div>';
   }).join('');
   panel.innerHTML = head + rows;
   scrollMapPanelIntoView();
@@ -1382,14 +1446,14 @@ window.fetchMapDriveTime = function(origin, dest, elId){
   var showEst = function(){
     var el = document.getElementById(elId); if (!el) return;
     var estMin = Math.max(1, Math.round(dest._dist * 1.3 / 30 * 60));   // 직선×1.3, 시속30km 가정
-    el.innerHTML = '🚗 약 ' + estMin + '분 (추정)';
+    el.innerHTML = '<i class=i-car></i> 약 ' + estMin + '분 (추정)';
   };
   google.script.run
     .withSuccessHandler(function(resStr){
       var el = document.getElementById(elId); if (!el) return;
       var r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
       if (r && r.ok){
-        el.innerHTML = '🚗 ' + (r.distance / 1000).toFixed(1) + 'km · ' + Math.round(r.duration / 60) + '분';
+        el.innerHTML = '<i class=i-car></i> ' + (r.distance / 1000).toFixed(1) + 'km · ' + Math.round(r.duration / 60) + '분';
         el.style.color = '#111827';
       } else { showEst(); }
     })
@@ -1416,6 +1480,7 @@ window.confirmTime = function() {
     if(!isNaN(idx) && schedContracts[idx]) { schedContracts[idx].time = val; }
   }
   window.closeM('mTime');
+  if (window.saveDraft) window.saveDraft();
 };
 
 window.formatFullDate = function(dStr, tStr) {
@@ -1511,11 +1576,11 @@ window.personalCard = function(v, admin, briefer, isMyPersonal) {
 
   return `<div class="vcrd" style="background-color:#fef3c7; border-color:#fcd34d; border-left:4px solid #b45309; padding: 12px 10px;">
     <div style="display:flex; flex-direction:column; align-items:flex-start;">
-      <span class="badge" style="background:#fffbeb;color:#92400e;border:1px solid #fde68a;font-size:12px; margin-bottom:8px;">🏖️ 개인일정</span>
+      <span class="badge" style="background:#fffbeb;color:#92400e;border:1px solid #fde68a;font-size:12px; margin-bottom:8px;"><i class=i-note></i> 개인일정</span>
       <div style="width:100%; min-width:0;">
         <div style="font-size:16px;font-weight:900;color:#92400e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.assignedBriefer} 브리퍼</div>
         <div style="margin-top:6px;">
-          ${timeStr ? `<div style="font-size:13px;color:#92400e;font-weight:800;">🕒 ${timeStr}</div>` : `<div style="font-size:13px;color:#92400e;font-weight:800;">⏰ 시간 미정</div>`}
+          ${timeStr ? `<div style="font-size:13px;color:#92400e;font-weight:800;"><i class=i-clock></i> ${timeStr}</div>` : `<div style="font-size:13px;color:#92400e;font-weight:800;">⏰ 시간 미정</div>`}
         </div>
         <div style="font-size:13px;color:#92400e;margin-top:6px;word-break:keep-all;font-weight:600;">내용: ${v.businessName}</div>
       </div>
@@ -1558,7 +1623,45 @@ window.submitVenue = function() {
   } else { window.loading(false); window.toast('로컬 테스트 모드','info'); }
 };
 
+var DRAFT_KEY = 'sp_draft_venue';
+var DRAFT_IDS = ['i_date','i_time','i_biz','i_addr','i_att','i_note'];
+window.saveDraft = function(){
+  try {
+    var o = {}, any = false;
+    DRAFT_IDS.forEach(function(id){ var el = document.getElementById(id); o[id] = el ? el.value : ''; });
+    ['i_biz','i_addr','i_att','i_note','i_time'].forEach(function(id){ if (o[id]) any = true; });
+    if (any) localStorage.setItem(DRAFT_KEY, JSON.stringify(o)); else localStorage.removeItem(DRAFT_KEY);
+  } catch(e){}
+};
+window.restoreDraft = function(){
+  try {
+    var raw = localStorage.getItem(DRAFT_KEY); if (!raw) return;
+    var o = JSON.parse(raw);
+    var empty = ['i_biz','i_addr','i_att','i_note','i_time'].every(function(id){ var el = document.getElementById(id); return !el || !el.value; });
+    if (!empty) return;
+    DRAFT_IDS.forEach(function(id){ var el = document.getElementById(id); if (el && o[id]) el.value = o[id]; });
+    if (window.autoDay) window.autoDay();
+    var n = document.getElementById('draftNote'); if (n) n.style.display = 'flex';
+  } catch(e){}
+};
+window.discardDraft = function(){
+  try { localStorage.removeItem(DRAFT_KEY); } catch(e){}
+  window.clearForm();
+  var n = document.getElementById('draftNote'); if (n) n.style.display = 'none';
+};
+(function(){
+  var t = null;
+  document.addEventListener('input', function(e){
+    if (!e.target || DRAFT_IDS.indexOf(e.target.id) < 0) return;
+    clearTimeout(t); t = setTimeout(window.saveDraft, 300);
+  });
+  document.addEventListener('change', function(e){
+    if (e.target && DRAFT_IDS.indexOf(e.target.id) >= 0) window.saveDraft();
+  });
+})();
 window.clearForm = function() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch(e){}
+  var _dn = document.getElementById('draftNote'); if (_dn) _dn.style.display = 'none';
   const now = new Date();
   document.getElementById('i_date').value = now.toISOString().split('T')[0];
   document.getElementById('i_time').value = '';
@@ -2014,7 +2117,7 @@ window.renderCalendar = function(fullList, cardList) {
       
       if (v.isPersonalEvent) {
          evClass = 'ev-personal';
-         displayTitle = `🏃 ${v.assignedBriefer}`;
+         displayTitle = `<i class=i-user></i> ${v.assignedBriefer}`;
       } else {
          let brieferName = v.assignedBriefer || '미배정';
          
@@ -2077,6 +2180,46 @@ window.renderCalendar = function(fullList, cardList) {
   }
 };
 
+window.jumpToDate = function(dateStr){
+  var ym = dateStr.slice(0,7);
+  if (ym !== curMonth){ curMonth = ym; if (window.setMonthBtnText) window.setMonthBtnText(); }
+  selectedCalDate = dateStr;
+  var wk = weekKeyOf(dateStr);
+  if (!loadedWeeks[wk]) window.loadWeekAndRender(wk); else window.renderList();
+  setTimeout(function(){ var el = document.querySelector('.cal-cell.selected'); if (el && el.scrollIntoView) el.scrollIntoView({block:'center',behavior:'smooth'}); }, 80);
+};
+window.goToday = function(){
+  var si = document.getElementById('srchInp'); if (si) { si.value=''; window.onSearchInput(''); }
+  window.jumpToDate(toISO(new Date()));
+};
+window.onSearchInput = function(q){
+  var box = document.getElementById('srchRes'); if (!box) return;
+  q = String(q||'').trim().toLowerCase();
+  if (!q){ box.style.display='none'; box.innerHTML=''; return; }
+  var admin = window.isAdmin(ME.role), briefer = ME.role.includes('브리퍼'), recruiter = ME.role.includes('섭외자');
+  var today = toISO(new Date()), td = new Date(today+'T00:00:00').getTime();
+  var hits = [];
+  (venues||[]).forEach(function(v){
+    if (!v || v.status === '삭제' || !v.date) return;
+    var mine = admin || (briefer && v.assignedBriefer === ME.name) || (recruiter && v.recruiter === ME.name);
+    if (!mine) return;   // 남의 섭외는 검색 대상에서 제외(달력에서 업체명을 가리는 것과 같은 기준)
+    var hay = [v.businessName, v.assignedBriefer, v.recruiter, v.address, v.notes].join(' ').toLowerCase();
+    if (hay.indexOf(q) >= 0) hits.push(v);
+  });
+  hits.sort(function(a,b){ return Math.abs(new Date(a.date+'T00:00:00')-td) - Math.abs(new Date(b.date+'T00:00:00')-td); });
+  var esc = function(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
+  var html = hits.slice(0,8).map(function(v){
+    return '<button type="button" class="srch-item" role="option" onclick="window.pickSearch(\''+v.date+'\')"><span class="d">'+esc(v.date.slice(5).replace('-','/'))+' '+esc((v.time||'').slice(0,5))+'</span><span class="t">'+esc(v.assignedBriefer||'미배정')+' · '+esc(v.businessName)+'</span></button>';
+  }).join('');
+  if (!hits.length) html = '<div class="srch-hint" style="border-top:0;">검색 결과가 없습니다.</div>';
+  html += '<div class="srch-hint">'+(hits.length>8?'상위 8건만 표시 · ':'')+'불러온 주 안에서만 검색됩니다. 다른 주는 달력에서 "이 주 섭외 보기"로 불러오세요.</div>';
+  box.innerHTML = html; box.style.display = 'block';
+};
+window.pickSearch = function(dateStr){
+  var si = document.getElementById('srchInp'); if (si) si.value='';
+  var box = document.getElementById('srchRes'); if (box){ box.style.display='none'; box.innerHTML=''; }
+  window.jumpToDate(dateStr);
+};
 window.onSelectDate = function(dateStr) {
   if (selectedCalDate === dateStr) { selectedCalDate = ''; window.renderList(); return; }
   selectedCalDate = dateStr;
@@ -2101,7 +2244,7 @@ window.renderDayVenues = function(dateStr, list) {
   const headerHtml = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px dashed #9cc2e6;">
         <div style="font-size:16px; font-weight:900; color:var(--blue); display:flex; align-items:center; gap:6px;">
-            <span style="font-size:20px;">🗓️</span> ${m}월 ${d}일 타임테이블
+            <span style="font-size:20px;"><i class=i-calendar></i></span> ${m}월 ${d}일 타임테이블
         </div>
         <button aria-label="날짜 패널 닫기" class="tap" onclick="event.stopPropagation(); window.onSelectDate('${dateStr}')" style="background:var(--bg1); border:1px solid #c5dcf2; color:var(--blue); width:44px; height:44px; border-radius:50%; font-size:14px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 2px rgba(0,0,0,0.05);">✕</button>
     </div>
@@ -2260,7 +2403,7 @@ window.renderDayVenues = function(dateStr, list) {
 };
 
 window.statusBadge = function(s, isSched, isSent, isConfirmed, showConfirmed) {
-  if (isSched) return `<span class="badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">📅 청약예정</span>`;
+  if (isSched) return `<span class="badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;"><i class=i-calendar></i> 청약예정</span>`;
   if (s === '결과입력완료' && isSent) return '<span class="badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">결과전달완료</span>';
   
   let displayS = s;
@@ -2323,7 +2466,7 @@ window.venueCardOther = function(v) {
   }
 
   const titlePrefix = isSched ? '<span style="color:var(--red);font-weight:800;margin-right:4px;">[예정]</span>' : '';
-  const displayDate = isSched ? `<div style="color:var(--red);font-size:12px;font-weight:800;margin-bottom:2px;">📅 ${v.date}</div>` : '';
+  const displayDate = isSched ? `<div style="color:var(--red);font-size:12px;font-weight:800;margin-bottom:2px;"><i class=i-calendar></i> ${v.date}</div>` : '';
 
   // 주소 숫자 마스킹 처리
   let blindedAddr = '주소 미입력';
@@ -2336,21 +2479,21 @@ window.venueCardOther = function(v) {
     : '주소 미입력';
     
   const attText = v.actualAttendees 
-    ? `<span>👥${v.attendees}명 <strong style="color:var(--red);">➔ ${v.actualAttendees}명</strong></span>`
-    : `<span>👥${v.attendees}명</span>`;
+    ? `<span><i class=i-users></i>${v.attendees}명 <strong style="color:var(--red);">➔ ${v.actualAttendees}명</strong></span>`
+    : `<span><i class=i-users></i>${v.attendees}명</span>`;
 
   return `<div class="vcrd" style="opacity:0.85; padding: 12px 10px; ${bgStyle}">
     <div style="display:flex; flex-direction:column; align-items:flex-start;">
       <span class="badge b-wait" style="font-size:12px; margin-bottom:8px;">타일정</span>
       <div style="width:100%; min-width:0;">
-        <div style="font-size:14px;font-weight:800;color:var(--tx2);word-break:keep-all;">${titlePrefix}📍 ${addrHtml}</div>
+        <div style="font-size:14px;font-weight:800;color:var(--tx2);word-break:keep-all;">${titlePrefix}<i class=i-pin></i> ${addrHtml}</div>
         <div style="margin-top:6px;">
           ${displayDate}
-          <div style="font-size:13px;color:var(--blue);font-weight:700;">🕒 ${timeStr}</div>
+          <div style="font-size:13px;color:var(--blue);font-weight:700;"><i class=i-clock></i> ${timeStr}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;letter-spacing:-0.5px;color:var(--tx2);margin-top:8px;">
           <div>${attText}</div>
-          ${v.assignedBriefer ? `<div>🎯 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
+          ${v.assignedBriefer ? `<div><i class=i-target></i> 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
         </div>
       </div>
     </div>
@@ -2411,7 +2554,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
   if (v.isScheduledEvent) { formattedSchedDate = window.formatFullDate(v.targetContract.date, v.targetContract.time); }
 
   const addrHtml = v.address 
-    ? `<div style="font-size:12px;color:var(--blue);font-weight:600;margin-top:2px;cursor:pointer;" onclick="event.stopPropagation(); window.openTmap('${v.address}')">📍 <span style="text-decoration:underline;text-underline-offset:2px;">${v.address}</span></div>` 
+    ? `<div style="font-size:12px;color:var(--blue);font-weight:600;margin-top:2px;cursor:pointer;" onclick="event.stopPropagation(); window.openTmap('${v.address}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${v.address}</span></div>` 
     : '';
   const titlePrefix = v.isScheduledEvent ? '<span style="color:var(--red);font-weight:800;margin-right:4px;">[예정]</span>' : '';
   const displayBizName = v.isScheduledEvent ? v.businessName + ' - ' + v.targetContract.name + '님' : v.businessName;
@@ -2492,8 +2635,8 @@ window.venueCard = function(v, admin, briefer, recruiter) {
   const totalAmt = activeContracts.reduce(function(a,c) { return a+(Number(c.amount)||0); }, 0);
 
   const attText = v.actualAttendees 
-    ? `<span>👥${v.attendees}명 <strong style="color:var(--red);">➔ ${v.actualAttendees}명</strong></span>`
-    : `<span>👥${v.attendees}명</span>`;
+    ? `<span><i class=i-users></i>${v.attendees}명 <strong style="color:var(--red);">➔ ${v.actualAttendees}명</strong></span>`
+    : `<span><i class=i-users></i>${v.attendees}명</span>`;
 
   const showConfirmedBadge = admin || v.recruiter === ME.name || v.assignedBriefer === ME.name;
 
@@ -2503,10 +2646,10 @@ window.venueCard = function(v, admin, briefer, recruiter) {
         <div style="font-size:16px;font-weight:900;color:var(--tx1);margin-bottom:6px;word-break:keep-all;">${titlePrefix}${displayBizName}${addrHtml}</div>
         <div style="font-size:13px;color:var(--tx2);font-weight:600;">
           ${v.isScheduledEvent ? `
-            <div style="color:var(--red);font-size:13px;font-weight:800;">📅 ${formattedSchedDate}</div>
+            <div style="color:var(--red);font-size:13px;font-weight:800;"><i class=i-calendar></i> ${formattedSchedDate}</div>
           ` : `
             <div class="v-date">${v.date} ${v.dayOfWeek}</div>
-            <div style="margin-top:4px;color:var(--blue);font-size:14px;font-weight:800;">🕒 ${timeStr}</div>
+            <div style="margin-top:4px;color:var(--blue);font-size:14px;font-weight:800;"><i class=i-clock></i> ${timeStr}</div>
           `}
         </div>
       </div>
@@ -2514,9 +2657,9 @@ window.venueCard = function(v, admin, briefer, recruiter) {
     </div>
     
     <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;letter-spacing:-0.5px;color:var(--tx2);margin-bottom:${hasRes||btns?'12px':'0'};" class="${textStrike}">
-      ${admin ? `<div>👤 섭외: <strong>${v.recruiter}</strong></div>` : ''}
+      ${admin ? `<div><i class=i-user></i> 섭외: <strong>${v.recruiter}</strong></div>` : ''}
       <div>${attText}</div>
-      ${v.assignedBriefer ? `<div>🎯 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
+      ${v.assignedBriefer ? `<div><i class=i-target></i> 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
     </div>
 
     ${(!v.isScheduledEvent && hasRes) ? `<div style="background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:${btns?'12px':'0'};border:1px solid var(--border);" class="${textStrike}">
@@ -2550,7 +2693,7 @@ window.openDetail = function(id) {
     <div class="pgrid">${v.images.map(function(fid) {
       return `
       <div class="pitem" onclick="window.open('https://drive.google.com/file/d/${fid}/view','_blank')">
-        <img src="https://drive.google.com/thumbnail?id=${fid}&sz=w400" onerror="this.parentElement.innerHTML='📷';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.fontSize='24px';">
+        <img src="https://drive.google.com/thumbnail?id=${fid}&sz=w400" onerror="this.parentElement.innerHTML='<i class=i-camera></i>';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.fontSize='24px';">
       </div>`;
     }).join('')}
     </div></div>` : '';
@@ -2588,7 +2731,7 @@ window.openDetail = function(id) {
       <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-top:1px dashed #fca5a5;">
         <div>
           <div style="font-size:13px;color:#c62828;font-weight:600;">[예정] ${c.name}</div>
-          <div style="font-size:12px;color:#c62828;font-weight:800;margin-top:2px;">📅 ${window.formatFullDate(v.date, c.time)}</div>
+          <div style="font-size:12px;color:#c62828;font-weight:800;margin-top:2px;"><i class=i-calendar></i> ${window.formatFullDate(v.date, c.time)}</div>
         </div>
         <span style="font-size:13px;color:#c62828;font-weight:800;">${(Number(c.amount)||0).toLocaleString()}원</span>
       </div>`;
@@ -2607,7 +2750,7 @@ window.openDetail = function(id) {
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
       <div>
         <div style="font-size:18px;font-weight:900;color:var(--tx1);">${v.businessName}</div>
-        ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:4px;font-weight:600;cursor:pointer;" onclick="window.openTmap('${v.address}')">📍 <span style="text-decoration:underline;text-underline-offset:2px;">${v.address}</span></div>` : ''}
+        ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:4px;font-weight:600;cursor:pointer;" onclick="window.openTmap('${v.address}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${v.address}</span></div>` : ''}
       </div>
       <button onclick="window.closeM('mDetail')" class="btn btn-ghost tap" aria-label="닫기" style="padding:6px 12px;font-size:16px;border-radius:8px;">✕</button>
     </div>
@@ -2638,7 +2781,7 @@ window.openDetail = function(id) {
         ${v.resultNotes?`<div style="font-size:13px;color:var(--tx2);padding-top:10px;margin-top:10px;border-top:1px dashed var(--border2);">${v.resultNotes}</div>`:''}
       </div></div>`:''}
     ${imgHtml}
-    ${v.resultSentToRecruiter?`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:700;color:#15803d;margin-top:16px;">✅ 섭외자에게 결과 전달 완료</div>`:''}
+    ${v.resultSentToRecruiter?`<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:700;color:#15803d;margin-top:16px;"><i class=i-check></i> 섭외자에게 결과 전달 완료</div>`:''}
   `;
   document.getElementById('mDetail').style.display = 'flex';
 };
@@ -2971,15 +3114,15 @@ window.loadStats = function(useCustomDate = false) {
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
               <div onclick="window.openBrieferDetail('${b.name}')" style="text-align:center;background:var(--bg3);padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border2);">
-                <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:2px;">받은 섭외 🔍</div>
+                <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:2px;">받은 섭외 <i class=i-search style="margin-left:2px"></i></div>
                 <div style="font-size:20px;font-weight:900;color:var(--tx1);">${b.totalVenues}</div>
               </div>
               <div onclick="window.openBrieferContractDetail('${b.name}')" style="text-align:center;background:#f0fdf4;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #bbf7d0;">
-                <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:2px;">청약한 섭외 🔍</div>
+                <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:2px;">청약한 섭외 <i class=i-search></i></div>
                 <div style="font-size:20px;font-weight:900;color:#15803d;">${b.withContract}</div>
               </div>
               <div onclick="window.openBrieferCostDetail('${b.name}')" style="text-align:center;background:#fef2f2;padding:8px;border-radius:8px;cursor:pointer;border:1.5px solid #fecaca;">
-                <div style="font-size:12px;font-weight:700;color:#c62828;margin-bottom:2px;">사업비 🔍</div>
+                <div style="font-size:12px;font-weight:700;color:#c62828;margin-bottom:2px;">사업비 <i class=i-search></i></div>
                 <div style="font-size:14px;font-weight:800;color:#c62828;margin-top:4px;">${b.businessCost>0?(b.businessCost/10000).toFixed(1)+'만':'-'}</div>
               </div>
             </div>
@@ -3000,7 +3143,7 @@ window.loadStats = function(useCustomDate = false) {
             <div class="card-sm" style="margin-bottom:10px;background:#ffffff;border-left:3px solid var(--red);">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
                 <div>
-                  <div style="font-size:12px;color:var(--red);font-weight:800;">📅 ${c.date} ${tStr}</div>
+                  <div style="font-size:12px;color:var(--red);font-weight:800;"><i class=i-calendar></i> ${c.date} ${tStr}</div>
                   <div style="font-size:14px;font-weight:900;color:var(--tx1);margin-top:2px;">${c.businessName} - ${c.contractName}</div>
                 </div>
                 <div style="font-size:15px;font-weight:900;color:var(--red);">${(Number(c.amount)||0).toLocaleString()}원</div>
@@ -3027,12 +3170,12 @@ window.loadStats = function(useCustomDate = false) {
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
               <div onclick="${hasVenues ? `window.openRecruiterTotalDetail('${r.name}')` : ''}"
                 style="text-align:center;background:var(--bg3);padding:10px 6px;border-radius:8px;${hasVenues?'cursor:pointer;border:1.5px solid var(--border2);':''}">
-                <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:4px;">내린 섭외${hasVenues?' 🔍':''}</div>
+                <div style="font-size:12px;font-weight:700;color:var(--tx3);margin-bottom:4px;">내린 섭외${hasVenues?' <i class=i-search></i>':''}</div>
                 <div style="font-size:20px;font-weight:900;color:var(--tx1);">${r.totalVenues}</div>
               </div>
               <div onclick="${hasProg ? `window.openRecruiterDetail('${r.name}')` : ''}"
                 style="text-align:center;background:#f0fdf4;padding:10px 6px;border-radius:8px;${hasProg?'cursor:pointer;border:1.5px solid #bbf7d0;':''}">
-                <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:4px;">진행${hasProg?' 🔍':''}</div>
+                <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:4px;">진행${hasProg?' <i class=i-search></i>':''}</div>
                 <div style="font-size:20px;font-weight:900;color:#15803d;">${r.inProgress}</div>
                 <div style="font-size:12px;color:#15803d;font-weight:600;">(${progPct}%)</div>
               </div>
@@ -3347,10 +3490,10 @@ window.openRecruiterDetail = function(name) {
         <div>
           <div style="font-size:12px;color:var(--tx3);font-weight:600;">${v.date} ${v.dayOfWeek}</div>
           <div style="font-size:15px;font-weight:900;color:var(--tx1);">${v.businessName}</div>
-          ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:2px;cursor:pointer;" onclick="window.openTmap('${v.address}')">📍 <span style="text-decoration:underline;text-underline-offset:2px;">${blindedAddr}</span></div>` : ''}
+          ${v.address ? `<div style="font-size:12px;color:var(--blue);margin-top:2px;cursor:pointer;" onclick="window.openTmap('${v.address}')"><i class=i-pin></i> <span style="text-decoration:underline;text-underline-offset:2px;">${blindedAddr}</span></div>` : ''}
         </div>
       </div>
-      ${v.assignedBriefer ? `<div style="font-size:12px;color:var(--tx2);margin-bottom:8px;">🎯 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
+      ${v.assignedBriefer ? `<div style="font-size:12px;color:var(--tx2);margin-bottom:8px;"><i class=i-target></i> 브리퍼: <strong>${v.assignedBriefer}</strong></div>` : ''}
       ${bottomText}
     </div>`;
   }).join('');
@@ -3456,7 +3599,7 @@ window.doSendRecruiter = function(id) {
     showCancelButton: true,
     confirmButtonColor: '#047857',
     cancelButtonColor: '#6b7280',
-    confirmButtonText: '📨 전달하기',
+    confirmButtonText: '전달하기',
     cancelButtonText: '취소',
     background: '#ffffff',
     color: '#111827'
@@ -3493,7 +3636,7 @@ window.clearSendSelect = function(){ selectedForSend = {}; window.renderSendBar(
 window.commitSendSelected = function(){
   var ids = Object.keys(selectedForSend);
   if (ids.length === 0) return;
-  Swal.fire({ title: '결과 일괄 전달', text: ids.length + '건의 섭외 결과를 각 섭외자에게 전달하시겠습니까?', icon: 'question', showCancelButton: true, confirmButtonColor: '#047857', cancelButtonColor: '#6b7280', confirmButtonText: '📨 전달', cancelButtonText: '취소', background:'#ffffff', color:'#111827' }).then(function(r){
+  Swal.fire({ title: '결과 일괄 전달', text: ids.length + '건의 섭외 결과를 각 섭외자에게 전달하시겠습니까?', icon: 'question', showCancelButton: true, confirmButtonColor: '#047857', cancelButtonColor: '#6b7280', confirmButtonText: '전달', cancelButtonText: '취소', background:'#ffffff', color:'#111827' }).then(function(r){
     if (!r.isConfirmed) return;
     window.loading(true, '결과 전달 중...');
     var i = 0, errs = 0;
