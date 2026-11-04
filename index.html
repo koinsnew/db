@@ -184,6 +184,13 @@ details.more[open] summary{background:var(--bg3);}
 .more-menu .btn{justify-content:flex-start;width:100%;}
 .more-menu .btn-danger{margin-top:4px;}
 
+/* ─── TIMETABLE GAP ─── */
+#venueList .v-date{display:none;}
+.gap-line{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:28px;padding:4px 12px;border:1px dashed var(--border2);border-radius:10px;background:transparent;color:var(--tx2);font-size:12px;font-weight:600;font-family:inherit;text-align:left;}
+button.gap-line{min-height:44px;cursor:pointer;color:var(--blue);background:#f7fafd;}
+button.gap-line:active{background:#eef5fc;}
+.gap-line b{font-weight:800;white-space:nowrap;}
+
 /* ─── PHOTO GRID ─── */
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 .pitem{aspect-ratio:1;background:var(--bg3);border-radius:8px;overflow:hidden;
@@ -361,17 +368,21 @@ div:where(.swal2-container){z-index:9999!important;}
     </div>
     
     <div id="adminStatFilter" style="display:none; margin-bottom:16px;">
-      <div style="display:flex; align-items:center; gap:2px; background:var(--bg1); padding:4px 6px; border-radius:10px; border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,0.02); width:100%; box-sizing:border-box;">
-        <input type="date" id="stat_start" class="inp" style="padding:4px; font-size:12px; flex:1; min-width:0; letter-spacing:0; text-align:center;">
-        <span style="font-size:12px; font-weight:800; color:var(--tx2); margin:0 1px;">~</span>
-        <input type="date" id="stat_end" class="inp" style="padding:4px; font-size:12px; flex:1; min-width:0; letter-spacing:0; text-align:center;">
-        <button onclick="window.loadStats(true)" class="btn btn-blue" style="padding:6px 8px; font-size:12px; flex-shrink:0; white-space:nowrap; margin-left:2px;">조회</button>
-        <button onclick="window.resetStatFilter()" class="btn btn-ghost" style="padding:6px 8px; font-size:12px; flex-shrink:0; white-space:nowrap; margin-left:2px;">초기화</button>
+      <div style="background:var(--bg1); padding:10px; border-radius:12px; border:1px solid var(--border); width:100%; box-sizing:border-box;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <input type="date" id="stat_start" class="inp" aria-label="조회 시작일" style="padding:0 6px; min-height:44px; font-size:14px; flex:1; min-width:0; text-align:center;">
+          <span aria-hidden="true" style="font-size:14px; font-weight:800; color:var(--tx2);">~</span>
+          <input type="date" id="stat_end" class="inp" aria-label="조회 종료일" style="padding:0 6px; min-height:44px; font-size:14px; flex:1; min-width:0; text-align:center;">
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button onclick="window.loadStats(true)" class="btn btn-blue tap" style="flex:1; font-size:14px;">조회</button>
+          <button onclick="window.resetStatFilter()" class="btn btn-ghost tap" style="flex:1; font-size:14px;">초기화</button>
+        </div>
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px;">
-      <div class="card-sm" style="text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.03);background:#ffffff;">
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:24px;">
+      <div class="card-sm" style="text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.03);background:#ffffff;min-width:0;">
         <div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 섭외</div>
         <div style="font-size:26px;font-weight:900;color:var(--blue);" id="sTotal">0</div>
       </div>
@@ -381,7 +392,7 @@ div:where(.swal2-container){z-index:9999!important;}
       </div>
       <div class="card-sm" style="text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.03);background:#ffffff;">
         <div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:6px;">총 보험료</div>
-        <div style="font-size:14px;font-weight:900;color:var(--indigo);margin-top:6px;" id="sAmount">0원</div>
+        <div style="font-size:16px;font-weight:900;color:var(--indigo);margin-top:6px;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere;" id="sAmount">0원</div>
       </div>
     </div>
     
@@ -411,9 +422,9 @@ div:where(.swal2-container){z-index:9999!important;}
     <div style="padding:12px 14px 6px;display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:nowrap;">
       <div style="font-size:clamp(13px,4vw,18px);font-weight:900;color:var(--tx1);white-space:nowrap;flex-shrink:0;">🗺️ 섭외지 지도</div>
       <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
-        <button onclick="window.mapPrevDay()" class="btn btn-ghost" style="padding:4px 7px;font-size:13px;">◀</button>
-        <input type="date" id="mapDateInput" class="inp" style="padding:4px 4px;font-size:12px;width:126px;text-align:center;" onchange="window.onMapDateChange(this.value)">
-        <button onclick="window.mapNextDay()" class="btn btn-ghost" style="padding:4px 7px;font-size:13px;">▶</button>
+        <button onclick="window.mapPrevDay()" class="btn btn-ghost tap" aria-label="전날" style="padding:4px 10px;font-size:14px;">◀</button>
+        <input type="date" id="mapDateInput" class="inp" aria-label="지도 날짜" style="padding:4px 4px;min-height:44px;font-size:13px;width:126px;text-align:center;" onchange="window.onMapDateChange(this.value)">
+        <button onclick="window.mapNextDay()" class="btn btn-ghost tap" aria-label="다음날" style="padding:4px 10px;font-size:14px;">▶</button>
       </div>
     </div>
     <div style="padding:0 14px 8px;display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--tx2);font-weight:600;">
@@ -1573,37 +1584,28 @@ window.submitEditVenue = function() {
   } else { window.loading(false); window.toast('로컬 모드','info'); }
 };
 
-window.doCancelVenue = function(id) {
-  Swal.fire({ title:'섭외 취소', text:'이 섭외를 정말 취소하시겠습니까?',
-    icon:'warning', showCancelButton:true, confirmButtonColor:'#c62828', cancelButtonColor:'#6b7280',
-    confirmButtonText:'섭외취소', cancelButtonText:'닫기', background:'#ffffff', color:'#111827'
-  }).then(function(r) {
-    if (!r.isConfirmed) return;
-    window.loading(true);
-    google.script.run.withSuccessHandler(function(resStr) {
-      window.loading(false);
-      const res = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
-      if(res.success) { window.toast('섭외가 취소되었습니다','success'); window.loadVenues(); }
-      else { window.toast('오류 발생','error'); }
-    }).withFailureHandler(function() { window.loading(false); }).cancelVenueRecord(id);
+window.deferDanger = function(id, msg, serverFn){
+  var removed = (venues || []).filter(function(v){ return String(v.id) === String(id); });
+  venues = (venues || []).filter(function(v){ return String(v.id) !== String(id); });
+  window.renderList();
+  Swal.mixin({ toast:true, position:'top', showConfirmButton:true, confirmButtonText:'되돌리기', timer:6000, timerProgressBar:true,
+    background:'#ffffff', color:'#111827', confirmButtonColor:'#0066cc'
+  }).fire({ icon:'warning', title: msg }).then(function(r){
+    if (r.isConfirmed) {
+      venues = dedupeById((venues || []).concat(removed));
+      window.renderList();
+      window.toast('되돌렸습니다','success');
+      return;
+    }
+    google.script.run.withSuccessHandler(function(resStr){
+      var res = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
+      if (res && res.success) { window.loadVenues(); }
+      else { window.toast('처리하지 못했습니다. 다시 시도해주세요','error'); window.loadVenues(); }
+    }).withFailureHandler(function(){ window.toast('처리하지 못했습니다. 다시 시도해주세요','error'); window.loadVenues(); })[serverFn](id);
   });
 };
-
-window.doRealDeleteVenue = function(id) {
-  Swal.fire({ title:'일정 영구 삭제', text:'이 일정을 데이터에서 완전히 삭제하시겠습니까? (복구 불가)',
-    icon:'error', showCancelButton:true, confirmButtonColor:'#c62828', cancelButtonColor:'#6b7280',
-    confirmButtonText:'삭제', cancelButtonText:'취소', background:'#ffffff', color:'#111827'
-  }).then(function(r) {
-    if (!r.isConfirmed) return;
-    window.loading(true);
-    google.script.run.withSuccessHandler(function(resStr) {
-      window.loading(false);
-      const res = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
-      if(res.success) { window.toast('일정이 완전히 삭제되었습니다','success'); window.loadVenues(); }
-      else { window.toast('오류 발생','error'); }
-    }).withFailureHandler(function() { window.loading(false); }).deleteVenueRecord(id);
-  });
-};
+window.doCancelVenue = function(id) { window.deferDanger(id, '섭외를 취소했습니다', 'cancelVenueRecord'); };
+window.doRealDeleteVenue = function(id) { window.deferDanger(id, '일정을 삭제했습니다', 'deleteVenueRecord'); };
 
 window.doProcessContract = function(venueId, contractIndex, action, cName, reason) {
   reason = reason || '';
@@ -2102,11 +2104,7 @@ window.renderDayVenues = function(dateStr, list) {
                   <div style="width:2px; flex:1; background:var(--border2);"></div>
               </div>
               <div style="flex:1; padding-left:6px; padding-bottom:12px;">
-                  <div style="height:150px; background:repeating-linear-gradient(45deg, #f1f5f9, #f1f5f9 10px, #ffffff 10px, #ffffff 20px); border:1px dashed var(--border2); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--tx3); font-size:12px; font-weight:700;">
-                      <div style="font-size:24px; margin-bottom:8px;">📭</div>
-                      <div>☕ 전일 빈 시간</div>
-                      <div style="font-size:12px; font-weight:600; margin-top:4px;">12시간 (08:00 ~ 20:00)</div>
-                  </div>
+                  ${window.gapLine('12시간', '08:00', '20:00', true)}
               </div>
            </div>
            <div style="display:flex; position:relative; height:20px;">
@@ -2182,7 +2180,6 @@ window.renderDayVenues = function(dateStr, list) {
 
          if (blk.type === 'empty') {
              if (myOnly) return;   // '내일정만' 시 빈 시간 숨김
-             const h = Math.min(Math.max(blk.gap, 40), 160);
              html += `
              <div style="display:flex; position:relative;">
                 <div style="width:45px; flex-shrink:0; display:flex; flex-direction:column; align-items:center;">
@@ -2190,10 +2187,7 @@ window.renderDayVenues = function(dateStr, list) {
                     <div style="width:2px; flex:1; background:var(--border2);"></div>
                 </div>
                 <div style="flex:1; padding-left:6px; padding-bottom:12px;">
-                    <div style="height:${h}px; background:repeating-linear-gradient(45deg, #f1f5f9, #f1f5f9 10px, #ffffff 10px, #ffffff 20px); border:1px dashed var(--border2); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--tx3); font-size:12px; font-weight:700; box-shadow:inset 0 1px 3px rgba(0,0,0,0.02);">
-                        <div>☕ 빈 시간</div>
-                        <div style="font-size:12px; font-weight:600; margin-top:4px;">${formatDuration(blk.gap)} (${formatMins(blk.start)} ~ ${formatMins(blk.end)})</div>
-                    </div>
+                    ${window.gapLine(formatDuration(blk.gap), formatMins(blk.start), formatMins(blk.end))}
                 </div>
              </div>`;
          } else {
@@ -2332,6 +2326,20 @@ window.venueCardOther = function(v) {
 
 // 주소를 티맵으로 열기 — 설치된 티맵 앱에서 해당 주소로 검색
 // (좌표 데이터가 없어 즉시 길안내 대신 '검색' 스킴 사용)
+window.gapLine = function(durLabel, from, to, allDay){
+  var label = (allDay ? '전일 빈 시간 ' : '빈 시간 ') + durLabel;
+  var range = from + ' ~ ' + to;
+  var ni = document.getElementById('ni-input');
+  var canReg = ni && ni.style.display !== 'none' && selectedCalDate;
+  if (canReg) return '<button type="button" class="gap-line" onclick="event.stopPropagation();window.quickRegister(\'' + selectedCalDate + '\',\'' + from + '\')" aria-label="' + label + ' ' + range + ' 섭외 등록"><span>' + label + ' · ' + range + '</span><b>+ 섭외 등록</b></button>';
+  return '<div class="gap-line"><span>' + label + ' · ' + range + '</span></div>';
+};
+window.quickRegister = function(dateStr, timeStr){
+  window.goPage('input');
+  var d = document.getElementById('i_date'); if (d) { d.value = dateStr; if (window.autoDay) window.autoDay(); }
+  var t = document.getElementById('i_time'); if (t) t.value = timeStr;
+  window.scrollTo(0,0);
+};
 window.openTmap = function(addr) {
   if (!addr) return;
   var url = 'tmap://search?name=' + encodeURIComponent(String(addr).trim());
@@ -2464,7 +2472,7 @@ window.venueCard = function(v, admin, briefer, recruiter) {
           ${v.isScheduledEvent ? `
             <div style="color:var(--red);font-size:13px;font-weight:800;">📅 ${formattedSchedDate}</div>
           ` : `
-            <div>${v.date} ${v.dayOfWeek}</div>
+            <div class="v-date">${v.date} ${v.dayOfWeek}</div>
             <div style="margin-top:4px;color:var(--blue);font-size:14px;font-weight:800;">🕒 ${timeStr}</div>
           `}
         </div>
@@ -3005,8 +3013,10 @@ window.loadStats = function(useCustomDate = false) {
         }).join('');
 
     }).withFailureHandler(function(e) {
-      document.getElementById('brieferStats').innerHTML = `<div style="color:var(--red);font-size:13px;">${e}</div>`;
-      document.getElementById('scheduledStatsArea').innerHTML = `<div style="color:var(--red);font-size:13px;">${e}</div>`;
+      console.error('통계 로드 실패', e);
+      var _fail = '<div style="padding:14px;text-align:center;color:var(--tx2);font-size:14px;">통계를 불러오지 못했습니다.<br><button class="btn btn-blue tap" style="margin-top:10px;padding:0 20px;" onclick="window.loadStats(true)">다시 시도</button></div>';
+      document.getElementById('brieferStats').innerHTML = _fail;
+      document.getElementById('scheduledStatsArea').innerHTML = '';
     }).getStats(useCustomDate ? null : curMonth, sDate, eDate);
   } else {
     ['sTotal','sContract'].forEach(function(id) { document.getElementById(id).innerText='0'; });
