@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes">
 <title>세미나 PRO</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="세미나 PRO">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
@@ -444,6 +451,9 @@ h1,h2,h3,.fl{text-wrap:balance;}
 @keyframes bootUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes bootCell{0%,100%{opacity:.28}30%{opacity:1}}
 @keyframes bootBar{from{transform:scaleX(.12)}to{transform:scaleX(1)}}
+/* ─── 월 로딩 중 표시 / 결과 저장 오류 ─── */
+.wk-pending span{display:block;padding:12px;border-radius:12px;background:var(--bg3);color:var(--tx2);font-size:13px;font-weight:600;}
+#resultErr{margin:0 0 10px;padding:12px 14px;border-radius:12px;background:#fef2f2;color:#b42318;font-size:14px;font-weight:600;line-height:1.5;border:1px solid #fecaca;}
 </style>
 </head>
 <body>
@@ -845,7 +855,8 @@ h1,h2,h3,.fl{text-wrap:balance;}
       <div id="photoGrid" class="pgrid"></div>
     </div>
 
-    <button onclick="window.submitResult()" class="btn btn-gold btn-full">결과 저장하기</button>
+    <div id="resultErr" role="alert" style="display:none;"></div>
+    <button id="resultSubmitBtn" onclick="window.submitResult()" class="btn btn-gold btn-full">결과 저장하기</button>
   </div>
 </div>
 
@@ -2118,6 +2129,36 @@ function loadWeeksSeq(weeks, cb){
   var i = 0; (function next(){ if (i >= weeks.length){ if (cb) cb(); return; } ensureWeek(weeks[i], function(e){ if (e){ if (cb) cb(e); return; } i++; next(); }); })();
 }
 // 주별 '보기' 버튼에서 호출
+window.monthWeeks = function(){
+  var ym = String(curMonth || '').split('-'), y = +ym[0], m = +ym[1], out = [], seen = {};
+  if (!y || !m) return out;
+  var last = new Date(y, m, 0).getDate();
+  for (var d = 1; d <= last; d++) { var k = weekKeyOf(y + '-' + pad2(m) + '-' + pad2(d)); if (!seen[k]) { seen[k] = 1; out.push(k); } }
+  return out;
+};
+window.monthPending = function(){ return window.monthWeeks().filter(function(k){ return !loadedWeeks[k]; }).length; };
+// 이번 달의 나머지 주를 조용히 순차 로드(화면 가림 없음). 실패한 주는 기존 '보기' 버튼으로 남김
+window.prefetchMonth = function(){
+  if (window.__pf || !curMonth) return;
+  window.__pfFail = window.__pfFail || {};
+  var ym0 = curMonth;
+  var todo = window.monthWeeks().filter(function(k){ return !loadedWeeks[k] && !window.__pfFail[k]; });
+  if (!todo.length) return;
+  window.__pf = true;
+  var paneOpen = function(){ var p = document.getElementById('dayPane'); return !!(p && p.classList.contains('open')); };
+  (function next(i){
+    if (i >= todo.length || curMonth !== ym0) {
+      window.__pf = false;
+      if (!paneOpen()) window.renderList();
+      return;
+    }
+    ensureWeek(todo[i], function(e){
+      if (e) window.__pfFail[todo[i]] = true;
+      else if (!paneOpen() && curMonth === ym0) window.renderList();
+      next(i + 1);
+    });
+  })(0);
+};
 window.loadWeekAndRender = function(weekKey){
   window.loading(true, '불러오는 중...');
   ensureWeek(weekKey, function(err){ window.loading(false); if (err){ window.toast('불러오지 못했습니다','error'); return; } window.renderList(); });
@@ -2241,6 +2282,7 @@ window.renderList = function() {
   }
 
   window.renderCalendar(fullList, cardList);
+  setTimeout(function(){ window.prefetchMonth(); }, 0);
 };
 
 window.renderCalendar = function(fullList, cardList) {
@@ -2332,6 +2374,9 @@ window.renderCalendar = function(fullList, cardList) {
       var rowWeekKey = weekKeyOf(y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0'));
       if (!loadedWeeks[rowWeekKey]) {
         var _rng = weekRange(rowWeekKey);
+        if (window.__pf && !(window.__pfFail && window.__pfFail[rowWeekKey])) {
+          html += `<div class="wk-pending" role="status" style="grid-column:1/-1;margin:4px 0 12px;text-align:center;"><span>이 주 일정을 불러오는 중…</span></div>`;
+        } else
         html += `<div style="grid-column:1/-1; margin:4px 0 12px; text-align:center;"><button onclick="window.loadWeekAndRender('${rowWeekKey}')" style="width:100%; background:#eef5fc; color:#0052a3; border:1px dashed #9cc2e6; border-radius:10px; padding:0 8px; min-height:44px; font-size:13px; font-weight:800; cursor:pointer;">이 주 섭외 보기 (${_rng.start.slice(5).replace('-','.')} ~ ${_rng.end.slice(5).replace('-','.')})</button></div>`;
         hasSelectedInWeek = false;
       } else if (hasSelectedInWeek) {
@@ -2426,7 +2471,7 @@ window.onSearchInput = function(q){
     return '<button type="button" class="srch-item" role="option" onclick="window.pickSearch(\''+v.date+'\')"><span class="d">'+esc(v.date.slice(5).replace('-','/'))+' '+esc((v.time||'').slice(0,5))+'</span><span class="t">'+esc(v.assignedBriefer||'미배정')+' · '+esc(v.businessName)+'</span></button>';
   }).join('');
   if (!hits.length) html = '<div class="srch-hint" style="border-top:0;">검색 결과가 없습니다.</div>';
-  html += '<div class="srch-hint">'+(hits.length>8?'상위 8건만 표시 · ':'')+'불러온 주 안에서만 검색됩니다. 다른 주는 달력에서 "이 주 섭외 보기"로 불러오세요.</div>';
+  html += '<div class="srch-hint">'+(hits.length>8?'상위 8건만 표시 · ':'')+''+(window.monthPending() ? (window.__pf ? '이번 달의 나머지 주를 불러오는 중입니다. 불러온 일정만 검색됩니다.' : '불러온 주 안에서만 검색됩니다. 다른 주는 달력에서 "이 주 섭외 보기"로 불러오세요.') : '이번 달 전체 일정에서 검색됩니다.')+'</div>';
   box.innerHTML = html; box.style.display = 'block';
 };
 window.pickSearch = function(dateStr){
@@ -3109,6 +3154,7 @@ const RBTNIDS = {'청약완료':'rb-complete','청약예정':'rb-scheduled','청
 window.openResult = function(id) {
   curVenueId = id;
   selResults = []; compContracts = []; schedContracts = []; photos = [];
+  (function(){ var e = document.getElementById('resultErr'); if (e) e.style.display = 'none'; var b = document.getElementById('resultSubmitBtn'); if (b) { b.disabled = false; b.innerText = '결과 저장하기'; } })();
 
   document.querySelectorAll('.rbtn').forEach(function(b) { b.style.borderColor='var(--border2)';b.style.background='var(--bg1)';b.style.color='var(--tx2)'; });
   ['compArea','schedArea'].forEach(function(f) { document.getElementById(f).style.display='none'; });
@@ -3217,7 +3263,21 @@ window.addPhotos = function(e) {
   const rem = 10 - photos.length;
   files.slice(0,rem).forEach(function(f) {
     const rd = new FileReader();
-    rd.onload = function(ev) { photos.push(ev.target.result); window.renderPhotos(); };
+    rd.onload = function(ev) {
+      var raw = ev.target.result, img = new Image();
+      img.onload = function(){
+        try {
+          var mx = 1280, sc = Math.min(1, mx / Math.max(img.width, img.height)), cv = document.createElement('canvas');
+          cv.width = Math.round(img.width * sc); cv.height = Math.round(img.height * sc);
+          cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+          var out = cv.toDataURL('image/jpeg', 0.82);
+          photos.push(out.length < raw.length ? out : raw);
+        } catch(err) { photos.push(raw); }
+        window.renderPhotos();
+      };
+      img.onerror = function(){ photos.push(raw); window.renderPhotos(); };
+      img.src = raw;
+    };
     rd.readAsDataURL(f);
   });
   if (files.length > rem) window.toast('최대 10장까지 첨부 가능합니다','info');
@@ -3260,15 +3320,18 @@ window.submitResult = function() {
     images          : photos
   };
 
-  window.closeM('mResult'); window.loading(true);
+  var btn = document.getElementById('resultSubmitBtn'), errEl = document.getElementById('resultErr');
+  var busy = function(on){ if (btn) { btn.disabled = on; btn.innerText = on ? '저장 중…' : (errEl && errEl.style.display !== 'none' ? '다시 시도' : '결과 저장하기'); } };
+  var fail = function(msg){ if (errEl) { errEl.innerText = '저장하지 못했습니다. 입력한 내용은 그대로 있어요. ' + (msg ? '(' + msg + ')' : '') + ' 다시 시도해 주세요.'; errEl.style.display = 'block'; } busy(false); };
+  if (errEl) errEl.style.display = 'none';
+  busy(true);
   if (typeof google !== 'undefined' && google.script) {
     google.script.run.withSuccessHandler(function(resStr) {
-      window.loading(false);
-      const r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
-      if (r.success) { window.toast('결과가 저장되었습니다.','success'); window.loadVenues(); }
-      else window.toast('오류: '+(r.error||''),'error');
-    }).withFailureHandler(function(e) { window.loading(false); window.toast('오류: '+e,'error'); }).saveResult(curVenueId, data);
-  } else { window.loading(false); window.toast('로컬 모드','info'); }
+      var r; try { r = typeof resStr === 'string' ? JSON.parse(resStr) : resStr; } catch(e) { fail('응답 오류'); return; }
+      if (r && r.success) { busy(false); window.closeM('mResult'); window.toast('결과가 저장되었습니다.','success'); window.loadVenues(); }
+      else fail((r && r.error) || '');
+    }).withFailureHandler(function(e) { fail(String((e && e.message) || e || '')); }).saveResult(curVenueId, data);
+  } else { busy(false); window.closeM('mResult'); window.toast('로컬 모드','info'); }
 };
 
 window.resetStatFilter = function() {
