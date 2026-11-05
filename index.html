@@ -439,11 +439,11 @@ h1,h2,h3,.fl{text-wrap:balance;}
 #loading.boot .boot-sub{margin-top:6px;color:rgba(255,255,255,.72);font-size:15px;font-weight:500;letter-spacing:.02em;animation:bootUp .7s .28s cubic-bezier(.16,1,.3,1) both;}
 #loading.boot #loadingText{margin-top:44px;color:rgba(255,255,255,.72)!important;font-size:14px!important;font-weight:500!important;animation:bootUp .7s .4s cubic-bezier(.16,1,.3,1) both;}
 #loading.boot .boot-bar{display:block;margin-top:16px;width:120px;height:3px;border-radius:2px;background:rgba(255,255,255,.16);overflow:hidden;}
-#loading.boot .boot-bar i{display:block;width:40%;height:100%;border-radius:2px;background:#6ea3ff;animation:bootBar 1.3s cubic-bezier(.45,0,.25,1) infinite;}
+#loading.boot .boot-bar i{display:block;width:100%;height:100%;border-radius:2px;background:#6ea3ff;transform-origin:left;animation:bootBar 1.4s cubic-bezier(.45,0,.25,1) infinite alternate;}
 @keyframes bootPop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
 @keyframes bootUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes bootCell{0%,100%{opacity:.28}30%{opacity:1}}
-@keyframes bootBar{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+@keyframes bootBar{from{transform:scaleX(.12)}to{transform:scaleX(1)}}
 </style>
 </head>
 <body>
