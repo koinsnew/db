@@ -410,14 +410,54 @@ h1,h2,h3,.fl{text-wrap:balance;}
   #dayPane #venueList{margin-top:0;}
 }
 @media (prefers-reduced-motion:reduce){#dayPane,#dayPane.open{transition:none!important;}}
+/* ─── 모바일 달력: PC와 같은 칩(시간·브리퍼·구) ─── */
+.ce-g{display:none;}
+@media (max-width:600px){
+  .cal-cell{min-height:96px;padding:3px 2px;}
+  .cal-ev{font-size:10px!important;line-height:1.2;height:auto!important;padding:2px 2px 2px 3px!important;margin-bottom:2px!important;border-radius:5px!important;white-space:normal!important;overflow:hidden;text-overflow:clip;overflow-wrap:anywhere;word-break:keep-all;border:1px solid!important;border-left-width:2px!important;}
+  .ce-t{display:block;font-size:10px;font-weight:700;line-height:1.2;}
+  .ce-a{display:none;}
+  .ce-g{display:block;font-size:10px;font-weight:500;line-height:1.2;}
+  .ev-x{display:none!important;}
+  .cal-legend{display:none!important;}
+  .ev-wait{background:#f2f4f6!important;color:#4e5968;border-color:#d1d6db!important;border-left-color:#6b7280!important;}
+  .ev-assign{background:#e8f1fd!important;color:#1553b0;border-color:#b9d3f7!important;border-left-color:#1b64da!important;}
+  .ev-done{background:#eef2ff!important;color:#4338ca;border-color:#c7d2fe!important;border-left-color:#6366f1!important;}
+  .ev-sched{background:#f0fdf4!important;color:#15803d;border-color:#bbf7d0!important;border-left-color:#15803d!important;}
+  .ev-failed{background:#fef2f2!important;color:#c62828;border-color:#fecaca!important;border-left-color:#c62828!important;}
+  .ev-cancel{background:#f3f4f6!important;color:#4b5563;border:1px dashed #9ca3af!important;text-decoration:line-through;height:auto!important;}
+  .ev-personal{background:#fffbeb!important;color:#92400e;border-color:#fde68a!important;border-left-color:#b45309!important;}
+}
+/* ─── 첫 접속 스플래시 (이후의 '처리 중' 오버레이는 기존 흰색 유지) ─── */
+#loading .boot-brand,#loading .boot-bar{display:none;}
+#loading.boot{background:radial-gradient(70% 50% at 50% 42%,#222c7a 0%,#14194a 72%)!important;backdrop-filter:none!important;gap:0;}
+#loading.boot .ld{display:none;}
+#loading.boot .boot-brand{display:flex;flex-direction:column;align-items:center;}
+#loading.boot .boot-mark{border-radius:24px;box-shadow:0 12px 32px rgba(0,0,0,.35);animation:bootPop .7s cubic-bezier(.16,1,.3,1) both;}
+#loading.boot .boot-mark .c{opacity:.28;animation:bootCell 1.8s ease-in-out infinite;}
+#loading.boot .boot-name{margin-top:24px;color:#fff;font-size:30px;font-weight:800;letter-spacing:-.02em;animation:bootUp .7s .15s cubic-bezier(.16,1,.3,1) both;}
+#loading.boot .boot-sub{margin-top:6px;color:rgba(255,255,255,.72);font-size:15px;font-weight:500;letter-spacing:.02em;animation:bootUp .7s .28s cubic-bezier(.16,1,.3,1) both;}
+#loading.boot #loadingText{margin-top:44px;color:rgba(255,255,255,.72)!important;font-size:14px!important;font-weight:500!important;animation:bootUp .7s .4s cubic-bezier(.16,1,.3,1) both;}
+#loading.boot .boot-bar{display:block;margin-top:16px;width:120px;height:3px;border-radius:2px;background:rgba(255,255,255,.16);overflow:hidden;}
+#loading.boot .boot-bar i{display:block;width:40%;height:100%;border-radius:2px;background:#6ea3ff;animation:bootBar 1.3s cubic-bezier(.45,0,.25,1) infinite;}
+@keyframes bootPop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+@keyframes bootUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes bootCell{0%,100%{opacity:.28}30%{opacity:1}}
+@keyframes bootBar{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
 </style>
 </head>
 <body>
 
-<div id="loading" style="position:fixed;inset:0;background:rgba(255,255,255,.95);backdrop-filter:blur(4px);z-index:9000;
+<div id="loading" class="boot" style="position:fixed;inset:0;background:rgba(255,255,255,.95);backdrop-filter:blur(4px);z-index:9000;
   display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;">
+  <div class="boot-brand" aria-hidden="true">
+    <svg class="boot-mark" viewBox="0 0 88 88" width="88" height="88"><rect width="88" height="88" rx="24" fill="#1b64da"/><rect x="20" y="22" width="48" height="9" rx="4.5" fill="#fff"/><g fill="#fff"><rect class="c" style="animation-delay:0s" x="20" y="40" width="12" height="12" rx="3.5"/><rect class="c" style="animation-delay:.14s" x="38" y="40" width="12" height="12" rx="3.5"/><rect class="c" style="animation-delay:.28s" x="56" y="40" width="12" height="12" rx="3.5"/><rect class="c" style="animation-delay:.42s" x="20" y="58" width="12" height="12" rx="3.5"/><rect class="c" style="animation-delay:.56s" x="38" y="58" width="12" height="12" rx="3.5"/><rect class="c" style="animation-delay:.7s" x="56" y="58" width="12" height="12" rx="3.5"/></g></svg>
+    <div class="boot-name">세미나 PRO</div>
+    <div class="boot-sub">헤리티지 금융지사</div>
+  </div>
   <div class="ld"></div>
   <div id="loadingText" style="color:var(--blue);font-size:14px;font-weight:800;letter-spacing:-0.5px;">세미나 영업지원 프로그램에 접속중입니다...</div>
+  <div class="boot-bar" aria-hidden="true"><i></i></div>
 </div>
 
 <div id="loginScreen" class="login-bg" style="display:none;">
@@ -2236,7 +2276,7 @@ window.renderCalendar = function(fullList, cardList) {
 
     const dayVenues = vByDate[dateStr] || [];
 
-    let evHtml = dayVenues.map(function(v) {
+    let evHtml = dayVenues.map(function(v, _ix) {
       let evClass = 'ev-wait';
       let displayTitle = '';
       
@@ -2253,7 +2293,8 @@ window.renderCalendar = function(fullList, cardList) {
          }
          
          var _short = (v.address ? addr : (admin || v.isMine ? (v.businessName || addr) : addr)).split(/\s+/).slice(0, v.address ? 2 : 9).join(' ');
-         let displayTitleRaw = `<span class="ce-t">${(v.time||'').slice(0,5)} ${escH(brieferName)}</span><span class="ce-a">${escH(_short)}</span>`;
+         var _tk = _short.split(' '); var _gu = _tk.length > 1 ? _tk[1] : _tk[0];
+         let displayTitleRaw = `<span class="ce-t">${(v.time||'').slice(0,5)} ${escH(brieferName)}</span><span class="ce-a">${escH(_short)}</span><span class="ce-g">${escH(_gu)}</span>`;
          displayTitle = displayTitleRaw;
 
          if (v.isScheduledEvent) { evClass = 'ev-sched'; displayTitle = `[예정] ${displayTitleRaw}`; }
@@ -2264,7 +2305,7 @@ window.renderCalendar = function(fullList, cardList) {
          }
          else if(v.status === '취소' || v.status.includes('취소')) evClass = 'ev-cancel';
       }
-      return `<div class="cal-ev ${evClass}" aria-hidden="true">${displayTitle}</div>`;
+      return `<div class="cal-ev ${evClass}${_ix >= 3 ? ' ev-x' : ''}" aria-hidden="true">${displayTitle}</div>`;
     }).join('');
 
     const isSelected = selectedCalDate === dateStr ? 'selected' : '';
@@ -3911,6 +3952,7 @@ window.loading = function(show, text) {
   if (text) document.getElementById('loadingText').innerText = text;
   else document.getElementById('loadingText').innerText = '처리 중...';
   el.style.display = show ? 'flex' : 'none'; 
+  if (!show) el.classList.remove('boot');
 };
 window.fmtNum = function(inp) {
   const v = inp.value.replace(/,/g,'');
