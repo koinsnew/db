@@ -399,6 +399,17 @@ h1,h2,h3,.fl{text-wrap:balance;}
 #todayBtn.on{background:var(--blue);border-color:var(--blue);}
 .cal-day{color:var(--tx1);}
 ::-webkit-scrollbar-thumb{background:#c9ced6;}
+/* ─── 모바일: 캘린더만 메인, 날짜를 누르면 우측에서 일정 화면이 밀려 들어옴 ─── */
+.day-bar{position:sticky;top:0;z-index:2;background:var(--bg0);padding:10px 0 6px;}
+.day-back{display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 14px 0 8px;border:0;background:transparent;color:var(--blue);font-size:15px;font-weight:700;border-radius:12px;}
+@media (max-width:1023px){
+  #dayPane{display:block;position:fixed;inset:0;z-index:150;background:var(--bg0);padding:0 16px calc(88px + env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    transform:translateX(100%);visibility:hidden;transition:transform .34s cubic-bezier(.16,1,.3,1),visibility 0s linear .34s;}
+  #dayPane.open{transform:none;visibility:visible;transition:transform .34s cubic-bezier(.16,1,.3,1),visibility 0s;}
+  #dayPane .day-bar ~ #venueList button[aria-label="날짜 패널 닫기"]{display:none!important;}
+  #dayPane #venueList{margin-top:0;}
+}
+@media (prefers-reduced-motion:reduce){#dayPane,#dayPane.open{transition:none!important;}}
 </style>
 </head>
 <body>
@@ -2282,18 +2293,19 @@ window.renderCalendar = function(fullList, cardList) {
         var _rng = weekRange(rowWeekKey);
         html += `<div style="grid-column:1/-1; margin:4px 0 12px; text-align:center;"><button onclick="window.loadWeekAndRender('${rowWeekKey}')" style="width:100%; background:#eef5fc; color:#0052a3; border:1px dashed #9cc2e6; border-radius:10px; padding:0 8px; min-height:44px; font-size:13px; font-weight:800; cursor:pointer;">이 주 섭외 보기 (${_rng.start.slice(5).replace('-','.')} ~ ${_rng.end.slice(5).replace('-','.')})</button></div>`;
         hasSelectedInWeek = false;
-      } else if (hasSelectedInWeek && !wide) {
-        html += `<div id="venueList" style="grid-column: 1 / -1; background:#f8fafc; border-radius:14px; padding:12px 10px; margin:6px 0 12px; border:2px solid #c5dcf2; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); animation: pgIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); overflow:hidden;"></div>`;
-        hasSelectedInWeek = false; 
+      } else if (hasSelectedInWeek) {
+        hasSelectedInWeek = false;
       }
     }
   }
   document.getElementById('calendarGrid').innerHTML = html;
   var _dp = document.getElementById('dayPane');
   if (_dp) {
-    if (!wide) _dp.innerHTML = '';
-    else if (selectedCalDate && selectedCalDate.startsWith(curMonth)) _dp.innerHTML = '<div id="venueList" style="background:#f8fafc;border-radius:14px;padding:12px 10px;border:2px solid #c5dcf2;"></div>';
-    else _dp.innerHTML = '<div class="dayph"><i class=i-calendar></i><div>달력에서 날짜를 선택하면<br>그날 타임테이블이 여기에 열립니다.</div></div>';
+    var _hasDay = !!(selectedCalDate && selectedCalDate.startsWith(curMonth));
+    if (_hasDay && (wide || window.__dayUser)) _dp.innerHTML = (wide ? '' : '<div class="day-bar"><button type="button" class="day-back" onclick="window.closeDayPane()" aria-label="캘린더로 돌아가기"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>캘린더</button></div>') + '<div id="venueList" style="background:#f8fafc;border-radius:14px;padding:12px 10px;border:2px solid #c5dcf2;"></div>';
+    else if (wide) _dp.innerHTML = '<div class="dayph"><i class=i-calendar></i><div>달력에서 날짜를 선택하면<br>그날 타임테이블이 여기에 열립니다.</div></div>';
+    if (!wide) window.setDayPaneOpen(_hasDay && !!window.__dayUser);
+    else { _dp.classList.remove('open'); document.body.style.overflow = ''; }
   }
   window.syncTodayBtn();
 
@@ -2305,11 +2317,38 @@ window.renderCalendar = function(fullList, cardList) {
 window.jumpToDate = function(dateStr){
   var ym = dateStr.slice(0,7);
   if (ym !== curMonth){ curMonth = ym; if (window.setMonthBtnText) window.setMonthBtnText(); }
-  selectedCalDate = dateStr;
+  selectedCalDate = dateStr; window.__dayUser = true;
   var wk = weekKeyOf(dateStr);
   if (!loadedWeeks[wk]) window.loadWeekAndRender(wk); else window.renderList();
   setTimeout(function(){ var el = document.querySelector('.cal-cell.selected'); if (el && el.scrollIntoView) el.scrollIntoView({block:'center',behavior:'smooth'}); }, 80);
 };
+window.setDayPaneOpen = function(open){
+  var dp = document.getElementById('dayPane'); if (!dp) return;
+  var was = dp.classList.contains('open');
+  dp.classList.toggle('open', open);
+  dp.setAttribute('aria-hidden', open ? 'false' : 'true');
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open && !was) { dp.scrollTop = 0; try { history.pushState({sp:'day'}, ''); window.__dayHist = true; } catch(e){} }
+};
+window.closeDayPane = function(){
+  if (window.__dayHist) { try { history.back(); return; } catch(e){} }
+  if (selectedCalDate) window.onSelectDate(selectedCalDate);
+};
+window.addEventListener('popstate', function(){
+  if (!window.__dayHist) return;
+  window.__dayHist = false;
+  if (selectedCalDate) window.onSelectDate(selectedCalDate);
+});
+(function(){
+  var dp = document.getElementById('dayPane'); if (!dp) return;
+  var x0=0,y0=0,t0=0;
+  dp.addEventListener('touchstart', function(e){ var t=e.touches[0]; x0=t.clientX; y0=t.clientY; t0=Date.now(); }, {passive:true});
+  dp.addEventListener('touchend', function(e){
+    if (!dp.classList.contains('open')) return;
+    var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0;
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)*1.6 && Date.now()-t0 < 700) window.closeDayPane();
+  }, {passive:true});
+})();
 window.syncTodayBtn = function(){
   var b = document.getElementById('todayBtn'); if (!b) return;
   var on = selectedCalDate === toISO(new Date());
@@ -2355,8 +2394,9 @@ window.pickSearch = function(dateStr){
   window.jumpToDate(dateStr);
 };
 window.onSelectDate = function(dateStr) {
-  if (selectedCalDate === dateStr) { selectedCalDate = ''; window.renderList(); return; }
-  selectedCalDate = dateStr;
+  if (selectedCalDate === dateStr && !window.__dayUser && window.matchMedia && window.matchMedia('(max-width:1023px)').matches) { window.__dayUser = true; window.renderList(); return; }
+  if (selectedCalDate === dateStr) { selectedCalDate = ''; window.__dayUser = false; window.renderList(); return; }
+  selectedCalDate = dateStr; window.__dayUser = true;
   var wk = weekKeyOf(dateStr);
   if (!loadedWeeks[wk]) { window.loadWeekAndRender(wk); }   // 안 불린 주면 그 주 로드
   else { window.renderList(); }
